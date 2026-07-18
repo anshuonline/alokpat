@@ -89,7 +89,7 @@
                         secondary: '#DC2626',
                     },
                     fontFamily: {
-                        sans: ['<?php echo SITE_FONT_FAMILY; ?>', 'sans-serif'],
+                        sans: ['<?php echo SITE_FONT_NAME; ?>', 'sans-serif'],
                     }
                 }
             }
