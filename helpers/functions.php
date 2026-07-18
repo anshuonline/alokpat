@@ -85,6 +85,44 @@ function getFlash() {
 }
 
 /**
+ * Display flash message if it exists
+ */
+function displayFlash() {
+    $flash = getFlash();
+    if ($flash) {
+        $type = $flash['type'];
+        $message = escape($flash['message']);
+        
+        $bg = 'bg-blue-100';
+        $text = 'text-blue-800';
+        $icon = 'fa-info-circle';
+        
+        if ($type === 'success') {
+            $bg = 'bg-green-100';
+            $text = 'text-green-800';
+            $icon = 'fa-check-circle';
+        } elseif ($type === 'error') {
+            $bg = 'bg-red-100';
+            $text = 'text-red-800';
+            $icon = 'fa-exclamation-circle';
+        } elseif ($type === 'warning') {
+            $bg = 'bg-yellow-100';
+            $text = 'text-yellow-800';
+            $icon = 'fa-exclamation-triangle';
+        }
+        
+        echo "<div class='max-w-4xl mx-auto mt-6 px-4'>";
+        echo "<div class='{$bg} {$text} p-4 rounded-lg flex items-center shadow-sm animate-fade-in-down'>";
+        echo "<i class='fas {$icon} mr-3 text-lg'></i>";
+        echo "<span class='font-medium'>{$message}</span>";
+        echo "<button type='button' class='ml-auto text-gray-500 hover:text-gray-700' onclick='this.parentElement.style.display=\"none\"'>";
+        echo "<i class='fas fa-times'></i></button>";
+        echo "</div>";
+        echo "</div>";
+    }
+}
+
+/**
  * Check if user is logged in
  * 
  * @return bool
