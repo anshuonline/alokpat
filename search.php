@@ -23,6 +23,10 @@ $page_title = !empty($query) ? 'অনুসন্ধান: ' . escape($query) 
 $category = new Category();
 $categories = $category->getActive();
 
+// Get site info for logo fallback
+$settingModel = new Setting();
+$site_info = $settingModel->getSiteInfo();
+
 ob_start();
 component('header', ['categories' => $categories]);
 ?>
@@ -92,11 +96,16 @@ component('header', ['categories' => $categories]);
                         <a href="<?php echo url_for_post($post_item); ?>" class="flex flex-col md:flex-row">
                             
                             <!-- Thumbnail -->
-                            <div class="md:w-72 flex-shrink-0 overflow-hidden">
-                                <?php if (!empty($post_item['featured_image'])): ?>
-                                    <img src="<?php echo escape($post_item['featured_image']); ?>" 
+                            <div class="md:w-72 flex-shrink-0 overflow-hidden bg-gray-50 flex items-center justify-center">
+                                <?php 
+                                $hasImage = !empty($post_item['featured_image']);
+                                $imgSrc = $hasImage ? escape($post_item['featured_image']) : escape($site_info['site_logo'] ?? '');
+                                $imgClass = $hasImage ? 'object-cover' : 'object-contain p-4 animate-pulse opacity-30';
+                                
+                                if (!empty($imgSrc)): ?>
+                                    <img src="<?php echo $imgSrc; ?>" 
                                          alt="<?php echo escape($post_item['title']); ?>"
-                                         class="w-full h-48 md:h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                         class="w-full h-48 md:h-full <?php echo $imgClass; ?> group-hover:scale-105 transition-transform duration-500"
                                          loading="lazy">
                                 <?php else: ?>
                                     <div class="w-full h-48 md:h-full bg-gradient-to-br from-primary-100 to-primary-50 flex items-center justify-center min-h-[160px]">
@@ -137,14 +146,8 @@ component('header', ['categories' => $categories]);
                                     <?php endif; ?>
                                 </div>
                                 
-                                <!-- Author -->
-                                <div class="flex items-center justify-between mt-auto pt-3 border-t border-gray-100">
-                                    <div class="flex items-center gap-2 text-sm text-gray-500">
-                                        <div class="w-7 h-7 rounded-full bg-primary-100 flex items-center justify-center">
-                                            <i class="fas fa-user text-xs text-primary-600"></i>
-                                        </div>
-                                        <span><?php echo escape($post_item['author_name'] ?? 'অজানা'); ?></span>
-                                    </div>
+                                <!-- Read More -->
+                                <div class="flex items-center justify-end mt-auto pt-3 border-t border-gray-100">
                                     <span class="text-primary-600 text-sm font-medium group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
                                         বিস্তারিত <i class="fas fa-arrow-right text-xs"></i>
                                     </span>
