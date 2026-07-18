@@ -21,7 +21,6 @@ $titleClass = $theme === 'dark' ? 'text-white hover:text-primary-400' : 'text-gr
 $excerptClass = $theme === 'dark' ? 'text-gray-300' : 'text-gray-600';
 $metaClass = $theme === 'dark' ? 'text-gray-400' : 'text-gray-500';
 $categoryClass = $theme === 'dark' ? 'bg-gray-800 text-primary-400 border border-gray-700' : 'bg-primary-100 text-primary-600';
-?>
 
 // Image Logic
 $hasImage = !empty($post['featured_image']);
@@ -29,6 +28,7 @@ $settingModel = new Setting();
 $site_info = $settingModel->getSiteInfo();
 $imgSrc = $hasImage ? escape($post['featured_image']) : escape($site_info['site_logo'] ?? '');
 $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opacity-30 bg-gray-50';
+?>
 
 <?php if ($variant === 'magazine-main'): ?>
     <!-- Magazine Main (Large Image Top, Title Below) -->
