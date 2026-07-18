@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Header Component
  * 
@@ -24,7 +24,7 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
                 <img src="<?php echo escape($site_info['site_logo']); ?>" alt="Logo" class="h-16 md:h-20">
             <?php else: ?>
                 <h1 class="text-3xl font-heading font-black text-gray-900 tracking-tight">
-                    <?php echo escape($site_info['site_name'] ?? 'à¦†à¦²à§‹à¦•à¦ªà¦¾à¦¤'); ?>
+                    <?php echo escape($site_info['site_name'] ?? 'আলোকপাত'); ?>
                 </h1>
             <?php endif; ?>
         </a>
@@ -91,7 +91,7 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
             
             <!-- Desktop Links -->
             <div class="hidden lg:flex items-center space-x-1 w-full justify-center">
-                <a href="<?php echo SITE_URL; ?>" class="px-4 py-3 nav-hover-effect font-medium text-lg" title="à¦ªà§à¦°à¦šà§à¦›à¦¦ (Home)">
+                <a href="<?php echo SITE_URL; ?>" class="px-4 py-3 nav-hover-effect font-medium text-lg" title="প্রচ্ছদ (Home)">
                     <i class="fas fa-home text-xl"></i>
                 </a>
                 
@@ -128,7 +128,7 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
             
             <!-- Search & Mobile Menu Button -->
             <div class="flex items-center space-x-4 py-2 lg:hidden w-full justify-between">
-                <span class="font-bold text-lg">à¦®à§‡à¦¨à§</span>
+                <span class="font-bold text-lg">মেনু</span>
                 <div class="flex items-center space-x-3">
                     <button onclick="document.getElementById('searchModal').classList.remove('hidden')" 
                             class="hover:text-gray-300 transition p-2">
@@ -146,7 +146,7 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
     <!-- Mobile Menu -->
     <div id="mobileMenu" class="hidden lg:hidden bg-white border-b shadow-2xl absolute top-full left-0 w-full z-40 max-h-[75vh] overflow-y-auto">
         <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col space-y-1">
-            <a href="<?php echo SITE_URL; ?>" class="px-4 py-3 bg-gray-50 text-primary-800 font-bold border-l-4 border-primary-600">à¦ªà§à¦°à¦šà§à¦›à¦¦</a>
+            <a href="<?php echo SITE_URL; ?>" class="px-4 py-3 bg-gray-50 text-primary-800 font-bold border-l-4 border-primary-600">প্রচ্ছদ</a>
             
             <?php if (!empty($mobileMenuItems)): ?>
                 <?php foreach ($mobileMenuItems as $item): ?>
@@ -172,62 +172,7 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
     </div>
 </nav>
 
-<!-- Secondary Bar (Breaking / Social) -->
-<div class="bg-black py-2 mt-1">
-    <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between">
-        
-        <!-- Breaking News Ticker (Left) -->
-        <div class="flex items-center flex-1 w-full overflow-hidden bg-primary-100 shadow-inner mr-4 rounded-md">
-            <div class="bg-primary-800 text-white font-bold px-4 py-2 whitespace-nowrap z-10 flex-shrink-0 flex items-center gap-2 relative">
-                <span class="relative flex h-3 w-3">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
-                </span>
-                à¦à¦‡ à¦®à§à¦¹à§‚à¦°à§à¦¤à§‡
-            </div>
-            <div class="overflow-hidden flex-1 relative h-full flex items-center px-4">
-                <?php
-                $post = new Post();
-                $breaking_news = $post->getBreakingNews(5);
-                if (empty($breaking_news)) {
-                    // Fallback to latest 3 posts if no breaking news
-                    $breaking_news = $post->getPublished(3);
-                }
-                ?>
-                <div class="breaking-ticker-container w-full h-full"><div class="breaking-ticker">
-                    <?php if (!empty($breaking_news)): ?>
-                        <?php foreach ($breaking_news as $news): ?>
-                            <a href="<?php echo url_for_post($news); ?>" class="inline-block mr-12 hover:text-primary-800 font-bold text-primary-900">
-                                <?php echo escape($news['title']); ?>
-                            </a>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <span class="text-gray-500">à¦†à¦ªà¦¾à¦¤à¦¤ à¦•à§‹à¦¨ à¦¬à§à¦°à§‡à¦•à¦¿à¦‚ à¦¨à¦¿à¦‰à¦œ à¦¨à§‡à¦‡</span>
-                    <?php endif; ?>
-                </div></div>
-        </div>
-        
-        <!-- Social Icons (Right) -->
-        <div class="hidden md:flex items-center space-x-4 py-1 px-4">
-            <?php if (!empty($site_info['facebook_url'])): ?>
-                <a href="<?php echo escape($site_info['facebook_url']); ?>" target="_blank" class="text-white hover:text-primary-300 transition text-lg">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-            <?php endif; ?>
-            <?php if (!empty($site_info['youtube_url'])): ?>
-                <a href="<?php echo escape($site_info['youtube_url']); ?>" target="_blank" class="text-white hover:text-red-400 transition text-lg">
-                    <i class="fab fa-youtube"></i>
-                </a>
-            <?php endif; ?>
-            <?php if (!empty($site_info['twitter_url'])): ?>
-                <a href="<?php echo escape($site_info['twitter_url']); ?>" target="_blank" class="text-white hover:text-gray-300 transition text-lg">
-                    <i class="fa-brands fa-x-twitter"></i>
-                </a>
-            <?php endif; ?>
-        </div>
-        
-    </div>
-</div>
+<!-- Secondary Bar Removed -->
 
 <?php
 // Render header ad if enabled
@@ -240,7 +185,7 @@ if (empty($site_info['site_header_html'])) {
 <div id="searchModal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] flex items-start justify-center pt-20 px-4 backdrop-blur-sm">
     <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full p-6 animate-fade-in-down">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-2xl font-bold text-gray-800">à¦…à¦¨à§à¦¸à¦¨à§à¦§à¦¾à¦¨ à¦•à¦°à§à¦¨</h3>
+            <h3 class="text-2xl font-bold text-gray-800">অনুসন্ধান করুন</h3>
             <button onclick="document.getElementById('searchModal').classList.add('hidden')" class="text-gray-400 hover:text-red-600 transition bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
                 <i class="fas fa-times"></i>
             </button>
@@ -249,10 +194,10 @@ if (empty($site_info['site_header_html'])) {
             <div class="flex shadow-sm rounded-lg overflow-hidden border border-gray-300 focus-within:border-primary-500 focus-within:ring-1 focus-within:ring-primary-500 transition">
                 <input type="text" 
                        name="q" 
-                       placeholder="à¦–à¦¬à¦° à¦–à§à¦à¦œà§à¦¨..." 
+                       placeholder="খবর খুঁজুন..." 
                        class="flex-1 px-4 py-4 w-full focus:outline-none text-lg">
                 <button type="submit" class="bg-primary-700 text-white px-8 py-4 hover:bg-primary-800 transition font-bold">
-                    à¦–à§à¦à¦œà§à¦¨
+                    খুঁজুন
                 </button>
             </div>
         </form>

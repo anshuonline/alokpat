@@ -111,7 +111,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
             
             <div class="mt-3">
                 <a href="<?php echo url_for_post($post); ?>" class="text-gray-400 hover:text-primary-600 text-sm font-semibold flex items-center transition w-fit group-hover:text-primary-500">
-                    à¦¬à¦¿à¦¸à§à¦¤à¦¾à¦°à¦¿à¦¤ <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                    বিস্তারিত <i class="fas fa-arrow-right ml-1 text-xs"></i>
                 </a>
             </div>
         </div>
@@ -151,7 +151,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
                 <div class="flex items-center justify-between mt-3 text-xs <?php echo $metaClass; ?>">
                     <span>
                         <i class="fas fa-user mr-1"></i>
-                        <?php echo escape($post['author_name'] ?? $post['author'] ?? 'à¦…à¦ªà¦°à¦¿à¦šà¦¿à¦¤'); ?>
+                        <?php echo escape($post['author_name'] ?? $post['author'] ?? 'অপরিচিত'); ?>
                     </span>
                     <span>
                         <i class="fas fa-clock mr-1"></i>
@@ -201,7 +201,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
             <div class="flex items-center space-x-4 text-sm text-gray-300">
                 <span>
                     <i class="fas fa-user mr-1"></i>
-                    <?php echo escape($post['author_name'] ?? $post['author'] ?? 'à¦…à¦ªà¦°à¦¿à¦šà¦¿à¦¤'); ?>
+                    <?php echo escape($post['author_name'] ?? $post['author'] ?? 'অপরিচিত'); ?>
                 </span>
                 <span>
                     <i class="fas fa-clock mr-1"></i>
@@ -230,7 +230,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
                     <div class="absolute top-3 left-3">
                         <span class="px-3 py-1 bg-red-600 text-white text-xs font-semibold rounded">
                             <i class="fas fa-bolt mr-1"></i>
-                            à¦¬à§à¦°à§‡à¦•à¦¿à¦‚
+                            ব্রেকিং
                         </span>
                     </div>
                 <?php endif; ?>
@@ -260,7 +260,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
             <div class="flex items-center justify-between mt-4 pt-4 border-t <?php echo $theme === 'dark' ? 'border-gray-800' : 'border-gray-100'; ?> text-xs <?php echo $metaClass; ?>">
                 <span>
                     <i class="fas fa-user mr-1"></i>
-                    <?php echo escape($post['author_name'] ?? $post['author'] ?? 'à¦…à¦ªà¦°à¦¿à¦šà¦¿à¦¤'); ?>
+                    <?php echo escape($post['author_name'] ?? $post['author'] ?? 'অপরিচিত'); ?>
                 </span>
                 <span>
                     <i class="fas fa-clock mr-1"></i>

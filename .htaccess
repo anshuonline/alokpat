@@ -1,4 +1,4 @@
-<IfModule mod_rewrite.c>
+﻿<IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /
 
@@ -6,8 +6,8 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
 
-    # Route /category-slug/article-slug.html to article.php?slug=article-slug
-    RewriteRule ^([^/]+)/([^/]+)\.html$ article.php?slug=$2 [L,QSA]
+    # Route /article/<slug> to article.php?slug=<slug>
+    RewriteRule ^article/([^/]+)/?$ article.php?slug=$1 [L,QSA]
 
     # Route /admin/<custom-slug> to admin/login.php?login_slug=<custom-slug>
     RewriteRule ^admin/([a-zA-Z0-9_-]+)/?$ admin/login.php?login_slug=$1 [L,QSA]

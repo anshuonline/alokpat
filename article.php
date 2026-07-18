@@ -59,7 +59,7 @@ component('header', ['categories' => $categories]);
         <!-- Breadcrumb (Centered) -->
         <nav class="mb-6 text-sm text-center">
             <ol class="flex items-center justify-center space-x-2 text-primary-600 font-medium">
-                <li><a href="<?php echo SITE_URL; ?>" class="hover:underline">à¦ªà§à¦°à¦šà§à¦›à¦¦</a></li>
+                <li><a href="<?php echo SITE_URL; ?>" class="hover:underline">প্রচ্ছদ</a></li>
                 <?php if (!empty($article['category_name'])): ?>
                     <li class="text-gray-400">/</li>
                     <li><a href="<?php echo SITE_URL; ?>/category.php?slug=<?php echo escape($article['category_slug']); ?>" class="hover:underline"><?php echo escape($article['category_name']); ?></a></li>
@@ -102,7 +102,7 @@ component('header', ['categories' => $categories]);
                     <?php else: ?>
                         <i class="fas fa-user-circle text-lg mr-2 text-primary-500"></i>
                     <?php endif; ?>
-                    <?php echo escape($article['author_name'] ?? 'à¦…à¦ªà¦°à¦¿à¦šà¦¿à¦¤'); ?>
+                    <?php echo escape($article['author_name'] ?? 'অপরিচিত'); ?>
                 </a>
                 <span><i class="far fa-clock mr-1"></i> <?php echo formatDateBengali($article['published_at'] ?? $article['created_at']); ?></span>
             </div>
@@ -167,7 +167,7 @@ component('header', ['categories' => $categories]);
         <!-- Tags -->
         <?php if (!empty($article['tags'])): ?>
             <div class="flex flex-wrap gap-2 mb-12 border-t border-b border-gray-100 py-6">
-                <span class="font-bold text-gray-700 py-1 mr-2"><i class="fas fa-tags mr-1"></i> à¦Ÿà§à¦¯à¦¾à¦—:</span>
+                <span class="font-bold text-gray-700 py-1 mr-2"><i class="fas fa-tags mr-1"></i> ট্যাগ:</span>
                 <?php foreach ($article['tags'] as $tag): ?>
                     <a href="<?php echo SITE_URL; ?>/tag.php?slug=<?php echo escape($tag['slug']); ?>" 
                        class="px-4 py-1 bg-gray-100 text-gray-700 rounded-full hover:bg-primary-100 hover:text-primary-600 transition text-sm">
@@ -181,7 +181,7 @@ component('header', ['categories' => $categories]);
         <?php if (!empty($related_posts)): ?>
             <div class="mt-12 bg-gray-50 rounded-2xl p-8">
                 <h3 class="text-2xl font-bold mb-6 text-gray-800 text-center">
-                    à¦¸à¦®à§à¦ªà¦°à§à¦•à¦¿à¦¤ à¦¸à¦‚à¦¬à¦¾à¦¦
+                    সম্পর্কিত সংবাদ
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <?php foreach (array_slice($related_posts, 0, 3) as $related): ?>
