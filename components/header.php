@@ -52,14 +52,14 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .nav-hover-effect:hover {
-        color: #1e3a8a !important; /* text-blue-900 */
+        color: var(--color-primary-dark) !important;
     }
     .nav-hover-effect:hover::before {
         transform: scaleY(1);
     }
     .dropdown-hover-effect:hover {
         background-color: #f3f4f6; /* gray-100 */
-        color: #1e3a8a;
+        color: var(--color-primary-dark);
     }
 
     @keyframes ticker {
