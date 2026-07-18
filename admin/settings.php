@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $footer_logo = sanitize($_POST['footer_logo'] ?? '');
     $header_html = trim($_POST['header_html'] ?? '');
     $custom_login_slug = sanitize($_POST['custom_login_slug'] ?? '');
+    $seo_title_format = trim($_POST['seo_title_format'] ?? '');
     $gemini_api_key = sanitize($_POST['gemini_api_key'] ?? '');
 
     // Persist settings (create if missing)
@@ -31,6 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'site_logo' => $site_logo,
         'footer_logo' => $footer_logo,
         'site_header_html' => $header_html,
+        'seo_title_format' => $seo_title_format,
         'custom_login_slug' => $custom_login_slug,
         'gemini_api_key' => $gemini_api_key,
     ];
@@ -53,6 +55,7 @@ $site_tagline = $setting->get('site_tagline') ?: '';
 $site_logo = $setting->get('site_logo') ?: '';
 $footer_logo = $setting->get('footer_logo') ?: '';
 $site_header_html = $setting->get('site_header_html') ?: '';
+$seo_title_format = $setting->get('seo_title_format') ?: '%pagetitle% - %sitename%';
 $custom_login_slug = $setting->get('custom_login_slug') ?: '';
 $gemini_api_key = $setting->get('gemini_api_key') ?: '';
 
@@ -79,6 +82,12 @@ ob_start();
         <div>
             <label class="block text-sm font-medium text-gray-700">ট্যাগলাইন</label>
             <input type="text" name="site_tagline" value="<?php echo escape($site_tagline); ?>" class="w-full px-4 py-3 border rounded" />
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">SEO Title Format</label>
+            <input type="text" name="seo_title_format" value="<?php echo escape($seo_title_format); ?>" class="w-full px-4 py-3 border rounded" />
+            <p class="text-xs text-gray-500 mt-1">ব্যবহারযোগ্য ভেরিয়েবল: %pagetitle%, %sitename%, %sitetagline% (উদাহরণ: %pagetitle% | %sitename%)</p>
         </div>
 
         <div>

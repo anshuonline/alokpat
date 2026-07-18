@@ -8,9 +8,28 @@
     $setting = new Setting();
     $site_name = $setting->get('site_name') ?: 'আলোকপাত';
     $site_tagline = $setting->get('site_tagline') ?: 'বাংলা সংবাদ';
-    $title_suffix = escape($site_name) . ($site_tagline ? ' - ' . escape($site_tagline) : '');
+    $seo_title_format = $setting->get('seo_title_format') ?: '%pagetitle% - %sitename%';
+    
+    $title_to_print = $seo_title_format;
+    
+    // Replace placeholders
+    if (isset($page_title) && $page_title !== '') {
+        $title_to_print = str_replace('%pagetitle%', $page_title, $title_to_print);
+    } else {
+        // If no page title, remove %pagetitle% and clean up leading separators
+        $title_to_print = str_replace('%pagetitle%', '', $title_to_print);
+        $title_to_print = ltrim($title_to_print, ' -|');
+    }
+    
+    $title_to_print = str_replace('%sitename%', $site_name, $title_to_print);
+    $title_to_print = str_replace('%sitetagline%', $site_tagline, $title_to_print);
+    
+    // Clean up trailing separators if tagline is empty
+    if (empty($site_tagline)) {
+        $title_to_print = rtrim($title_to_print, ' -|');
+    }
     ?>
-    <title><?php echo isset($page_title) ? escape($page_title) . ' - ' : ''; ?><?php echo $title_suffix; ?></title>
+    <title><?php echo escape(trim($title_to_print)); ?></title>
     <?php if (isset($meta_description) && !empty($meta_description)): ?>
         <meta name="description" content="<?php echo escape($meta_description); ?>">
     <?php endif; ?>
