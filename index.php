@@ -16,7 +16,12 @@ $featured_posts = $post->getFeatured(5);
 $trending_posts = $post->getTrending(10);
 $latest_posts = $post->getPublished(5); // Fetch exactly 5 for the 1+4 layout
 
-$page_title = 'প্রচ্ছদ';
+$setting = new Setting();
+$home_seo_title = $setting->get('home_seo_title');
+$page_title = $home_seo_title ?: 'প্রচ্ছদ';
+
+$meta_description = $setting->get('home_seo_description') ?: '';
+$meta_keywords = $setting->get('home_seo_keywords') ?: '';
 
 ob_start();
 

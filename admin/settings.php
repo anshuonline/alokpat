@@ -23,6 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $header_html = trim($_POST['header_html'] ?? '');
     $custom_login_slug = sanitize($_POST['custom_login_slug'] ?? '');
     $seo_title_format = trim($_POST['seo_title_format'] ?? '');
+    
+    // Homepage SEO
+    $home_seo_title = trim($_POST['home_seo_title'] ?? '');
+    $home_seo_description = trim($_POST['home_seo_description'] ?? '');
+    $home_seo_keywords = trim($_POST['home_seo_keywords'] ?? '');
+    
     $gemini_api_key = sanitize($_POST['gemini_api_key'] ?? '');
 
     // Persist settings (create if missing)
@@ -33,6 +39,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'footer_logo' => $footer_logo,
         'site_header_html' => $header_html,
         'seo_title_format' => $seo_title_format,
+        'home_seo_title' => $home_seo_title,
+        'home_seo_description' => $home_seo_description,
+        'home_seo_keywords' => $home_seo_keywords,
         'custom_login_slug' => $custom_login_slug,
         'gemini_api_key' => $gemini_api_key,
     ];
@@ -56,6 +65,11 @@ $site_logo = $setting->get('site_logo') ?: '';
 $footer_logo = $setting->get('footer_logo') ?: '';
 $site_header_html = $setting->get('site_header_html') ?: '';
 $seo_title_format = $setting->get('seo_title_format') ?: '%pagetitle% - %sitename%';
+
+$home_seo_title = $setting->get('home_seo_title') ?: '';
+$home_seo_description = $setting->get('home_seo_description') ?: '';
+$home_seo_keywords = $setting->get('home_seo_keywords') ?: '';
+
 $custom_login_slug = $setting->get('custom_login_slug') ?: '';
 $gemini_api_key = $setting->get('gemini_api_key') ?: '';
 
@@ -89,6 +103,27 @@ ob_start();
             <input type="text" name="seo_title_format" value="<?php echo escape($seo_title_format); ?>" class="w-full px-4 py-3 border rounded" />
             <p class="text-xs text-gray-500 mt-1">ব্যবহারযোগ্য ভেরিয়েবল: %pagetitle%, %sitename%, %sitetagline% (উদাহরণ: %pagetitle% | %sitename%)</p>
         </div>
+        
+        <hr class="my-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-2">হোমপেজ এসইও (Homepage SEO)</h3>
+        
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Homepage SEO Title</label>
+            <input type="text" name="home_seo_title" value="<?php echo escape($home_seo_title); ?>" class="w-full px-4 py-3 border rounded border-gray-300" placeholder="e.g. Alokpath - Breaking Bengali News" />
+            <p class="text-xs text-gray-500 mt-1">হোমপেজের জন্য বিশেষ টাইটেল (খালি রাখলে ডিফল্ট 'প্রচ্ছদ' ব্যবহার হবে)</p>
+        </div>
+        
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Homepage SEO Description</label>
+            <textarea name="home_seo_description" class="w-full px-4 py-3 border rounded border-gray-300" rows="2" placeholder="Search engine description for homepage..."><?php echo escape($home_seo_description); ?></textarea>
+        </div>
+        
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Homepage SEO Keywords</label>
+            <input type="text" name="home_seo_keywords" value="<?php echo escape($home_seo_keywords); ?>" class="w-full px-4 py-3 border rounded border-gray-300" placeholder="news, bangla, updates" />
+        </div>
+        
+        <hr class="my-6">
 
         <div>
             <label class="block text-sm font-medium text-gray-700">সাইট লোগো URL</label>
