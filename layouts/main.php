@@ -37,6 +37,16 @@
         <meta name="keywords" content="<?php echo escape($meta_keywords); ?>">
     <?php endif; ?>
     <?php
+    $google_search_console = $setting->get('google_search_console');
+    if ($google_search_console) {
+        echo $google_search_console . "\n";
+    }
+    
+    $google_analytics_code = $setting->get('google_analytics_code');
+    if ($google_analytics_code) {
+        echo $google_analytics_code . "\n";
+    }
+    
     // Include centrally managed favicon tags
     component('favicon');
     ?>

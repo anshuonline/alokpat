@@ -29,6 +29,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $home_seo_description = trim($_POST['home_seo_description'] ?? '');
     $home_seo_keywords = trim($_POST['home_seo_keywords'] ?? '');
     
+    // Tracking & Verification
+    $google_analytics_code = trim($_POST['google_analytics_code'] ?? '');
+    $google_search_console = trim($_POST['google_search_console'] ?? '');
+    
     $gemini_api_key = sanitize($_POST['gemini_api_key'] ?? '');
 
     // Persist settings (create if missing)
@@ -42,6 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'home_seo_title' => $home_seo_title,
         'home_seo_description' => $home_seo_description,
         'home_seo_keywords' => $home_seo_keywords,
+        'google_analytics_code' => $google_analytics_code,
+        'google_search_console' => $google_search_console,
         'custom_login_slug' => $custom_login_slug,
         'gemini_api_key' => $gemini_api_key,
     ];
@@ -69,6 +75,9 @@ $seo_title_format = $setting->get('seo_title_format') ?: '%pagetitle% - %sitenam
 $home_seo_title = $setting->get('home_seo_title') ?: '';
 $home_seo_description = $setting->get('home_seo_description') ?: '';
 $home_seo_keywords = $setting->get('home_seo_keywords') ?: '';
+
+$google_analytics_code = $setting->get('google_analytics_code') ?: '';
+$google_search_console = $setting->get('google_search_console') ?: '';
 
 $custom_login_slug = $setting->get('custom_login_slug') ?: '';
 $gemini_api_key = $setting->get('gemini_api_key') ?: '';
@@ -121,6 +130,21 @@ ob_start();
         <div>
             <label class="block text-sm font-medium text-gray-700">Homepage SEO Keywords</label>
             <input type="text" name="home_seo_keywords" value="<?php echo escape($home_seo_keywords); ?>" class="w-full px-4 py-3 border rounded border-gray-300" placeholder="news, bangla, updates" />
+        </div>
+        
+        <hr class="my-6">
+        <h3 class="text-xl font-bold text-gray-800 mb-2">ট্র্যাকিং এবং ভেরিফিকেশন (Tracking & Verification)</h3>
+        
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Google Search Console Verification HTML Tag</label>
+            <input type="text" name="google_search_console" value="<?php echo escape($google_search_console); ?>" class="w-full px-4 py-3 border rounded border-gray-300" placeholder="<meta name='google-site-verification' content='...' />" />
+            <p class="text-xs text-gray-500 mt-1">Search Console থেকে পাওয়া সম্পূর্ণ মেটা ট্যাগ এখানে দিন।</p>
+        </div>
+        
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Google Analytics (GA4) Tracking Code</label>
+            <textarea name="google_analytics_code" class="w-full px-4 py-3 border rounded border-gray-300" rows="5" placeholder="<!-- Google tag (gtag.js) -->..."><?php echo escape($google_analytics_code); ?></textarea>
+            <p class="text-xs text-gray-500 mt-1">Google Analytics থেকে পাওয়া সম্পূর্ণ &lt;script&gt; ট্যাগটি এখানে পেস্ট করুন।</p>
         </div>
         
         <hr class="my-6">
