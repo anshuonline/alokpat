@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Admin Posts Management
  * 
@@ -75,10 +75,26 @@ if (empty($where)) {
     
     $sql .= " ORDER BY p.created_at DESC LIMIT :limit OFFSET :offset";
     
-    $stmt = $database->query($sql, array_merge($where, ['limit' => $limit, 'offset' => $offset]));
+    $stmt = $db->prepare($sql);
+    if (isset($where['status'])) {
+        $stmt->bindValue(':status', $where['status']);
+    }
+    $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+    $stmt->execute();
     $posts = $stmt->fetchAll();
     
-    $total = $post->getCount($filter !== 'all' ? $filter : null);
+    // Get total count
+    $count_sql = "SELECT COUNT(*) FROM posts p";
+    if (!empty($conditions)) {
+        $count_sql .= " WHERE " . implode(' AND ', $conditions);
+    }
+    $count_stmt = $db->prepare($count_sql);
+    if (isset($where['status'])) {
+        $count_stmt->bindValue(':status', $where['status']);
+    }
+    $count_stmt->execute();
+    $total = $count_stmt->fetchColumn();
 }
 
 $total_pages = ceil($total / $limit);
