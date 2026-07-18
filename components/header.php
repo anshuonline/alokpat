@@ -63,7 +63,7 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
     }
 
     @keyframes ticker {
-        0% { transform: translateX(100%); }
+        0% { transform: translateX(0); }
         100% { transform: translateX(-100%); }
     }
     .breaking-ticker-container {
@@ -173,12 +173,12 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
 </nav>
 
 <!-- Secondary Bar (Breaking / Social) -->
-<div class="bg-gray-100 border-b border-gray-200">
+<div class="bg-black py-2 mt-1">
     <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between">
         
         <!-- Breaking News Ticker (Left) -->
-        <div class="flex items-center flex-1 w-full overflow-hidden bg-white shadow-inner mr-4 rounded-r-md">
-            <div class="bg-primary-600 text-white font-bold px-4 py-3 whitespace-nowrap z-10 flex-shrink-0 flex items-center gap-2 relative">
+        <div class="flex items-center flex-1 w-full overflow-hidden bg-primary-100 shadow-inner mr-4 rounded-md">
+            <div class="bg-primary-800 text-white font-bold px-4 py-2 whitespace-nowrap z-10 flex-shrink-0 flex items-center gap-2 relative">
                 <span class="relative flex h-3 w-3">
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                   <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
@@ -197,7 +197,7 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
                 <div class="breaking-ticker-container w-full h-full"><div class="breaking-ticker">
                     <?php if (!empty($breaking_news)): ?>
                         <?php foreach ($breaking_news as $news): ?>
-                            <a href="<?php echo url_for_post($news['slug']); ?>" class="inline-block mr-12 hover:text-primary-600 font-medium text-gray-800">
+                            <a href="<?php echo url_for_post($news['slug']); ?>" class="inline-block mr-12 hover:text-primary-800 font-bold text-primary-900">
                                 <?php echo escape($news['title']); ?>
                             </a>
                         <?php endforeach; ?>
@@ -208,19 +208,19 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
         </div>
         
         <!-- Social Icons (Right) -->
-        <div class="hidden md:flex items-center space-x-4 py-2 px-4">
+        <div class="hidden md:flex items-center space-x-4 py-1 px-4">
             <?php if (!empty($site_info['facebook_url'])): ?>
-                <a href="<?php echo escape($site_info['facebook_url']); ?>" target="_blank" class="text-primary-600 hover:opacity-80 transition text-lg">
+                <a href="<?php echo escape($site_info['facebook_url']); ?>" target="_blank" class="text-white hover:text-primary-300 transition text-lg">
                     <i class="fab fa-facebook-f"></i>
                 </a>
             <?php endif; ?>
             <?php if (!empty($site_info['youtube_url'])): ?>
-                <a href="<?php echo escape($site_info['youtube_url']); ?>" target="_blank" class="text-red-600 hover:opacity-80 transition text-lg">
+                <a href="<?php echo escape($site_info['youtube_url']); ?>" target="_blank" class="text-white hover:text-red-400 transition text-lg">
                     <i class="fab fa-youtube"></i>
                 </a>
             <?php endif; ?>
             <?php if (!empty($site_info['twitter_url'])): ?>
-                <a href="<?php echo escape($site_info['twitter_url']); ?>" target="_blank" class="text-black hover:opacity-80 transition text-lg">
+                <a href="<?php echo escape($site_info['twitter_url']); ?>" target="_blank" class="text-white hover:text-gray-300 transition text-lg">
                     <i class="fa-brands fa-x-twitter"></i>
                 </a>
             <?php endif; ?>
