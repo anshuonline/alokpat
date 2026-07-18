@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /config/
+Disallow: /helpers/
+Disallow: /models/
+Disallow: /components/
+Disallow: /layouts/
+
+Sitemap: https://alokpat.in/sitemap.php
