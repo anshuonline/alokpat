@@ -32,6 +32,8 @@ $total = $category->getPostCount($cat['id']);
 $total_pages = ceil($total / $limit);
 
 $page_title = $cat['seo_title'] ?? $cat['name'];
+$meta_description = $cat['seo_description'] ?? $cat['description'] ?? '';
+$meta_keywords = $cat['seo_keywords'] ?? '';
 
 // Get categories for header
 $categories = $category->getActive();
@@ -39,10 +41,6 @@ $categories = $category->getActive();
 ob_start();
 component('header', ['categories' => $categories]);
 ?>
-
-<!-- SEO Meta -->
-<meta name="description" content="<?php echo escape($cat['seo_description'] ?? $cat['description'] ?? ''); ?>">
-<meta name="keywords" content="<?php echo escape($cat['seo_keywords'] ?? ''); ?>">
 
 <!-- Main Content -->
 <main class="max-w-4xl mx-auto px-4 py-8">

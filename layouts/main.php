@@ -11,6 +11,12 @@
     $title_suffix = escape($site_name) . ($site_tagline ? ' - ' . escape($site_tagline) : '');
     ?>
     <title><?php echo isset($page_title) ? escape($page_title) . ' - ' : ''; ?><?php echo $title_suffix; ?></title>
+    <?php if (isset($meta_description) && !empty($meta_description)): ?>
+        <meta name="description" content="<?php echo escape($meta_description); ?>">
+    <?php endif; ?>
+    <?php if (isset($meta_keywords) && !empty($meta_keywords)): ?>
+        <meta name="keywords" content="<?php echo escape($meta_keywords); ?>">
+    <?php endif; ?>
     <?php
     // Include centrally managed favicon tags
     component('favicon');

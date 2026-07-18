@@ -49,6 +49,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['update_id'])) {
     }
 }
 
+// Handle update
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_id'])) {
+    requireCSRF();
+    $id = (int)$_POST['update_id'];
+    
+    $data = [
+        'name' => $_POST['name'] ?? '',
+        'name_en' => $_POST['name_en'] ?? '',
+        'slug' => generateSlug($_POST['slug'] ?? $_POST['name'] ?? ''),
+        'description' => $_POST['description'] ?? '',
+        'parent_id' => isset($_POST['parent_id']) ? (int)$_POST['parent_id'] : null,
+        'display_order' => (int)($_POST['display_order'] ?? 0),
+        'is_active' => isset($_POST['is_active']) ? 1 : 0,
+        'seo_title' => $_POST['seo_title'] ?? '',
+        'seo_description' => $_POST['seo_description'] ?? '',
+        'seo_keywords' => $_POST['seo_keywords'] ?? '',
+    ];
+    
+    if ($category->update($id, $data)) {
+        setFlash('success', 'ক্যাটাগরি সফলভাবে আপডেট করা হয়েছে');
+        redirect(ADMIN_URL . '/categories.php');
+    } else {
+        setFlash('error', 'ক্যাটাগরি আপডেট করতে সমস্যা হয়েছে');
+    }
+}
+
 $categories = $category->getAll();
 $page_title = 'ক্যাটাগরি ব্যবস্থাপনা';
 
@@ -259,6 +285,119 @@ ob_start();
     </div>
 </div>
 
+<!-- Edit Category Modal -->
+<div id="editModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl max-w-2xl w-full max-h-screen overflow-y-auto">
+        <div class="p-6 border-b">
+            <div class="flex items-center justify-between">
+                <h3 class="text-2xl font-bold">ক্যাটাগরি সম্পাদনা</h3>
+                <button onclick="document.getElementById('editModal').classList.add('hidden')" class="text-gray-500 hover:text-red-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <form id="editForm" method="POST" class="p-6 space-y-4">
+            <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+            <input type="hidden" name="update_id" id="edit_update_id" value="">
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        নাম (বাংলা) <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" name="name" id="edit_name" required
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        নাম (English)
+                    </label>
+                    <input type="text" name="name_en" id="edit_name_en"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Slug (URL-friendly)
+                </label>
+                <input type="text" name="slug" id="edit_slug"
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    বিবরণ
+                </label>
+                <textarea name="description" id="edit_description" rows="3"
+                          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        প্রদর্শন ক্রম
+                    </label>
+                    <input type="number" name="display_order" id="edit_display_order"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <div class="flex items-end">
+                    <label class="flex items-center">
+                        <input type="checkbox" name="is_active" id="edit_is_active" value="1"
+                               class="mr-2 h-4 w-4">
+                        <span class="text-sm">সক্রিয়</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- SEO Fields -->
+            <div class="border-t pt-4">
+                <h4 class="font-bold mb-3">এসইও সেটিংস</h4>
+                
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            SEO Title
+                        </label>
+                        <input type="text" name="seo_title" id="edit_seo_title"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            SEO Description
+                        </label>
+                        <textarea name="seo_description" id="edit_seo_description" rows="2"
+                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            SEO Keywords
+                        </label>
+                        <input type="text" name="seo_keywords" id="edit_seo_keywords"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex space-x-3 pt-4">
+                <button type="submit" class="flex-1 bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700">
+                    <i class="fas fa-save mr-2"></i>
+                    আপডেট করুন
+                </button>
+                <button type="button" onclick="document.getElementById('editModal').classList.add('hidden')" 
+                        class="px-6 py-3 bg-gray-200 rounded-lg font-semibold hover:bg-gray-300">
+                    বাতিল
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <script>
     document.querySelectorAll('.delete-confirm').forEach(link => {
         link.addEventListener('click', function(e) {
@@ -269,8 +408,22 @@ ob_start();
     });
     
     function editCategory(cat) {
-        // TODO: Implement edit functionality
-        alert('Edit functionality will be added soon');
+        // Populate modal fields
+        document.getElementById('edit_update_id').value = cat.id;
+        document.getElementById('edit_name').value = cat.name || '';
+        document.getElementById('edit_name_en').value = cat.name_en || '';
+        document.getElementById('edit_slug').value = cat.slug || '';
+        document.getElementById('edit_description').value = cat.description || '';
+        document.getElementById('edit_display_order').value = cat.display_order || 0;
+        document.getElementById('edit_is_active').checked = cat.is_active == 1;
+        
+        // Populate SEO fields
+        document.getElementById('edit_seo_title').value = cat.seo_title || '';
+        document.getElementById('edit_seo_description').value = cat.seo_description || '';
+        document.getElementById('edit_seo_keywords').value = cat.seo_keywords || '';
+        
+        // Show the modal
+        document.getElementById('editModal').classList.remove('hidden');
     }
 </script>
 
