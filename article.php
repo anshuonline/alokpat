@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Article Detail Page
  * 
@@ -176,6 +176,32 @@ component('header', ['categories' => $categories]);
                 <?php endforeach; ?>
             </div>
         <?php endif; ?>
+        
+        <!-- Author Bio Box -->
+        <div class="mb-12 bg-primary-50 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6 border border-primary-100">
+            <div class="flex-shrink-0">
+                <?php if (!empty($article['author_avatar'])): ?>
+                    <img src="<?php echo escape($article['author_avatar']); ?>" class="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover shadow-md border-4 border-white" alt="<?php echo escape($article['author_name'] ?? 'Author'); ?>">
+                <?php else: ?>
+                    <div class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-primary-200 text-primary-600 flex items-center justify-center text-4xl shadow-md border-4 border-white">
+                        <i class="fas fa-user"></i>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <div class="flex-1 text-center md:text-left">
+                <h3 class="text-2xl font-bold text-primary-900 mb-2">
+                    <a href="<?php echo SITE_URL; ?>/author.php?username=<?php echo escape($article['author_username'] ?? ''); ?>" class="hover:text-primary-700 transition">
+                        <?php echo escape($article['author_name'] ?? 'অপরিচিত'); ?>
+                    </a>
+                </h3>
+                <p class="text-gray-700 leading-relaxed mb-4">
+                    <?php echo !empty($article['author_bio']) ? nl2br(escape($article['author_bio'])) : 'এই লেখকের কোন বায়ো বা তথ্য দেওয়া নেই।'; ?>
+                </p>
+                <a href="<?php echo SITE_URL; ?>/author.php?username=<?php echo escape($article['author_username'] ?? ''); ?>" class="inline-flex items-center justify-center px-5 py-2 border border-primary-300 text-sm font-medium rounded-md text-primary-700 bg-white hover:bg-primary-50 hover:text-primary-800 transition-colors shadow-sm">
+                    সব লেখা দেখুন <i class="fas fa-arrow-right ml-2 text-xs"></i>
+                </a>
+            </div>
+        </div>
         
         <!-- Related Posts (Bottom) -->
         <?php if (!empty($related_posts)): ?>
