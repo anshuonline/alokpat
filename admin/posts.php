@@ -29,7 +29,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_action'])) {
             }
         }
         setFlash('success', $count . ' টি পোস্টে সফলভাবে পরিবর্তন করা হয়েছে');
-        redirect(ADMIN_URL . '/posts.php');
+        
+        $redirect_url = ADMIN_URL . '/posts.php';
+        $query_parts = [];
+        if (isset($_GET['filter']) && $_GET['filter'] !== 'all') {
+            $query_parts[] = 'filter=' . urlencode($_GET['filter']);
+        }
+        if (isset($_GET['search']) && !empty($_GET['search'])) {
+            $query_parts[] = 'search=' . urlencode($_GET['search']);
+        }
+        if (isset($_GET['page']) && $_GET['page'] > 1) {
+            $query_parts[] = 'page=' . (int)$_GET['page'];
+        }
+        
+        if (!empty($query_parts)) {
+            $redirect_url .= '?' . implode('&', $query_parts);
+        }
+        
+        redirect($redirect_url);
     }
 }
 

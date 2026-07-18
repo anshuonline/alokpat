@@ -35,4 +35,5 @@ if ($post->delete($id)) {
     setFlash('error', 'পোস্ট মুছে ফেলতে সমস্যা হয়েছে');
 }
 
-redirect(ADMIN_URL . '/posts.php');
+$redirect_url = $_SERVER['HTTP_REFERER'] ?? ADMIN_URL . '/posts.php';
+redirect($redirect_url);
