@@ -38,8 +38,14 @@ ob_start();
 <!-- Open Graph -->
 <meta property="og:title" content="<?php echo escape($article['meta_og_title'] ?? $article['title']); ?>">
 <meta property="og:description" content="<?php echo escape($article['meta_og_description'] ?? $article['excerpt'] ?? ''); ?>">
-<?php if (!empty($article['meta_og_image'])): ?>
-<meta property="og:image" content="<?php echo escape($article['meta_og_image']); ?>">
+<?php 
+$og_image = !empty($article['meta_og_image']) ? $article['meta_og_image'] : (!empty($article['featured_image']) ? $article['featured_image'] : '');
+if (!empty($og_image) && !preg_match('~^(?:f|ht)tps?://~i', $og_image)) {
+    $og_image = rtrim(SITE_URL, '/') . '/' . ltrim($og_image, '/');
+}
+if (!empty($og_image)): 
+?>
+<meta property="og:image" content="<?php echo escape($og_image); ?>">
 <?php endif; ?>
 <meta property="og:type" content="article">
 <meta property="og:url" content="<?php echo url_for_post($article); ?>">
@@ -48,6 +54,9 @@ ob_start();
 <meta name="twitter:card" content="<?php echo escape($article['meta_twitter_card'] ?? 'summary_large_image'); ?>">
 <meta name="twitter:title" content="<?php echo escape($article['meta_og_title'] ?? $article['title']); ?>">
 <meta name="twitter:description" content="<?php echo escape($article['meta_og_description'] ?? $article['excerpt'] ?? ''); ?>">
+<?php if (!empty($og_image)): ?>
+<meta name="twitter:image" content="<?php echo escape($og_image); ?>">
+<?php endif; ?>
 
 <?php
 component('header', ['categories' => $categories]);
