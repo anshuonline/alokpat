@@ -89,8 +89,8 @@ component('header', ['categories' => $categories]);
         
         <!-- Pagination -->
         <?php if ($total_pages > 1): ?>
-            <div class="mt-10 flex justify-center">
-                <nav class="flex space-x-2">
+            <div class="mt-10 flex justify-center w-full">
+                <nav class="flex flex-wrap justify-center gap-2 max-w-full">
                     <?php if ($page > 1): ?>
                         <a href="?username=<?php echo escape($author['username']); ?>&page=<?php echo $page - 1; ?>" 
                            class="px-4 py-2 bg-white border rounded-lg hover:bg-primary-50 transition">

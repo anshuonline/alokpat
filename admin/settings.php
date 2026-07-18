@@ -32,8 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Tracking & Verification
     $google_analytics_code = trim($_POST['google_analytics_code'] ?? '');
     $google_search_console = trim($_POST['google_search_console'] ?? '');
-    
-    $gemini_api_key = sanitize($_POST['gemini_api_key'] ?? '');
 
     // Persist settings (create if missing)
     $pairs = [
@@ -49,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'google_analytics_code' => $google_analytics_code,
         'google_search_console' => $google_search_console,
         'custom_login_slug' => $custom_login_slug,
-        'gemini_api_key' => $gemini_api_key,
     ];
 
     foreach ($pairs as $k => $v) {
@@ -80,7 +77,6 @@ $google_analytics_code = $setting->get('google_analytics_code') ?: '';
 $google_search_console = $setting->get('google_search_console') ?: '';
 
 $custom_login_slug = $setting->get('custom_login_slug') ?: '';
-$gemini_api_key = $setting->get('gemini_api_key') ?: '';
 
 $page_title = 'সাইট সেটিংস';
 
@@ -182,12 +178,6 @@ ob_start();
                 <input type="text" name="custom_login_slug" value="<?php echo escape($custom_login_slug); ?>" placeholder="administrator-login" class="flex-1 px-4 py-3 border rounded border-gray-300" />
             </div>
             <p class="text-xs text-red-500 mt-1 font-bold">সতর্কতা: এটি পরিবর্তন করলে আপনাকে এই নতুন URL ব্যবহার করে লগইন করতে হবে (যেমন /admin/আপনার-স্লাগ)। ভুলে গেলে লগইন করা যাবে না!</p>
-        </div>
-
-        <div>
-            <label class="block text-sm font-medium text-gray-700">Gemini API Key (Auto Post AI এর জন্য)</label>
-            <input type="password" name="gemini_api_key" value="<?php echo escape($gemini_api_key); ?>" class="w-full px-4 py-3 border rounded border-gray-300" placeholder="AIzaSy..." />
-            <p class="text-xs text-gray-500 mt-1">Google AI Studio থেকে বিনামূল্যে API Key সংগ্রহ করতে পারেন। এটি Auto Post এর মাধ্যমে স্ক্র্যাপ করা নিউজগুলো রিরাইট (প্যারাফ্রেস) করার জন্য ব্যবহৃত হবে।</p>
         </div>
 
         <div class="flex items-center justify-between">
