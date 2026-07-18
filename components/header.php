@@ -78,14 +78,6 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
                             <?php echo escape($item['title']); ?>
                         </a>
                     <?php endforeach; ?>
-                <?php else: ?>
-                    <!-- Fallback if no primary menu is set -->
-                    <?php foreach ($categories as $category): ?>
-                        <a href="<?php echo SITE_URL; ?>/category.php?slug=<?php echo escape($category['slug']); ?>" 
-                           class="px-4 py-3 nav-hover-effect font-medium text-lg whitespace-nowrap">
-                            <?php echo escape($category['name']); ?>
-                        </a>
-                    <?php endforeach; ?>
                 <?php endif; ?>
             </div>
             
@@ -97,7 +89,7 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
                             class="hover:text-gray-300 transition p-2">
                         <i class="fas fa-search"></i>
                     </button>
-                    <button id="mobileMenuBtn" class="hover:text-gray-300 transition p-2 border border-primary-600 rounded">
+                    <button id="mobileMenuBtn" type="button" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')" class="hover:text-gray-300 transition p-2 border border-primary-600 rounded cursor-pointer">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
@@ -116,14 +108,6 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
                     <a href="<?php echo escape($item['url']); ?>" 
                        class="px-4 py-3 text-gray-800 font-medium hover:bg-gray-50 transition border-b border-gray-100 last:border-0">
                         <?php echo escape($item['title']); ?>
-                    </a>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <!-- Fallback if no mobile menu is set -->
-                <?php foreach ($categories as $category): ?>
-                    <a href="<?php echo SITE_URL; ?>/category.php?slug=<?php echo escape($category['slug']); ?>" 
-                       class="px-4 py-3 text-gray-800 font-medium hover:bg-gray-50 transition border-b border-gray-100 last:border-0">
-                        <?php echo escape($category['name']); ?>
                     </a>
                 <?php endforeach; ?>
             <?php endif; ?>
@@ -237,9 +221,5 @@ if (empty($site_info['site_header_html'])) {
         if (!CSS.supports('position', 'sticky')) {
             window.addEventListener('scroll', handleScroll);
         }
-        
-        document.getElementById('mobileMenuBtn')?.addEventListener('click', function() {
-            document.getElementById('mobileMenu').classList.toggle('hidden');
-        });
     });
 </script>
