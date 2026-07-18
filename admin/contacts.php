@@ -143,5 +143,5 @@ ob_start();
 
 <?php
 $content = ob_get_clean();
-require_once 'layouts/admin.php';
+include 'layouts/admin.php';
 ?>
