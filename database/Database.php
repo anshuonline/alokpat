@@ -29,6 +29,8 @@ class Database {
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+            // Set MySQL timezone to India Standard Time
+            $this->conn->exec("SET time_zone = '+05:30'");
         } catch(PDOException $exception) {
             error_log("Database Connection Error: " . $exception->getMessage());
             die("Database connection failed. Please try again later.");

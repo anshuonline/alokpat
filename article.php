@@ -97,11 +97,20 @@ component('header', ['categories' => $categories]);
         <div class="flex flex-col md:flex-row items-center justify-between border-b border-gray-200 pb-4 mb-8">
             <div class="text-gray-500 text-sm mb-4 md:mb-0 font-medium flex items-center">
                 <span><i class="far fa-clock mr-1"></i> <?php echo formatDateBengali($article['published_at'] ?? $article['created_at']); ?></span>
-                <?php if (!empty($article['updated_at']) && strtotime($article['updated_at']) > strtotime($article['published_at'] ?? $article['created_at'])): ?>
+                <?php 
+                if (!empty($article['updated_at'])) {
+                    $pub_date = formatDateBengali($article['published_at'] ?? $article['created_at']);
+                    $upd_date = formatDateBengali($article['updated_at']);
+                    
+                    if ($upd_date !== $pub_date && strtotime($article['updated_at']) > strtotime($article['published_at'] ?? $article['created_at'])): 
+                ?>
                     <span class="ml-4 pl-4 border-l border-gray-300 text-gray-500">
-                        <i class="fas fa-history mr-1"></i> আপডেট: <?php echo formatDateBengali($article['updated_at']); ?>
+                        <i class="fas fa-history mr-1"></i> আপডেট: <?php echo $upd_date; ?>
                     </span>
-                <?php endif; ?>
+                <?php 
+                    endif; 
+                } 
+                ?>
             </div>
             
             <div class="flex items-center space-x-3">
