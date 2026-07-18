@@ -61,7 +61,29 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
         background-color: #f3f4f6; /* gray-100 */
         color: #1e3a8a;
     }
+
+    @keyframes ticker {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-100%); }
+    }
+    .breaking-ticker-container {
+        overflow: hidden;
+        position: relative;
+        width: 100%;
+        display: flex;
+        align-items: center;
+    }
+    .breaking-ticker {
+        display: inline-block;
+        white-space: nowrap;
+        animation: ticker 25s linear infinite;
+        padding-left: 100%;
+    }
+    .breaking-ticker:hover {
+        animation-play-state: paused;
+    }
 </style>
+
 
 <nav id="main-nav" class="bg-primary-800 text-white shadow-md sticky z-50 transition-all duration-200 relative" style="position: -webkit-sticky; position: sticky; top: 0;">
     <div class="max-w-6xl mx-auto px-4">
@@ -163,8 +185,13 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
                 <?php
                 $post = new Post();
                 $breaking_news = $post->getBreakingNews(5);
+                if (empty($breaking_news)) {
+                    // Fallback to latest 3 posts if no breaking news
+                    $fallback = $post->getPosts(1, 3);
+                    $breaking_news = $fallback['posts'] ?? [];
+                }
                 ?>
-                <div class="breaking-ticker whitespace-nowrap absolute">
+                <div class="breaking-ticker-container w-full h-full"><div class="breaking-ticker">
                     <?php if (!empty($breaking_news)): ?>
                         <?php foreach ($breaking_news as $news): ?>
                             <a href="<?php echo url_for_post($news['slug']); ?>" class="inline-block mr-12 hover:text-primary-600 font-medium text-gray-800">
@@ -176,9 +203,7 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
                     <?php endif; ?>
                 </div>
             </div>
-        </div>
-        
-        <!-- Social Icons (Right) -->
+        </div>\s*</div>\s*<!-- Social Icons (Right) -->
         <div class="hidden md:flex items-center space-x-4 py-2 px-4">
             <?php if (!empty($site_info['facebook_url'])): ?>
                 <a href="<?php echo escape($site_info['facebook_url']); ?>" target="_blank" class="text-primary-600 hover:opacity-80 transition text-lg">
