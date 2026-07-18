@@ -125,41 +125,62 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
     <div class="max-w-6xl mx-auto px-4">
         <div class="flex items-center justify-between">
             
-            <!-- Desktop Links -->
-            <div class="hidden lg:flex items-center space-x-1 w-full justify-center">
-                <a href="<?php echo SITE_URL; ?>" class="px-4 py-3 nav-hover-effect font-medium text-lg" title="প্রচ্ছদ (Home)">
-                    <i class="fas fa-home text-xl"></i>
-                </a>
+            <!-- Desktop Links and Search -->
+            <div class="hidden lg:flex items-center justify-between w-full h-[52px]">
                 
-                <?php if (!empty($primaryMenuItems)): ?>
-                    <?php foreach ($primaryMenuItems as $item): ?>
-                        <?php if (!empty($item['children'])): ?>
-                            <!-- Dropdown Menu Item -->
-                            <div class="relative group h-full">
-                                <a href="<?php echo escape($item['url']); ?>" 
-                                   class="px-4 py-3 nav-hover-effect font-medium text-lg whitespace-nowrap flex items-center gap-1 h-full cursor-pointer">
-                                    <?php echo escape($item['title']); ?>
-                                    <i class="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
-                                </a>
-                                <!-- Dropdown Content -->
-                                <div class="absolute left-0 top-full hidden group-hover:block w-56 bg-white shadow-lg border-t-2 border-primary-600 rounded-b-lg overflow-hidden py-2 z-50">
-                                    <?php foreach ($item['children'] as $child): ?>
-                                        <a href="<?php echo escape($child['url']); ?>" 
-                                           class="block px-4 py-2 text-gray-700 font-medium dropdown-hover-effect transition-colors">
-                                            <?php echo escape($child['title']); ?>
-                                        </a>
-                                    <?php endforeach; ?>
+                <!-- Links -->
+                <div class="flex items-center h-full">
+                    <a href="<?php echo SITE_URL; ?>" class="px-4 py-3 nav-hover-effect font-medium text-lg flex items-center h-full" title="প্রচ্ছদ (Home)">
+                        <i class="fas fa-home text-xl"></i>
+                    </a>
+                    
+                    <?php if (!empty($primaryMenuItems)): ?>
+                        <?php foreach ($primaryMenuItems as $item): ?>
+                            <?php if (!empty($item['children'])): ?>
+                                <!-- Dropdown Menu Item -->
+                                <div class="relative group h-full">
+                                    <a href="<?php echo escape($item['url']); ?>" 
+                                       class="px-4 py-3 nav-hover-effect font-medium text-lg whitespace-nowrap flex items-center gap-1 h-full cursor-pointer">
+                                        <?php echo escape($item['title']); ?>
+                                        <i class="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
+                                    </a>
+                                    <!-- Dropdown Content -->
+                                    <div class="absolute left-0 top-full hidden group-hover:block w-56 bg-white shadow-lg border-t-2 border-primary-600 rounded-b-lg overflow-hidden py-2 z-50">
+                                        <?php foreach ($item['children'] as $child): ?>
+                                            <a href="<?php echo escape($child['url']); ?>" 
+                                               class="block px-4 py-2 text-gray-700 font-medium dropdown-hover-effect transition-colors">
+                                                <?php echo escape($child['title']); ?>
+                                            </a>
+                                        <?php endforeach; ?>
+                                    </div>
                                 </div>
-                            </div>
-                        <?php else: ?>
-                            <!-- Regular Menu Item -->
-                            <a href="<?php echo escape($item['url']); ?>" 
-                               class="px-4 py-3 nav-hover-effect font-medium text-lg whitespace-nowrap">
-                                <?php echo escape($item['title']); ?>
-                            </a>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                            <?php else: ?>
+                                <!-- Regular Menu Item -->
+                                <a href="<?php echo escape($item['url']); ?>" 
+                                   class="px-4 py-3 nav-hover-effect font-medium text-lg whitespace-nowrap flex items-center h-full">
+                                    <?php echo escape($item['title']); ?>
+                                </a>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Desktop Smart Search -->
+                <div class="relative" id="desktopSearchContainer">
+                    <form action="<?php echo SITE_URL; ?>/search.php" method="GET" class="flex items-center bg-primary-700 rounded-full overflow-hidden border border-primary-600 focus-within:border-white transition-colors h-9">
+                        <input type="text" name="q" id="desktopSearchInput" placeholder="খবর খুঁজুন..." autocomplete="off"
+                               class="bg-transparent text-white px-4 py-1 focus:outline-none w-48 xl:w-64 text-sm placeholder-gray-300">
+                        <button type="submit" class="px-3 text-gray-300 hover:text-white transition">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                    
+                    <!-- AJAX Results Dropdown -->
+                    <div id="desktopSearchResults" class="absolute right-0 top-full mt-2 w-80 bg-white rounded-lg shadow-2xl border border-gray-100 overflow-hidden hidden z-[70]">
+                        <!-- Results will be injected here via JS -->
+                    </div>
+                </div>
+                
             </div>
             
             <!-- Search & Mobile Menu Button -->
@@ -265,6 +286,67 @@ if (empty($site_info['site_header_html'])) {
         
         if (!CSS.supports('position', 'sticky')) {
             window.addEventListener('scroll', handleScroll);
+        }
+    });
+
+    // Smart Live Search Logic
+    document.addEventListener("DOMContentLoaded", function() {
+        const searchInput = document.getElementById('desktopSearchInput');
+        const resultsContainer = document.getElementById('desktopSearchResults');
+        let searchTimeout;
+
+        if (searchInput && resultsContainer) {
+            searchInput.addEventListener('input', function() {
+                const query = this.value.trim();
+                
+                clearTimeout(searchTimeout);
+                
+                if (query.length < 2) {
+                    resultsContainer.classList.add('hidden');
+                    return;
+                }
+
+                // Show loading state
+                resultsContainer.classList.remove('hidden');
+                resultsContainer.innerHTML = '<div class="p-4 text-center text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i>খোঁজা হচ্ছে...</div>';
+
+                searchTimeout = setTimeout(() => {
+                    fetch('<?php echo SITE_URL; ?>/ajax_search.php?q=' + encodeURIComponent(query))
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.length > 0) {
+                                let html = '<div class="flex flex-col">';
+                                data.forEach(post => {
+                                    html += `
+                                        <a href="${post.url}" class="flex items-center gap-3 p-3 hover:bg-gray-50 border-b border-gray-100 transition">
+                                            ${post.image ? `<img src="${post.image}" class="w-12 h-12 object-cover rounded shadow-sm flex-shrink-0" alt="">` : `<div class="w-12 h-12 bg-gray-200 rounded flex items-center justify-center text-gray-400"><i class="fas fa-image"></i></div>`}
+                                            <div class="flex-1 min-w-0">
+                                                <h4 class="text-sm font-semibold text-gray-800 truncate">${post.title}</h4>
+                                                <span class="text-xs text-gray-500">${post.date}</span>
+                                            </div>
+                                        </a>
+                                    `;
+                                });
+                                html += `<a href="<?php echo SITE_URL; ?>/search.php?q=${encodeURIComponent(query)}" class="block w-full text-center p-3 text-sm text-primary-600 hover:bg-primary-50 font-medium">সব ফলাফল দেখুন</a>`;
+                                html += '</div>';
+                                resultsContainer.innerHTML = html;
+                            } else {
+                                resultsContainer.innerHTML = '<div class="p-4 text-center text-gray-500 text-sm">কোনো খবর পাওয়া যায়নি।</div>';
+                            }
+                        })
+                        .catch(err => {
+                            resultsContainer.innerHTML = '<div class="p-4 text-center text-red-500 text-sm">সমস্যা হয়েছে। আবার চেষ্টা করুন।</div>';
+                        });
+                }, 300); // 300ms debounce
+            });
+
+            // Hide dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                const container = document.getElementById('desktopSearchContainer');
+                if (container && !container.contains(e.target)) {
+                    resultsContainer.classList.add('hidden');
+                }
+            });
         }
     });
 </script>
