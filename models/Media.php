@@ -10,8 +10,8 @@ class Media {
     private $table = 'media';
 
     public function __construct() {
-        global $pdo;
-        $this->conn = $pdo;
+        global $db;
+        $this->conn = $db;
     }
 
     /**

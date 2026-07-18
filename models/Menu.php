@@ -6,8 +6,8 @@ class Menu {
     private $db;
 
     public function __construct() {
-        global $pdo;
-        $this->db = $pdo;
+        global $db;
+        $this->db = $db;
     }
 
     // Get all menus

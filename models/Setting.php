@@ -10,8 +10,8 @@ class Setting {
     private $table = 'settings';
 
     public function __construct() {
-        global $pdo;
-        $this->conn = $pdo;
+        global $db;
+        $this->conn = $db;
     }
 
     /**

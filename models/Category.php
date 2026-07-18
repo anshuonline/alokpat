@@ -10,8 +10,8 @@ class Category {
     private $table = 'categories';
 
     public function __construct() {
-        global $pdo;
-        $this->conn = $pdo;
+        global $db;
+        $this->conn = $db;
     }
 
     /**
