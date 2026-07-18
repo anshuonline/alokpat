@@ -78,6 +78,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_id'])) {
 $categories = $category->getAll();
 $page_title = 'ক্যাটাগরি ব্যবস্থাপনা';
 
+$next_order = 1;
+if (!empty($categories)) {
+    $orders = array_column($categories, 'display_order');
+    $next_order = !empty($orders) ? max($orders) + 1 : 1;
+}
+
 ob_start();
 ?>
 
@@ -227,7 +233,7 @@ ob_start();
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         প্রদর্শন ক্রম
                     </label>
-                    <input type="number" name="display_order" value="0"
+                    <input type="number" name="display_order" value="<?php echo $next_order; ?>"
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                 </div>
                 
