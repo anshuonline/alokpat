@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Menu Model - Handles dynamic menus and menu items
  */
@@ -6,8 +6,8 @@ class Menu {
     private $db;
 
     public function __construct() {
-        global $pdo;
-        $this->db = $pdo;
+        $database = new Database();
+        $this->db = $database->getConnection();
     }
 
     // Get all menus
