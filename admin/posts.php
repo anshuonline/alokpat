@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Admin Posts Management
  * 
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_action'])) {
                 if ($stmt->execute([$action, $id])) $count++;
             }
         }
-        setFlash('success', $count . ' টি পোস্টে সফলভাবে পরিবর্তন করা হয়েছে');
+        setFlash('success', $count . ' à¦Ÿà¦¿ à¦ªà§‹à¦¸à§à¦Ÿà§‡ à¦¸à¦«à¦²à¦­à¦¾à¦¬à§‡ à¦ªà¦°à¦¿à¦¬à¦°à§à¦¤à¦¨ à¦•à¦°à¦¾ à¦¹à¦¯à¦¼à§‡à¦›à§‡');
         redirect(ADMIN_URL . '/posts.php');
     }
 }
@@ -83,7 +83,7 @@ if (empty($where)) {
 
 $total_pages = ceil($total / $limit);
 
-$page_title = 'সংবাদ ব্যবস্থাপনা';
+$page_title = 'à¦¸à¦‚à¦¬à¦¾à¦¦ à¦¬à§à¦¯à¦¬à¦¸à§à¦¥à¦¾à¦ªà¦¨à¦¾';
 
 ob_start();
 ?>
@@ -92,11 +92,11 @@ ob_start();
     
     <!-- Page Header -->
     <div class="flex items-center justify-between">
-        <h2 class="text-3xl font-bold text-gray-800">সংবাদ ব্যবস্থাপনা</h2>
+        <h2 class="text-3xl font-bold text-gray-800">à¦¸à¦‚à¦¬à¦¾à¦¦ à¦¬à§à¦¯à¦¬à¦¸à§à¦¥à¦¾à¦ªà¦¨à¦¾</h2>
         <a href="<?php echo ADMIN_URL; ?>/post-create.php" 
            class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">
             <i class="fas fa-plus mr-2"></i>
-            নতুন সংবাদ
+            à¦¨à¦¤à§à¦¨ à¦¸à¦‚à¦¬à¦¾à¦¦
         </a>
     </div>
     
@@ -105,19 +105,19 @@ ob_start();
         <div class="flex flex-wrap gap-3">
             <a href="?filter=all" 
                class="px-4 py-2 rounded-lg <?php echo $filter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?> transition">
-                সকল (<?php echo formatNumberBengali($post->getCount()); ?>)
+                à¦¸à¦•à¦² (<?php echo formatNumberBengali($post->getCount()); ?>)
             </a>
             <a href="?filter=published" 
                class="px-4 py-2 rounded-lg <?php echo $filter === 'published' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?> transition">
-                প্রকাশিত (<?php echo formatNumberBengali($post->getCount('published')); ?>)
+                à¦ªà§à¦°à¦•à¦¾à¦¶à¦¿à¦¤ (<?php echo formatNumberBengali($post->getCount('published')); ?>)
             </a>
             <a href="?filter=draft" 
                class="px-4 py-2 rounded-lg <?php echo $filter === 'draft' ? 'bg-yellow-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?> transition">
-                খসড়া (<?php echo formatNumberBengali($post->getCount('draft')); ?>)
+                à¦–à¦¸à¦¡à¦¼à¦¾ (<?php echo formatNumberBengali($post->getCount('draft')); ?>)
             </a>
             <a href="?filter=breaking" 
                class="px-4 py-2 rounded-lg <?php echo $filter === 'breaking' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?> transition">
-                ব্রেকিং (<?php echo formatNumberBengali(count($post->getBreakingNews())); ?>)
+                à¦¬à§à¦°à§‡à¦•à¦¿à¦‚ (<?php echo formatNumberBengali(count($post->getBreakingNews())); ?>)
             </a>
         </div>
     </div>
@@ -128,13 +128,13 @@ ob_start();
         
         <div class="mb-4 flex items-center space-x-3">
             <select name="bulk_action" class="border-gray-300 rounded-lg text-sm px-3 py-2 outline-none focus:border-blue-500">
-                <option value="">বাল্ক অ্যাকশন (Bulk Action)</option>
-                <option value="published">পাবলিশ করুন (Publish)</option>
-                <option value="draft">ড্রাফট করুন (Draft)</option>
-                <option value="archived">প্রাইভেট/আর্কাইভ (Archive)</option>
-                <option value="delete">মুছে ফেলুন (Delete)</option>
+                <option value="">à¦¬à¦¾à¦²à§à¦• à¦…à§à¦¯à¦¾à¦•à¦¶à¦¨ (Bulk Action)</option>
+                <option value="published">à¦ªà¦¾à¦¬à¦²à¦¿à¦¶ à¦•à¦°à§à¦¨ (Publish)</option>
+                <option value="draft">à¦¡à§à¦°à¦¾à¦«à¦Ÿ à¦•à¦°à§à¦¨ (Draft)</option>
+                <option value="archived">à¦ªà§à¦°à¦¾à¦‡à¦­à§‡à¦Ÿ/à¦†à¦°à§à¦•à¦¾à¦‡à¦­ (Archive)</option>
+                <option value="delete">à¦®à§à¦›à§‡ à¦«à§‡à¦²à§à¦¨ (Delete)</option>
             </select>
-            <button type="submit" onclick="return confirm('আপনি কি নিশ্চিত?')" class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-700 transition">এপ্লাই</button>
+            <button type="submit" onclick="return confirm('à¦†à¦ªà¦¨à¦¿ à¦•à¦¿ à¦¨à¦¿à¦¶à§à¦šà¦¿à¦¤?')" class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-700 transition">à¦à¦ªà§à¦²à¦¾à¦‡</button>
         </div>
 
         <div class="bg-white rounded-xl shadow-md overflow-hidden">
@@ -145,20 +145,20 @@ ob_start();
                             <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 w-12">
                                 <input type="checkbox" id="selectAll" class="rounded text-blue-600 focus:ring-blue-500">
                             </th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">শিরোনাম</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">লেখক</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">ক্যাটাগরি</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">স্ট্যাটাস</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">ভিউ</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">তারিখ</th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">কাজ</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">à¦¶à¦¿à¦°à§‹à¦¨à¦¾à¦®</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">à¦²à§‡à¦–à¦•</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">à¦•à§à¦¯à¦¾à¦Ÿà¦¾à¦—à¦°à¦¿</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">à¦¸à§à¦Ÿà§à¦¯à¦¾à¦Ÿà¦¾à¦¸</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">à¦­à¦¿à¦‰</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">à¦¤à¦¾à¦°à¦¿à¦–</th>
+                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">à¦•à¦¾à¦œ</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y">
                     <?php if (empty($posts)): ?>
                         <tr>
                             <td colspan="8" class="px-6 py-12 text-center text-gray-500">
-                                কোনো সংবাদ পাওয়া যায়নি
+                                à¦•à§‹à¦¨à§‹ à¦¸à¦‚à¦¬à¦¾à¦¦ à¦ªà¦¾à¦“à¦¯à¦¼à¦¾ à¦¯à¦¾à¦¯à¦¼à¦¨à¦¿
                             </td>
                         </tr>
                     <?php else: ?>
@@ -176,7 +176,7 @@ ob_start();
                                         <?php endif; ?>
                                         <div>
                                             <h4 class="font-semibold text-gray-800 hover:text-blue-600">
-                                                <a href="<?php echo url_for_post($post_item['slug']); ?>" target="_blank">
+                                                <a href="<?php echo url_for_post($post_item); ?>" target="_blank">
                                                     <?php echo escape($post_item['title']); ?>
                                                 </a>
                                             </h4>
@@ -207,10 +207,10 @@ ob_start();
                                         'archived' => 'bg-gray-100 text-gray-800'
                                     ];
                                     $status_labels = [
-                                        'published' => 'প্রকাশিত',
-                                        'draft' => 'খসড়া',
-                                        'scheduled' => 'নির্ধারিত',
-                                        'archived' => 'সংরক্ষিত'
+                                        'published' => 'à¦ªà§à¦°à¦•à¦¾à¦¶à¦¿à¦¤',
+                                        'draft' => 'à¦–à¦¸à¦¡à¦¼à¦¾',
+                                        'scheduled' => 'à¦¨à¦¿à¦°à§à¦§à¦¾à¦°à¦¿à¦¤',
+                                        'archived' => 'à¦¸à¦‚à¦°à¦•à§à¦·à¦¿à¦¤'
                                     ];
                                     ?>
                                     <span class="px-2 py-1 text-xs font-semibold rounded <?php echo $status_classes[$post_item['status']]; ?>">
@@ -231,15 +231,15 @@ ob_start();
                                 <td class="px-6 py-4 text-sm">
                                     <div class="flex space-x-2">
                                         <a href="<?php echo ADMIN_URL; ?>/post-edit.php?id=<?php echo $post_item['id']; ?>" 
-                                           class="text-blue-600 hover:text-blue-800" title="সম্পাদনা">
+                                           class="text-blue-600 hover:text-blue-800" title="à¦¸à¦®à§à¦ªà¦¾à¦¦à¦¨à¦¾">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <a href="<?php echo ADMIN_URL; ?>/post-duplicate.php?id=<?php echo $post_item['id']; ?>" 
-                                           class="text-gray-600 hover:text-gray-800" title="ডুপ্লিকেট">
+                                           class="text-gray-600 hover:text-gray-800" title="à¦¡à§à¦ªà§à¦²à¦¿à¦•à§‡à¦Ÿ">
                                             <i class="fas fa-copy"></i>
                                         </a>
                                         <a href="<?php echo ADMIN_URL; ?>/post-delete.php?id=<?php echo $post_item['id']; ?>" 
-                                           class="text-red-600 hover:text-red-800 delete-confirm" title="মুছুন">
+                                           class="text-red-600 hover:text-red-800 delete-confirm" title="à¦®à§à¦›à§à¦¨">
                                             <i class="fas fa-trash"></i>
                                         </a>
                                     </div>
@@ -258,7 +258,7 @@ ob_start();
             <div class="px-6 py-4 border-t bg-gray-50">
                 <div class="flex items-center justify-between">
                     <p class="text-sm text-gray-600">
-                        মোট <?php echo formatNumberBengali($total); ?> টি সংবাদ
+                        à¦®à§‹à¦Ÿ <?php echo formatNumberBengali($total); ?> à¦Ÿà¦¿ à¦¸à¦‚à¦¬à¦¾à¦¦
                     </p>
                     <nav class="flex space-x-2">
                         <?php if ($page > 1): ?>
@@ -292,7 +292,7 @@ ob_start();
 <script>
     document.querySelectorAll('.delete-confirm').forEach(link => {
         link.addEventListener('click', function(e) {
-            if (!confirm('আপনি কি নিশ্চিত? এটি মুছে ফেললে আর ফিরে পাওয়া যাবে না।')) {
+            if (!confirm('à¦†à¦ªà¦¨à¦¿ à¦•à¦¿ à¦¨à¦¿à¦¶à§à¦šà¦¿à¦¤? à¦à¦Ÿà¦¿ à¦®à§à¦›à§‡ à¦«à§‡à¦²à¦²à§‡ à¦†à¦° à¦«à¦¿à¦°à§‡ à¦ªà¦¾à¦“à¦¯à¦¼à¦¾ à¦¯à¦¾à¦¬à§‡ à¦¨à¦¾à¥¤')) {
                 e.preventDefault();
             }
         });
@@ -312,3 +312,4 @@ ob_start();
 $content = ob_get_clean();
 include 'layouts/admin.php';
 ?>
+

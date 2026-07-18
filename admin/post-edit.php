@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Edit Post Page
  * 
@@ -11,7 +11,7 @@ requireAuth();
 $post_id = $_GET['id'] ?? null;
 
 if (!$post_id) {
-    setFlash('error', 'কোনো পোস্ট নির্বাচন করা হয়নি');
+    setFlash('error', 'à¦•à§‹à¦¨à§‹ à¦ªà§‹à¦¸à§à¦Ÿ à¦¨à¦¿à¦°à§à¦¬à¦¾à¦šà¦¨ à¦•à¦°à¦¾ à¦¹à¦¯à¦¼à¦¨à¦¿');
     redirect(ADMIN_URL . '/posts.php');
 }
 
@@ -24,7 +24,7 @@ $media = new Media();
 $post = $post_model->getById($post_id);
 
 if (!$post) {
-    setFlash('error', 'পোস্ট পাওয়া যায়নি');
+    setFlash('error', 'à¦ªà§‹à¦¸à§à¦Ÿ à¦ªà¦¾à¦“à¦¯à¦¼à¦¾ à¦¯à¦¾à¦¯à¦¼à¦¨à¦¿');
     redirect(ADMIN_URL . '/posts.php');
 }
 
@@ -50,10 +50,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Validate required fields
     $errors = [];
     if (empty($title)) {
-        $errors[] = 'শিরোনাম প্রয়োজন';
+        $errors[] = 'à¦¶à¦¿à¦°à§‹à¦¨à¦¾à¦® à¦ªà§à¦°à¦¯à¦¼à§‹à¦œà¦¨';
     }
     if (empty($content)) {
-        $errors[] = 'বিষয়বস্তু প্রয়োজন';
+        $errors[] = 'à¦¬à¦¿à¦·à¦¯à¦¼à¦¬à¦¸à§à¦¤à§ à¦ªà§à¦°à¦¯à¦¼à§‹à¦œà¦¨';
     }
     
     if (empty($errors)) {
@@ -142,11 +142,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         if (empty($errors)) {
             if ($post_model->update($post_id, $data)) {
-                setFlash('success', 'সংবাদ সফলভাবে আপডেট হয়েছে');
+                setFlash('success', 'à¦¸à¦‚à¦¬à¦¾à¦¦ à¦¸à¦«à¦²à¦­à¦¾à¦¬à§‡ à¦†à¦ªà¦¡à§‡à¦Ÿ à¦¹à¦¯à¦¼à§‡à¦›à§‡');
                 
                 redirect(ADMIN_URL . '/post-edit.php?id=' . $post_id);
             } else {
-                $errors[] = 'সংবাদ আপডেটে সমস্যা হয়েছে';
+                $errors[] = 'à¦¸à¦‚à¦¬à¦¾à¦¦ à¦†à¦ªà¦¡à§‡à¦Ÿà§‡ à¦¸à¦®à¦¸à§à¦¯à¦¾ à¦¹à¦¯à¦¼à§‡à¦›à§‡';
             }
         }
     }
@@ -155,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_POST = $post;
 }
 
-$page_title = 'সংবাদ সম্পাদনা করুন';
+$page_title = 'à¦¸à¦‚à¦¬à¦¾à¦¦ à¦¸à¦®à§à¦ªà¦¾à¦¦à¦¨à¦¾ à¦•à¦°à§à¦¨';
 
 ob_start();
 ?>
@@ -166,22 +166,22 @@ ob_start();
     <div class="flex items-center justify-between">
         <h2 class="text-3xl font-bold text-gray-800">
             <i class="fas fa-edit text-blue-600 mr-2"></i>
-            সংবাদ সম্পাদনা করুন
+            à¦¸à¦‚à¦¬à¦¾à¦¦ à¦¸à¦®à§à¦ªà¦¾à¦¦à¦¨à¦¾ à¦•à¦°à§à¦¨
         </h2>
         <div class="flex space-x-3">
-            <a href="<?php echo url_for_post($post['slug']); ?>" 
+            <a href="<?php echo url_for_post($post); ?>" 
                 target="_blank" 
                class="bg-green-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-700 transition">
                 <i class="fas fa-eye mr-2"></i>
-                পূর্বরূপ দেখুন
+                à¦ªà§‚à¦°à§à¦¬à¦°à§‚à¦ª à¦¦à§‡à¦–à§à¦¨
             </a>
             <button type="submit" form="postEditForm" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition shadow">
                 <i class="fas fa-save mr-2"></i>
-                আপডেট করুন
+                à¦†à¦ªà¦¡à§‡à¦Ÿ à¦•à¦°à§à¦¨
             </button>
             <a href="<?php echo ADMIN_URL; ?>/posts.php" class="bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-700 transition">
                 <i class="fas fa-arrow-left mr-2"></i>
-                ফিরে যান
+                à¦«à¦¿à¦°à§‡ à¦¯à¦¾à¦¨
             </a>
         </div>
     </div>
@@ -207,10 +207,10 @@ ob_start();
             'archived' => 'bg-gray-100 text-gray-800'
         ];
         $status_labels = [
-            'published' => 'প্রকাশিত',
-            'draft' => 'খসড়া',
-            'scheduled' => 'নির্ধারিত',
-            'archived' => 'সংরক্ষিত'
+            'published' => 'à¦ªà§à¦°à¦•à¦¾à¦¶à¦¿à¦¤',
+            'draft' => 'à¦–à¦¸à¦¡à¦¼à¦¾',
+            'scheduled' => 'à¦¨à¦¿à¦°à§à¦§à¦¾à¦°à¦¿à¦¤',
+            'archived' => 'à¦¸à¦‚à¦°à¦•à§à¦·à¦¿à¦¤'
         ];
         ?>
         <span class="px-4 py-2 text-sm font-semibold rounded-full <?php echo $status_classes[$post['status']]; ?>">
@@ -218,7 +218,7 @@ ob_start();
         </span>
         <span class="text-gray-500 text-sm">
             <i class="fas fa-calendar mr-1"></i>
-            তৈরি: <?php echo formatDateBengali($post['created_at']); ?>
+            à¦¤à§ˆà¦°à¦¿: <?php echo formatDateBengali($post['created_at']); ?>
         </span>
     </div>
     
@@ -234,14 +234,14 @@ ob_start();
                 <!-- Title -->
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <label class="block text-lg font-semibold text-gray-800 mb-2">
-                        শিরোনাম <span class="text-red-500">*</span>
+                        à¦¶à¦¿à¦°à§‹à¦¨à¦¾à¦® <span class="text-red-500">*</span>
                     </label>
                     <input type="text" 
                            name="title" 
                            required
                            value="<?php echo isset($_POST['title']) ? escape($_POST['title']) : ''; ?>"
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                           placeholder="সংবাদের শিরোনাম লিখুন...">
+                           placeholder="à¦¸à¦‚à¦¬à¦¾à¦¦à§‡à¦° à¦¶à¦¿à¦°à§‹à¦¨à¦¾à¦® à¦²à¦¿à¦–à§à¦¨...">
                 </div>
                 
                 <!-- Slug -->
@@ -257,10 +257,10 @@ ob_start();
                     
                     <div class="mt-4 p-3 bg-gray-50 rounded border border-gray-200 flex items-center justify-between">
                         <div class="text-sm text-gray-700 break-all mr-4 font-mono">
-                            <span id="fullUrlText"><?php echo url_for_post($post['slug']); ?></span>
+                            <span id="fullUrlText"><?php echo url_for_post($post); ?></span>
                         </div>
                         <button type="button" onclick="copyFullUrl()" class="px-3 py-1.5 bg-white text-gray-700 rounded border border-gray-300 hover:bg-gray-100 text-sm font-medium whitespace-nowrap transition shadow-sm">
-                            <i class="fas fa-copy mr-1"></i> কপি
+                            <i class="fas fa-copy mr-1"></i> à¦•à¦ªà¦¿
                         </button>
                     </div>
                 </div>
@@ -268,28 +268,28 @@ ob_start();
                 <!-- Content -->
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <label class="block text-lg font-semibold text-gray-800 mb-2">
-                        বিষয়বস্তু <span class="text-red-500">*</span>
+                        à¦¬à¦¿à¦·à¦¯à¦¼à¦¬à¦¸à§à¦¤à§ <span class="text-red-500">*</span>
                     </label>
                         <textarea name="content" 
                               rows="20"
                               id="contentEditor"
                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono text-sm"
-                              placeholder="সংবাদের বিস্তারিত লিখুন..."><?php echo isset($post['content']) ? htmlspecialchars($post['content']) : (isset($_POST['content']) ? htmlspecialchars($_POST['content']) : ''); ?></textarea>
+                              placeholder="à¦¸à¦‚à¦¬à¦¾à¦¦à§‡à¦° à¦¬à¦¿à¦¸à§à¦¤à¦¾à¦°à¦¿à¦¤ à¦²à¦¿à¦–à§à¦¨..."><?php echo isset($post['content']) ? htmlspecialchars($post['content']) : (isset($_POST['content']) ? htmlspecialchars($_POST['content']) : ''); ?></textarea>
                     <?php if (isset($post['content'])): ?>
                         <!-- DEBUG: Content length = <?php echo strlen($post['content']); ?> bytes -->
                     <?php endif; ?>
-                    <p class="text-xs text-gray-500 mt-1">HTML ট্যাগ ব্যবহার করতে পারবেন বা টুলবার ব্যবহার করুন</p>
+                    <p class="text-xs text-gray-500 mt-1">HTML à¦Ÿà§à¦¯à¦¾à¦— à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦° à¦•à¦°à¦¤à§‡ à¦ªà¦¾à¦°à¦¬à§‡à¦¨ à¦¬à¦¾ à¦Ÿà§à¦²à¦¬à¦¾à¦° à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦° à¦•à¦°à§à¦¨</p>
                 </div>
                 
                 <!-- Excerpt -->
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        সারাংশ (Excerpt)
+                        à¦¸à¦¾à¦°à¦¾à¦‚à¦¶ (Excerpt)
                     </label>
                     <textarea name="excerpt" 
                               rows="3"
                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                              placeholder="সংবাদের সংক্ষিপ্ত সারাংশ..."><?php echo isset($_POST['excerpt']) ? escape($_POST['excerpt']) : ''; ?></textarea>
+                              placeholder="à¦¸à¦‚à¦¬à¦¾à¦¦à§‡à¦° à¦¸à¦‚à¦•à§à¦·à¦¿à¦ªà§à¦¤ à¦¸à¦¾à¦°à¦¾à¦‚à¦¶..."><?php echo isset($_POST['excerpt']) ? escape($_POST['excerpt']) : ''; ?></textarea>
                 </div>
                 
             </div>
@@ -301,7 +301,7 @@ ob_start();
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <h3 class="text-lg font-bold text-gray-800 mb-4">
                         <i class="fas fa-paper-plane mr-2"></i>
-                        প্রকাশের ধরন
+                        à¦ªà§à¦°à¦•à¦¾à¦¶à§‡à¦° à¦§à¦°à¦¨
                     </h3>
                     
                     <div class="space-y-3">
@@ -311,7 +311,7 @@ ob_start();
                                    value="draft" 
                                    <?php echo (!isset($_POST['status']) || $_POST['status'] === 'draft') ? 'checked' : ''; ?>
                                    class="mr-2 h-4 w-4">
-                            <span class="text-sm">খসড়া (Draft)</span>
+                            <span class="text-sm">à¦–à¦¸à¦¡à¦¼à¦¾ (Draft)</span>
                         </label>
                         
                         <label class="flex items-center">
@@ -320,7 +320,7 @@ ob_start();
                                    value="published" 
                                    <?php echo (isset($_POST['status']) && $_POST['status'] === 'published') ? 'checked' : ''; ?>
                                    class="mr-2 h-4 w-4">
-                            <span class="text-sm">প্রকাশিত (Published)</span>
+                            <span class="text-sm">à¦ªà§à¦°à¦•à¦¾à¦¶à¦¿à¦¤ (Published)</span>
                         </label>
                     </div>
                 </div>
@@ -328,11 +328,11 @@ ob_start();
                 <!-- Category -->
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        ক্যাটাগরি
+                        à¦•à§à¦¯à¦¾à¦Ÿà¦¾à¦—à¦°à¦¿
                     </label>
                     <select name="category_id" 
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                        <option value="">-- নির্বাচন করুন --</option>
+                        <option value="">-- à¦¨à¦¿à¦°à§à¦¬à¦¾à¦šà¦¨ à¦•à¦°à§à¦¨ --</option>
                         <?php foreach ($categories as $cat): ?>
                             <option value="<?php echo $cat['id']; ?>" 
                                     <?php echo (isset($_POST['category_id']) && $_POST['category_id'] == $cat['id']) ? 'selected' : (isset($post['category_id']) && $post['category_id'] == $cat['id'] ? 'selected' : ''); ?>>
@@ -345,7 +345,7 @@ ob_start();
                 <!-- Tags -->
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        ট্যাগ (Tags)
+                        à¦Ÿà§à¦¯à¦¾à¦— (Tags)
                     </label>
                     <?php
                     $selected_tag_ids = [];
@@ -362,13 +362,13 @@ ob_start();
                             </option>
                         <?php endforeach; ?>
                     </select>
-                    <p class="text-xs text-gray-500 mt-2">নতুন ট্যাগ লিখতে পারেন এবং এন্টার চাপুন</p>
+                    <p class="text-xs text-gray-500 mt-2">à¦¨à¦¤à§à¦¨ à¦Ÿà§à¦¯à¦¾à¦— à¦²à¦¿à¦–à¦¤à§‡ à¦ªà¦¾à¦°à§‡à¦¨ à¦à¦¬à¦‚ à¦à¦¨à§à¦Ÿà¦¾à¦° à¦šà¦¾à¦ªà§à¦¨</p>
                 </div>
                 
                 <!-- Featured Image -->
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        ফিচার্ড ইমেজ (Featured Image)
+                        à¦«à¦¿à¦šà¦¾à¦°à§à¦¡ à¦‡à¦®à§‡à¦œ (Featured Image)
                     </label>
                     
                     <div id="featuredImagePreviewContainer" class="<?php echo empty($post['featured_image']) ? 'hidden' : ''; ?> mb-4 relative rounded overflow-hidden border border-gray-200">
@@ -380,7 +380,7 @@ ob_start();
 
                     <div class="flex items-center space-x-3 mb-3">
                         <button type="button" onclick="openMediaLibrary()" class="px-4 py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-100 transition flex items-center font-semibold">
-                            <i class="fas fa-images mr-2"></i> মিডিয়া লাইব্রেরি থেকে বেছে নিন
+                            <i class="fas fa-images mr-2"></i> à¦®à¦¿à¦¡à¦¿à¦¯à¦¼à¦¾ à¦²à¦¾à¦‡à¦¬à§à¦°à§‡à¦°à¦¿ à¦¥à§‡à¦•à§‡ à¦¬à§‡à¦›à§‡ à¦¨à¦¿à¦¨
                         </button>
                     </div>
                     
@@ -389,19 +389,19 @@ ob_start();
                     <div class="mt-3">
                         <input type="text" 
                                name="featured_image_alt" 
-                               placeholder="ছবির Alt text (SEO এর জন্য)"
+                               placeholder="à¦›à¦¬à¦¿à¦° Alt text (SEO à¦à¦° à¦œà¦¨à§à¦¯)"
                                value="<?php echo isset($_POST['featured_image_alt']) ? escape($_POST['featured_image_alt']) : ''; ?>"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm">
                     </div>
                     <div class="mt-3 bg-blue-50 text-blue-700 text-xs p-3 rounded-lg border border-blue-100 flex items-start">
                         <i class="fas fa-info-circle mt-0.5 mr-2"></i>
-                        <span>পরামর্শিত ছবির সাইজ: <strong>800x450 px</strong> (বা ১৬:৯ অনুপাত)। ছবি স্বয়ংক্রিয়ভাবে কন্টেইনারের সাইজে ফিট হয়ে যাবে (Contain)।</span>
+                        <span>à¦ªà¦°à¦¾à¦®à¦°à§à¦¶à¦¿à¦¤ à¦›à¦¬à¦¿à¦° à¦¸à¦¾à¦‡à¦œ: <strong>800x450 px</strong> (à¦¬à¦¾ à§§à§¬:à§¯ à¦…à¦¨à§à¦ªà¦¾à¦¤)à¥¤ à¦›à¦¬à¦¿ à¦¸à§à¦¬à¦¯à¦¼à¦‚à¦•à§à¦°à¦¿à¦¯à¦¼à¦­à¦¾à¦¬à§‡ à¦•à¦¨à§à¦Ÿà§‡à¦‡à¦¨à¦¾à¦°à§‡à¦° à¦¸à¦¾à¦‡à¦œà§‡ à¦«à¦¿à¦Ÿ à¦¹à§Ÿà§‡ à¦¯à¦¾à¦¬à§‡ (Contain)à¥¤</span>
                     </div>
                 </div>
                 
                 <!-- Flags -->
                 <div class="bg-white rounded-xl shadow-md p-6">
-                    <h3 class="text-sm font-bold text-gray-800 mb-3">বিশেষ চিহ্ন</h3>
+                    <h3 class="text-sm font-bold text-gray-800 mb-3">à¦¬à¦¿à¦¶à§‡à¦· à¦šà¦¿à¦¹à§à¦¨</h3>
                     
                     <div class="space-y-3">
                         <label class="flex items-center">
@@ -410,7 +410,7 @@ ob_start();
                                    value="1"
                                    <?php echo (isset($_POST['is_featured']) && $_POST['is_featured']) ? 'checked' : ''; ?>
                                    class="mr-2 h-4 w-4">
-                            <span class="text-sm">⭐ ফিচার্ড</span>
+                            <span class="text-sm">â­ à¦«à¦¿à¦šà¦¾à¦°à§à¦¡</span>
                         </label>
                         
                         <label class="flex items-center">
@@ -419,7 +419,7 @@ ob_start();
                                    value="1"
                                    <?php echo (isset($_POST['is_breaking']) && $_POST['is_breaking']) ? 'checked' : ''; ?>
                                    class="mr-2 h-4 w-4">
-                            <span class="text-sm">🔴 ব্রেকিং নিউজ</span>
+                            <span class="text-sm">ðŸ”´ à¦¬à§à¦°à§‡à¦•à¦¿à¦‚ à¦¨à¦¿à¦‰à¦œ</span>
                         </label>
                         
                         <label class="flex items-center">
@@ -428,7 +428,7 @@ ob_start();
                                    value="1"
                                    <?php echo (isset($_POST['is_trending']) && $_POST['is_trending']) ? 'checked' : ''; ?>
                                    class="mr-2 h-4 w-4">
-                            <span class="text-sm">🔥 ট্রেন্ডিং</span>
+                            <span class="text-sm">ðŸ”¥ à¦Ÿà§à¦°à§‡à¦¨à§à¦¡à¦¿à¦‚</span>
                         </label>
                     </div>
                 </div>
@@ -441,7 +441,7 @@ ob_start();
         <div class="bg-white rounded-xl shadow-md p-6">
             <h3 class="text-xl font-bold text-gray-800 mb-4">
                 <i class="fas fa-search text-green-600 mr-2"></i>
-                এসইও (SEO) সেটিংস
+                à¦à¦¸à¦‡à¦“ (SEO) à¦¸à§‡à¦Ÿà¦¿à¦‚à¦¸
             </h3>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -456,7 +456,7 @@ ob_start();
                            value="<?php echo isset($_POST['seo_title']) ? escape($_POST['seo_title']) : ''; ?>"
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                            placeholder="Search engine title">
-                    <p class="text-xs text-gray-500 mt-1">খালি থাকলে শিরোনাম ব্যবহার হবে</p>
+                    <p class="text-xs text-gray-500 mt-1">à¦–à¦¾à¦²à¦¿ à¦¥à¦¾à¦•à¦²à§‡ à¦¶à¦¿à¦°à§‹à¦¨à¦¾à¦® à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦° à¦¹à¦¬à§‡</p>
                 </div>
                 
                 <!-- SEO Description -->
@@ -558,11 +558,11 @@ ob_start();
         <div class="flex space-x-4">
             <button type="submit" class="flex-1 bg-blue-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-blue-700 transition">
                 <i class="fas fa-save mr-2"></i>
-                আপডেট সংরক্ষণ করুন
+                à¦†à¦ªà¦¡à§‡à¦Ÿ à¦¸à¦‚à¦°à¦•à§à¦·à¦£ à¦•à¦°à§à¦¨
             </button>
             <a href="<?php echo ADMIN_URL; ?>/posts.php" 
                class="px-8 py-4 bg-gray-200 rounded-lg font-bold text-lg hover:bg-gray-300 transition">
-                বাতিল
+                à¦¬à¦¾à¦¤à¦¿à¦²
             </a>
         </div>
         
@@ -580,7 +580,7 @@ function removeFeaturedImage() {
 function copyFullUrl() {
     const url = document.getElementById('fullUrlText').innerText;
     navigator.clipboard.writeText(url).then(() => {
-        alert('URL কপি করা হয়েছে!');
+        alert('URL à¦•à¦ªà¦¿ à¦•à¦°à¦¾ à¦¹à¦¯à¦¼à§‡à¦›à§‡!');
     });
 }
 </script>
@@ -633,9 +633,9 @@ function copyFullUrl() {
                 text: 'Button',
                 tooltip: 'Insert Styled Link Button',
                 onAction: function () {
-                    const text = prompt('বাটনের টেক্সট দিন (উদাঃ Read More):');
+                    const text = prompt('à¦¬à¦¾à¦Ÿà¦¨à§‡à¦° à¦Ÿà§‡à¦•à§à¦¸à¦Ÿ à¦¦à¦¿à¦¨ (à¦‰à¦¦à¦¾à¦ƒ Read More):');
                     if (!text) return;
-                    const url = prompt('বাটনের লিংক (URL) দিন:');
+                    const url = prompt('à¦¬à¦¾à¦Ÿà¦¨à§‡à¦° à¦²à¦¿à¦‚à¦• (URL) à¦¦à¦¿à¦¨:');
                     if (!url) return;
                     editor.execCommand('mceInsertContent', false, '<a href="' + url + '" class="custom-cta-btn">' + text + '</a>&nbsp;');
                 }
@@ -664,7 +664,7 @@ function copyFullUrl() {
                 }
             });
 
-            // --- Custom: Image Size % Selector (10–100%) ---
+            // --- Custom: Image Size % Selector (10â€“100%) ---
             var sizeItems = [];
             for (var s = 10; s <= 100; s += 5) {
                 (function(pct) {
@@ -752,7 +752,7 @@ $(document).ready(function() {
     $('#postTags').select2({
         tags: true,
         tokenSeparators: [',', ' '],
-        placeholder: "ট্যাগ খুঁজুন বা নতুন লিখুন",
+        placeholder: "à¦Ÿà§à¦¯à¦¾à¦— à¦–à§à¦à¦œà§à¦¨ à¦¬à¦¾ à¦¨à¦¤à§à¦¨ à¦²à¦¿à¦–à§à¦¨",
         width: '100%'
     });
     
@@ -767,3 +767,4 @@ $(document).ready(function() {
 $content = ob_get_clean();
 include 'layouts/admin.php';
 ?>
+

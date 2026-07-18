@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Article Detail Page
  * 
@@ -33,7 +33,7 @@ ob_start();
 <!-- SEO Meta Tags -->
 <meta name="description" content="<?php echo escape($article['seo_description'] ?? $article['excerpt'] ?? ''); ?>">
 <meta name="keywords" content="<?php echo escape($article['seo_keywords'] ?? ''); ?>">
-<link rel="canonical" href="<?php echo url_for_post($article['slug']); ?>">
+<link rel="canonical" href="<?php echo url_for_post($article); ?>">
 
 <!-- Open Graph -->
 <meta property="og:title" content="<?php echo escape($article['meta_og_title'] ?? $article['title']); ?>">
@@ -42,7 +42,7 @@ ob_start();
 <meta property="og:image" content="<?php echo escape($article['meta_og_image']); ?>">
 <?php endif; ?>
 <meta property="og:type" content="article">
-<meta property="og:url" content="<?php echo url_for_post($article['slug']); ?>">
+<meta property="og:url" content="<?php echo url_for_post($article); ?>">
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="<?php echo escape($article['meta_twitter_card'] ?? 'summary_large_image'); ?>">
@@ -59,7 +59,7 @@ component('header', ['categories' => $categories]);
         <!-- Breadcrumb (Centered) -->
         <nav class="mb-6 text-sm text-center">
             <ol class="flex items-center justify-center space-x-2 text-primary-600 font-medium">
-                <li><a href="<?php echo SITE_URL; ?>" class="hover:underline">প্রচ্ছদ</a></li>
+                <li><a href="<?php echo SITE_URL; ?>" class="hover:underline">à¦ªà§à¦°à¦šà§à¦›à¦¦</a></li>
                 <?php if (!empty($article['category_name'])): ?>
                     <li class="text-gray-400">/</li>
                     <li><a href="<?php echo SITE_URL; ?>/category.php?slug=<?php echo escape($article['category_slug']); ?>" class="hover:underline"><?php echo escape($article['category_name']); ?></a></li>
@@ -102,28 +102,28 @@ component('header', ['categories' => $categories]);
                     <?php else: ?>
                         <i class="fas fa-user-circle text-lg mr-2 text-primary-500"></i>
                     <?php endif; ?>
-                    <?php echo escape($article['author_name'] ?? 'অপরিচিত'); ?>
+                    <?php echo escape($article['author_name'] ?? 'à¦…à¦ªà¦°à¦¿à¦šà¦¿à¦¤'); ?>
                 </a>
                 <span><i class="far fa-clock mr-1"></i> <?php echo formatDateBengali($article['published_at'] ?? $article['created_at']); ?></span>
             </div>
             
             <div class="flex items-center space-x-3">
-                <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(url_for_post($article['slug'])); ?>" 
+                <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(url_for_post($article)); ?>" 
                    target="_blank"
                    class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition" title="Share on Facebook">
                     <i class="fab fa-facebook-f"></i>
                 </a>
-                <a href="https://wa.me/?text=<?php echo urlencode($article['title'] . ' ' . url_for_post($article['slug'])); ?>" 
+                <a href="https://wa.me/?text=<?php echo urlencode($article['title'] . ' ' . url_for_post($article)); ?>" 
                    target="_blank"
                    class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 transition" title="Share on WhatsApp">
                     <i class="fab fa-whatsapp"></i>
                 </a>
-                <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode(url_for_post($article['slug'])); ?>&text=<?php echo urlencode($article['title']); ?>" 
+                <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode(url_for_post($article)); ?>&text=<?php echo urlencode($article['title']); ?>" 
                    target="_blank"
                    class="w-8 h-8 rounded-full bg-blue-400 text-white flex items-center justify-center hover:bg-blue-500 transition" title="Share on Twitter">
                     <i class="fab fa-twitter"></i>
                 </a>
-                <button onclick="navigator.clipboard.writeText('<?php echo url_for_post($article['slug']); ?>'); alert('Link copied!');"
+                <button onclick="navigator.clipboard.writeText('<?php echo url_for_post($article); ?>'); alert('Link copied!');"
                    class="w-8 h-8 rounded-full bg-gray-600 text-white flex items-center justify-center hover:bg-gray-700 transition" title="Copy Link">
                     <i class="fas fa-link"></i>
                 </button>
@@ -167,7 +167,7 @@ component('header', ['categories' => $categories]);
         <!-- Tags -->
         <?php if (!empty($article['tags'])): ?>
             <div class="flex flex-wrap gap-2 mb-12 border-t border-b border-gray-100 py-6">
-                <span class="font-bold text-gray-700 py-1 mr-2"><i class="fas fa-tags mr-1"></i> ট্যাগ:</span>
+                <span class="font-bold text-gray-700 py-1 mr-2"><i class="fas fa-tags mr-1"></i> à¦Ÿà§à¦¯à¦¾à¦—:</span>
                 <?php foreach ($article['tags'] as $tag): ?>
                     <a href="<?php echo SITE_URL; ?>/tag.php?slug=<?php echo escape($tag['slug']); ?>" 
                        class="px-4 py-1 bg-gray-100 text-gray-700 rounded-full hover:bg-primary-100 hover:text-primary-600 transition text-sm">
@@ -181,13 +181,13 @@ component('header', ['categories' => $categories]);
         <?php if (!empty($related_posts)): ?>
             <div class="mt-12 bg-gray-50 rounded-2xl p-8">
                 <h3 class="text-2xl font-bold mb-6 text-gray-800 text-center">
-                    সম্পর্কিত সংবাদ
+                    à¦¸à¦®à§à¦ªà¦°à§à¦•à¦¿à¦¤ à¦¸à¦‚à¦¬à¦¾à¦¦
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <?php foreach (array_slice($related_posts, 0, 3) as $related): ?>
                         <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden">
                             <?php if (!empty($related['featured_image'])): ?>
-                                <a href="<?php echo url_for_post($related['slug']); ?>" class="block">
+                                <a href="<?php echo url_for_post($related); ?>" class="block">
                                     <img src="<?php echo escape($related['featured_image']); ?>" 
                                          alt="<?php echo escape($related['title']); ?>" 
                                          class="w-full h-40 object-cover">
@@ -195,7 +195,7 @@ component('header', ['categories' => $categories]);
                             <?php endif; ?>
                             <div class="p-4">
                                 <h4 class="font-bold text-gray-800 hover:text-primary-600 transition line-clamp-2">
-                                    <a href="<?php echo url_for_post($related['slug']); ?>">
+                                    <a href="<?php echo url_for_post($related); ?>">
                                         <?php echo escape($related['title']); ?>
                                     </a>
                                 </h4>
@@ -217,3 +217,4 @@ component('footer');
 $content = ob_get_clean();
 include 'layouts/main.php';
 ?>
+

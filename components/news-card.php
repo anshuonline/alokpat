@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * News Card Component
  * 
@@ -34,7 +34,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
     <!-- Magazine Main (Large Image Top, Title Below) -->
     <div class="group h-full flex flex-col <?php echo $bgClass; ?> <?php echo $theme === 'dark' ? 'p-4 rounded-lg' : ''; ?>">
         <div class="overflow-hidden rounded mb-3 bg-gray-50 flex items-center justify-center h-64">
-                <a href="<?php echo url_for_post($post['slug']); ?>" class="block w-full h-full">
+                <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
                     <img src="<?php echo $imgSrc; ?>" 
                          alt="<?php echo escape($post['title']); ?>" 
                          class="w-full h-full <?php echo $imgClass; ?> group-hover:scale-105 transition duration-500"
@@ -42,7 +42,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
                 </a>
             </div>
         <h3 class="text-2xl md:text-3xl font-semibold leading-tight <?php echo $titleClass; ?> mb-2 transition">
-            <a href="<?php echo url_for_post($post['slug']); ?>">
+            <a href="<?php echo url_for_post($post); ?>">
                 <?php echo escape($post['title']); ?>
             </a>
         </h3>
@@ -57,7 +57,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
     <!-- Magazine List (Small Thumbnail Left, Title Right, Dashed Border) -->
     <div class="flex items-center py-4 border-b border-dashed <?php echo $theme === 'dark' ? 'border-gray-700' : 'border-gray-300'; ?> group last:border-0">
         <div class="w-24 h-16 flex-shrink-0 overflow-hidden rounded mr-4 bg-gray-50 flex items-center justify-center">
-                <a href="<?php echo url_for_post($post['slug']); ?>" class="block w-full h-full">
+                <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
                     <img src="<?php echo $imgSrc; ?>" 
                          alt="<?php echo escape($post['title']); ?>" 
                          class="w-full h-full <?php echo $imgClass; ?> group-hover:scale-110 transition duration-300"
@@ -66,7 +66,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
             </div>
         <div class="flex-1">
             <h3 class="text-base md:text-lg font-semibold leading-snug <?php echo $titleClass; ?> transition line-clamp-2">
-                <a href="<?php echo url_for_post($post['slug']); ?>">
+                <a href="<?php echo url_for_post($post); ?>">
                     <?php echo escape($post['title']); ?>
                 </a>
             </h3>
@@ -77,7 +77,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
     <!-- Classic List View (Image Left, Content Right, Dashed Border) -->
     <div class="flex flex-col md:flex-row py-6 border-b border-dashed <?php echo $theme === 'dark' ? 'border-gray-700' : 'border-gray-300'; ?> group last:border-0">
         <div class="w-full md:w-[280px] h-44 flex-shrink-0 overflow-hidden mb-4 md:mb-0 md:mr-6 bg-gray-50 flex items-center justify-center">
-                <a href="<?php echo url_for_post($post['slug']); ?>" class="block w-full h-full">
+                <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
                     <img src="<?php echo $imgSrc; ?>" 
                          alt="<?php echo escape($post['title']); ?>" 
                          class="w-full h-full <?php echo $imgClass; ?> group-hover:scale-105 transition duration-500"
@@ -86,7 +86,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
             </div>
         <div class="flex-1 flex flex-col justify-center">
             <h3 class="text-xl md:text-2xl font-semibold leading-tight <?php echo $titleClass; ?> mb-2 transition">
-                <a href="<?php echo url_for_post($post['slug']); ?>">
+                <a href="<?php echo url_for_post($post); ?>">
                     <?php echo escape($post['title']); ?>
                 </a>
             </h3>
@@ -110,8 +110,8 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
             </div>
             
             <div class="mt-3">
-                <a href="<?php echo url_for_post($post['slug']); ?>" class="text-gray-400 hover:text-primary-600 text-sm font-semibold flex items-center transition w-fit group-hover:text-primary-500">
-                    বিস্তারিত <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                <a href="<?php echo url_for_post($post); ?>" class="text-gray-400 hover:text-primary-600 text-sm font-semibold flex items-center transition w-fit group-hover:text-primary-500">
+                    à¦¬à¦¿à¦¸à§à¦¤à¦¾à¦°à¦¿à¦¤ <i class="fas fa-arrow-right ml-1 text-xs"></i>
                 </a>
             </div>
         </div>
@@ -123,7 +123,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
         <div class="flex">
             <?php if (!empty($post['featured_image'])): ?>
                 <div class="w-48 h-32 flex-shrink-0">
-                    <a href="<?php echo url_for_post($post['slug']); ?>" class="block w-full h-full">
+                    <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
                         <img src="<?php echo escape($post['featured_image']); ?>" 
                              alt="<?php echo escape($post['featured_image_alt'] ?? $post['title']); ?>" 
                              class="w-full h-full object-cover"
@@ -139,7 +139,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
                     </a>
                 <?php endif; ?>
                 <h3 class="text-lg font-semibold <?php echo $titleClass; ?> transition line-clamp-2">
-                    <a href="<?php echo url_for_post($post['slug']); ?>">
+                    <a href="<?php echo url_for_post($post); ?>">
                         <?php echo escape($post['title']); ?>
                     </a>
                 </h3>
@@ -151,7 +151,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
                 <div class="flex items-center justify-between mt-3 text-xs <?php echo $metaClass; ?>">
                     <span>
                         <i class="fas fa-user mr-1"></i>
-                        <?php echo escape($post['author_name'] ?? $post['author'] ?? 'অপরিচিত'); ?>
+                        <?php echo escape($post['author_name'] ?? $post['author'] ?? 'à¦…à¦ªà¦°à¦¿à¦šà¦¿à¦¤'); ?>
                     </span>
                     <span>
                         <i class="fas fa-clock mr-1"></i>
@@ -166,7 +166,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
     <!-- Featured Card -->
     <div class="relative rounded-xl shadow-xl overflow-hidden group">
         <?php if (!empty($post['featured_image'])): ?>
-            <a href="<?php echo url_for_post($post['slug']); ?>" class="block w-full h-full">
+            <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
                 <img src="<?php echo escape($post['featured_image']); ?>" 
                      alt="<?php echo escape($post['featured_image_alt'] ?? $post['title']); ?>" 
                      class="w-full h-96 object-cover group-hover:scale-105 transition duration-500"
@@ -187,7 +187,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
             <?php endif; ?>
             
             <h2 class="text-3xl font-semibold text-white mb-3 hover:text-primary-300 transition">
-                <a href="<?php echo url_for_post($post['slug']); ?>">
+                <a href="<?php echo url_for_post($post); ?>">
                     <?php echo escape($post['title']); ?>
                 </a>
             </h2>
@@ -201,7 +201,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
             <div class="flex items-center space-x-4 text-sm text-gray-300">
                 <span>
                     <i class="fas fa-user mr-1"></i>
-                    <?php echo escape($post['author_name'] ?? $post['author'] ?? 'অপরিচিত'); ?>
+                    <?php echo escape($post['author_name'] ?? $post['author'] ?? 'à¦…à¦ªà¦°à¦¿à¦šà¦¿à¦¤'); ?>
                 </span>
                 <span>
                     <i class="fas fa-clock mr-1"></i>
@@ -220,7 +220,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
     <div class="<?php echo $bgClass; ?> rounded-lg shadow-md hover:shadow-xl transition overflow-hidden">
         <?php if (!empty($post['featured_image'])): ?>
             <div class="relative overflow-hidden group">
-                <a href="<?php echo url_for_post($post['slug']); ?>" class="block w-full h-full">
+                <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
                     <img src="<?php echo escape($post['featured_image']); ?>" 
                          alt="<?php echo escape($post['featured_image_alt'] ?? $post['title']); ?>" 
                          class="w-full h-52 object-cover group-hover:scale-110 transition duration-500"
@@ -230,7 +230,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
                     <div class="absolute top-3 left-3">
                         <span class="px-3 py-1 bg-red-600 text-white text-xs font-semibold rounded">
                             <i class="fas fa-bolt mr-1"></i>
-                            ব্রেকিং
+                            à¦¬à§à¦°à§‡à¦•à¦¿à¦‚
                         </span>
                     </div>
                 <?php endif; ?>
@@ -246,7 +246,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
             <?php endif; ?>
             
             <h3 class="text-xl font-semibold <?php echo $titleClass; ?> transition line-clamp-2">
-                <a href="<?php echo url_for_post($post['slug']); ?>">
+                <a href="<?php echo url_for_post($post); ?>">
                     <?php echo escape($post['title']); ?>
                 </a>
             </h3>
@@ -260,7 +260,7 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
             <div class="flex items-center justify-between mt-4 pt-4 border-t <?php echo $theme === 'dark' ? 'border-gray-800' : 'border-gray-100'; ?> text-xs <?php echo $metaClass; ?>">
                 <span>
                     <i class="fas fa-user mr-1"></i>
-                    <?php echo escape($post['author_name'] ?? $post['author'] ?? 'অপরিচিত'); ?>
+                    <?php echo escape($post['author_name'] ?? $post['author'] ?? 'à¦…à¦ªà¦°à¦¿à¦šà¦¿à¦¤'); ?>
                 </span>
                 <span>
                     <i class="fas fa-clock mr-1"></i>
@@ -270,3 +270,4 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
         </div>
     </div>
 <?php endif; ?>
+
