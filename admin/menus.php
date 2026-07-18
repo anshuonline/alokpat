@@ -46,22 +46,22 @@ if ($edit_id > 0) {
     }
 }
 
-$page_title = '???? (Menus)';
+$page_title = 'মেনু (Menus)';
 ob_start();
 ?>
 
 <div class="space-y-6">
     <div class="flex items-center justify-between">
         <div>
-            <h2 class="text-2xl font-bold text-gray-800">???? (Menus)</h2>
-            <p class="text-sm text-gray-500">????? ??????????? ???????? ???? ???? ??? ???????? ????</p>
+            <h2 class="text-2xl font-bold text-gray-800">মেনু (Menus)</h2>
+            <p class="text-sm text-gray-500">আপনার ওয়েবসাইটের নেভিগেশন মেনু তৈরি এবং পরিচালনা করুন</p>
         </div>
     </div>
 
     <!-- Top Bar -->
     <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col md:flex-row items-center gap-4">
         <div class="flex items-center space-x-3 w-full md:w-auto">
-            <span class="font-medium text-gray-700">???????? ???? ???? ???? ???????? ????:</span>
+            <span class="font-medium text-gray-700">সম্পাদনা করার জন্য মেনু নির্বাচন করুন:</span>
             <select id="menuSelector" class="border-gray-300 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500" onchange="if(this.value !== '') window.location.href='menus.php?menu=' + this.value;">
                 <?php foreach ($allMenus as $m): ?>
                     <option value="<?php echo $m['id']; ?>" <?php echo $edit_id === $m['id'] ? 'selected' : ''; ?>>
@@ -69,8 +69,8 @@ ob_start();
                     </option>
                 <?php endforeach; ?>
             </select>
-            <span class="text-gray-500">????</span>
-            <a href="menus.php?menu=0" class="text-blue-600 hover:underline font-medium">???? ???? ???? ????</a>
+            <span class="text-gray-500">অথবা</span>
+            <a href="menus.php?menu=0" class="text-blue-600 hover:underline font-medium">নতুন মেনু তৈরি করুন</a>
         </div>
     </div>
 
@@ -80,13 +80,13 @@ ob_start();
             <?php if ($edit_id === 0): ?>
                 <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded shadow-sm">
                     <p class="text-sm text-yellow-700">
-                        ????? ??? ???? ??? ??? ??? ??????? ???? <strong>????? ???</strong> ??? ??? ??? ?????
+                        আইটেম যোগ করার আগে দয়া করে ডানদিকে একটি <strong>মেনুর নাম</strong> দিন এবং সেভ করুন।
                     </p>
                 </div>
             <?php else: ?>
                 <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
                     <button type="button" class="w-full px-4 py-3 bg-gray-50 flex justify-between items-center text-left font-bold text-gray-700 hover:bg-gray-100 transition" onclick="document.getElementById('cat-list').classList.toggle('hidden')">
-                        ????????? (Categories) <i class="fas fa-chevron-down text-sm"></i>
+                        ক্যাটাগরি (Categories) <i class="fas fa-chevron-down text-sm"></i>
                     </button>
                     <div id="cat-list" class="p-4 border-t border-gray-200">
                         <div class="max-h-48 overflow-y-auto space-y-2 mb-3 border border-gray-200 p-2 rounded bg-gray-50">
@@ -98,15 +98,15 @@ ob_start();
                             <?php endforeach; ?>
                         </div>
                         <div class="flex justify-between items-center">
-                            <label class="text-sm text-blue-600 hover:underline cursor-pointer"><input type="checkbox" onchange="document.querySelectorAll('.cat-checkbox').forEach(cb => cb.checked = this.checked);" class="mr-1">?? ???????? ????</label>
-                            <button type="button" onclick="addCategoriesToMenu()" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded text-sm font-medium transition">?????? ????? ????</button>
+                            <label class="text-sm text-blue-600 hover:underline cursor-pointer"><input type="checkbox" onchange="document.querySelectorAll('.cat-checkbox').forEach(cb => cb.checked = this.checked);" class="mr-1">সব নির্বাচন করুন</label>
+                            <button type="button" onclick="addCategoriesToMenu()" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded text-sm font-medium transition">মেনুতে যুক্ত করুন</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
                     <button type="button" class="w-full px-4 py-3 bg-gray-50 flex justify-between items-center text-left font-bold text-gray-700 hover:bg-gray-100 transition" onclick="document.getElementById('custom-link-box').classList.toggle('hidden')">
-                        ?????? ???? (Custom Links) <i class="fas fa-chevron-down text-sm"></i>
+                        কাস্টম লিংক (Custom Links) <i class="fas fa-chevron-down text-sm"></i>
                     </button>
                     <div id="custom-link-box" class="p-4 border-t border-gray-200 hidden space-y-3">
                         <div>
@@ -114,11 +114,11 @@ ob_start();
                             <input type="url" id="custom-url" class="w-full border-gray-300 rounded text-sm focus:ring-blue-500 focus:border-blue-500" value="https://">
                         </div>
                         <div>
-                            <label class="block text-xs text-gray-500 mb-1">?????? ??????</label>
-                            <input type="text" id="custom-text" class="w-full border-gray-300 rounded text-sm focus:ring-blue-500 focus:border-blue-500" placeholder="?????? ???">
+                            <label class="block text-xs text-gray-500 mb-1">লিংকের টেক্সট</label>
+                            <input type="text" id="custom-text" class="w-full border-gray-300 rounded text-sm focus:ring-blue-500 focus:border-blue-500" placeholder="লিংকের নাম">
                         </div>
                         <div class="text-right">
-                            <button type="button" onclick="addCustomLinkToMenu()" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded text-sm font-medium transition">?????? ????? ????</button>
+                            <button type="button" onclick="addCustomLinkToMenu()" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded text-sm font-medium transition">মেনুতে যুক্ত করুন</button>
                         </div>
                     </div>
                 </div>
@@ -128,24 +128,24 @@ ob_start();
         <!-- Right Side -->
         <div class="w-full lg:w-2/3 bg-white border border-gray-200 rounded-lg shadow-sm">
             <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
-                <h3 class="font-bold text-gray-800 text-lg">???? ??????????</h3>
+                <h3 class="font-bold text-gray-800 text-lg">মেনু স্ট্রাকচার</h3>
             </div>
             
             <form id="menuForm" onsubmit="event.preventDefault(); saveMenu();" class="p-6">
                 <input type="hidden" id="menu_id" value="<?php echo $edit_id; ?>">
                 
                 <div class="mb-6 flex items-center space-x-4">
-                    <label class="font-medium text-gray-700 whitespace-nowrap">????? ???:</label>
-                    <input type="text" id="menu_name" required value="<?php echo escape($currentMenu['name'] ?? ''); ?>" placeholder="????: Main Menu" class="w-full md:w-1/2 border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                    <label class="font-medium text-gray-700 whitespace-nowrap">মেনুর নাম:</label>
+                    <input type="text" id="menu_name" required value="<?php echo escape($currentMenu['name'] ?? ''); ?>" placeholder="যেমন: Main Menu" class="w-full md:w-1/2 border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
                 <div class="bg-gray-50 border border-gray-200 p-4 rounded-lg min-h-[300px]">
-                    <h4 class="text-sm font-bold text-gray-600 mb-3">????? ????????? (Drag & Drop ??? ?????, ???? ????? ?????? ?????)</h4>
+                    <h4 class="text-sm font-bold text-gray-600 mb-3">মেনুর আইটেমসমূহ (Drag & Drop করে সাজান, ডানে সরিয়ে চাইল্ড বানান)</h4>
                     
                     <ul id="menuList" class="space-y-2 nested-sortable min-h-[50px]">
                         <?php 
                         function renderMenuItem($item) {
-                            $typeLabel = $item['type'] === 'category' ? '?????????' : '?????? ????';
+                            $typeLabel = $item['type'] === 'category' ? 'ক্যাটাগরি' : 'কাস্টম লিংক';
                             $html = '<li class="menu-item-wrapper mb-2" data-id="' . $item['id'] . '">';
                             $html .= '<div class="menu-item bg-white border border-gray-300 rounded shadow-sm flex items-center justify-between p-3 cursor-move" ';
                             $html .= 'data-type="' . escape($item['type']) . '" ';
@@ -174,33 +174,33 @@ ob_start();
                     </ul>
                     
                     <div id="empty-menu-msg" class="text-gray-400 text-center py-10 <?php echo empty($menuItems) ? '' : 'hidden'; ?>">
-                        ??? ??? ???? ?????? ????? ??? ????
+                        বাম পাশ থেকে মেনুতে আইটেম যোগ করুন
                     </div>
                 </div>
 
                 <!-- Menu Locations -->
                 <div class="mt-8">
-                    <h4 class="font-bold text-gray-800 mb-3">???? ????? (Menu Settings)</h4>
+                    <h4 class="font-bold text-gray-800 mb-3">মেনু সেটিং (Menu Settings)</h4>
                     <div class="space-y-2">
                         <label class="flex items-center space-x-2">
                             <input type="checkbox" id="loc_primary" class="rounded text-blue-600 focus:ring-blue-500" <?php echo in_array('primary', $menuLocations) ? 'checked' : ''; ?>>
-                            <span class="text-gray-700">Primary Menu (?????? ??????)</span>
+                            <span class="text-gray-700">Primary Menu (হেডারে দেখাবে)</span>
                         </label>
                         <label class="flex items-center space-x-2">
                             <input type="checkbox" id="loc_mobile" class="rounded text-blue-600 focus:ring-blue-500" <?php echo in_array('mobile', $menuLocations) ? 'checked' : ''; ?>>
-                            <span class="text-gray-700">Mobile Menu (??????? ??????)</span>
+                            <span class="text-gray-700">Mobile Menu (মোবাইলে দেখাবে)</span>
                         </label>
                     </div>
                 </div>
 
                 <div class="mt-8 pt-4 border-t border-gray-200 flex justify-between items-center">
                     <?php if ($edit_id > 0): ?>
-                        <button type="button" onclick="deleteMenu(<?php echo $edit_id; ?>)" class="text-red-600 hover:text-red-800 font-medium text-sm underline">???? ?????</button>
+                        <button type="button" onclick="deleteMenu(<?php echo $edit_id; ?>)" class="text-red-600 hover:text-red-800 font-medium text-sm underline">মেনু মুছুন</button>
                     <?php else: ?>
                         <div></div>
                     <?php endif; ?>
                     <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-bold shadow-md transition">
-                        ???? ??? ????
+                        মেনু সেভ করুন
                     </button>
                 </div>
             </form>
@@ -237,7 +237,7 @@ ob_start();
     }
 
     function createMenuItemHTML(title, type, typeId, url) {
-        const typeLabel = type === 'category' ? '?????????' : '?????? ????';
+        const typeLabel = type === 'category' ? 'ক্যাটাগরি' : 'কাস্টম লিংক';
         const tempId = 'tmp_' + tempIdCounter++;
         return `
             <li class="menu-item-wrapper mb-2" data-id="${tempId}">
@@ -291,7 +291,7 @@ ob_start();
             document.getElementById('custom-url').value = 'https://';
             checkEmptyMenu();
         } else {
-            alert('URL ??? ?????? ?????? ?????? ?????');
+            alert('URL এবং লিংকের টেক্সট প্রদান করুন।');
         }
     }
 
@@ -343,7 +343,7 @@ ob_start();
         .then(res => res.json())
         .then(data => {
             if (data.status === 'success') {
-                alert('???? ??????? ??? ??????!');
+                alert('মেনু সফলভাবে সেভ হয়েছে!');
                 window.location.href = 'menus.php?menu=' + (menuId == 0 ? data.new_id : menuId);
             } else {
                 alert(data.message || 'Error saving menu');
@@ -356,7 +356,7 @@ ob_start();
     }
 
     function deleteMenu(id) {
-        if (confirm('???? ?? ??????? ?? ?? ?????? ????? ????')) {
+        if (confirm('আপনি কি নিশ্চিত যে এই মেনুটি মুছতে চান?')) {
             fetch('<?php echo ADMIN_URL; ?>/ajax/delete-menu.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
