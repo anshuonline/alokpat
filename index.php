@@ -2,7 +2,7 @@
 /**
  * Homepage - Magazine Grid Layout
  * 
- * @package Alokpath
+ * @package Alokpat
  */
 
 require_once 'config/config.php';

@@ -1,11 +1,11 @@
 <?php
 /**
- * Alokpath - Bengali News Portal CMS
+ * Alokpat - Bengali News Portal CMS
  * Main Configuration File
  * 
- * @package Alokpath
+ * @package Alokpat
  * @version 1.0.0
- * @author Alokpath Team
+ * @author Alokpat Team
  */
 
 // Database Configuration
@@ -16,7 +16,7 @@ define('DB_PASS', '');
 define('DB_CHARSET', 'utf8mb4');
 
 // Site Configuration
-define('SITE_NAME', 'Alokpath');
+define('SITE_NAME', 'Alokpat');
 define('SITE_URL', 'http://localhost/alokpath');
 define('ADMIN_URL', SITE_URL . '/admin');
 
@@ -49,7 +49,7 @@ define('POSTS_PER_PAGE', 10);
 define('ADMIN_POSTS_PER_PAGE', 15);
 
 // SEO Settings
-define('DEFAULT_META_TITLE', 'Alokpath - Bengali News Portal');
+define('DEFAULT_META_TITLE', 'Alokpat - Bengali News Portal');
 define('DEFAULT_META_DESCRIPTION', 'আলোকপাত - বাংলা সংবাদ এবং নিউজ পোর্টাল');
 define('DEFAULT_KEYWORDS', 'খবর আজ, bengali news, আলোকপাত, alokpat');
 
