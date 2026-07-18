@@ -43,10 +43,13 @@
                         <span class="text-gray-500 block text-xs font-semibold uppercase">ফাইলের নাম</span>
                         <div id="mediaSidebarFilename" class="text-gray-800 break-all font-medium"></div>
                     </div>
-                    <div class="pt-4 border-t border-gray-100">
-                        <a href="#" id="mediaSidebarFullLink" target="_blank" class="w-full text-center block px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition font-medium">
+                    <div class="pt-4 border-t border-gray-100 space-y-2">
+                        <a href="#" id="mediaSidebarFullLink" target="_blank" class="w-full text-center block px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition font-medium text-sm">
                             <i class="fas fa-external-link-alt mr-2"></i> ফুল সাইজ দেখুন
                         </a>
+                        <button type="button" onclick="navigator.clipboard.writeText(selectedMediaUrl); alert('URL কপি করা হয়েছে!');" class="w-full text-center block px-4 py-2 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-200 border border-gray-200 transition font-medium text-sm">
+                            <i class="fas fa-copy mr-2"></i> URL কপি করুন
+                        </button>
                     </div>
                 </div>
             </div>
