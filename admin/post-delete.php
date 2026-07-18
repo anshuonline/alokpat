@@ -1,0 +1,38 @@
+<?php
+/**
+ * Delete Post Action
+ * 
+ * @package Alokpath\Admin
+ */
+
+require_once '../config/config.php';
+requireAuth();
+
+if (!isset($_GET['id'])) {
+    redirect(ADMIN_URL . '/posts.php');
+}
+
+$id = (int)$_GET['id'];
+$post = new Post();
+
+// Verify permission
+$post_data = $post->getById($id);
+if (!$post_data) {
+    setFlash('error', 'পোস্টটি পাওয়া যায়নি');
+    redirect(ADMIN_URL . '/posts.php');
+}
+
+// Only admin/super_admin or the author can delete
+$user = getCurrentUser();
+if ($user['role'] !== 'super_admin' && $user['role'] !== 'admin' && $post_data['author_id'] !== $user['id']) {
+    setFlash('error', 'আপনার এই পোস্ট মুছে ফেলার অনুমতি নেই');
+    redirect(ADMIN_URL . '/posts.php');
+}
+
+if ($post->delete($id)) {
+    setFlash('success', 'পোস্ট সফলভাবে মুছে ফেলা হয়েছে');
+} else {
+    setFlash('error', 'পোস্ট মুছে ফেলতে সমস্যা হয়েছে');
+}
+
+redirect(ADMIN_URL . '/posts.php');

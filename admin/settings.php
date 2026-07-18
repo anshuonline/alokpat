@@ -1,0 +1,141 @@
+<?php
+/**
+ * Site Settings Page
+ */
+
+require_once '../config/config.php';
+requireAuth();
+
+// Permission check
+$allowed_roles = ['super_admin', 'admin'];
+if (!in_array(getCurrentUser()['role'], $allowed_roles)) {
+    setFlash('error', 'আপনার এই পৃষ্ঠা দেখার অনুমতি নেই');
+    redirect(ADMIN_URL . '/dashboard.php');
+}
+
+$setting = new Setting();
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $site_name = sanitize($_POST['site_name'] ?? '');
+    $site_tagline = sanitize($_POST['site_tagline'] ?? '');
+    $site_logo = sanitize($_POST['site_logo'] ?? '');
+    $footer_logo = sanitize($_POST['footer_logo'] ?? '');
+    $header_html = trim($_POST['header_html'] ?? '');
+    $custom_login_slug = sanitize($_POST['custom_login_slug'] ?? '');
+    $gemini_api_key = sanitize($_POST['gemini_api_key'] ?? '');
+
+    // Persist settings (create if missing)
+    $pairs = [
+        'site_name' => $site_name,
+        'site_tagline' => $site_tagline,
+        'site_logo' => $site_logo,
+        'footer_logo' => $footer_logo,
+        'site_header_html' => $header_html,
+        'custom_login_slug' => $custom_login_slug,
+        'gemini_api_key' => $gemini_api_key,
+    ];
+
+    foreach ($pairs as $k => $v) {
+        if ($setting->get($k) === false) {
+            $setting->create($k, $v, 'text', 'Site setting ' . $k);
+        } else {
+            $setting->update($k, $v);
+        }
+    }
+
+    setFlash('success', 'সাইট সেটিংস সফলভাবে আপডেট হয়েছে');
+    redirect(ADMIN_URL . '/settings.php');
+}
+
+// Load current settings
+$site_name = $setting->get('site_name') ?: 'আলোকপাত';
+$site_tagline = $setting->get('site_tagline') ?: '';
+$site_logo = $setting->get('site_logo') ?: '';
+$footer_logo = $setting->get('footer_logo') ?: '';
+$site_header_html = $setting->get('site_header_html') ?: '';
+$custom_login_slug = $setting->get('custom_login_slug') ?: '';
+$gemini_api_key = $setting->get('gemini_api_key') ?: '';
+
+$page_title = 'সাইট সেটিংস';
+
+ob_start();
+?>
+
+<div class="space-y-6">
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-3xl font-bold text-gray-800">সাইট সেটিংস</h2>
+            <p class="text-sm text-gray-500 mt-1">সাইটের হেডার, ফেভিকন, ফুটার ইত্যাদি কনফিগার করুন</p>
+        </div>
+        <a href="<?php echo ADMIN_URL; ?>/dashboard.php" class="px-4 py-2 bg-gray-600 text-white rounded-lg">ড্যাশবোর্ডে ফিরুন</a>
+    </div>
+
+    <form method="POST" class="bg-white rounded-xl shadow-md p-6 space-y-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-700">সাইট নাম</label>
+            <input type="text" name="site_name" value="<?php echo escape($site_name); ?>" class="w-full px-4 py-3 border rounded" />
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">ট্যাগলাইন</label>
+            <input type="text" name="site_tagline" value="<?php echo escape($site_tagline); ?>" class="w-full px-4 py-3 border rounded" />
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">সাইট লোগো URL</label>
+            <div class="flex space-x-2">
+                <input type="text" name="site_logo" id="site_logo" value="<?php echo escape($site_logo); ?>" class="flex-1 px-4 py-3 border rounded" />
+                <button type="button" onclick="copyToClipboard(document.getElementById('site_logo').value)" class="px-4 py-2 bg-gray-200 rounded">কপি</button>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">লগো আপলোড করতে মিডিয়া ব্যবহার করুন এবং URL এ পেস্ট করুন</p>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">ফুটার লোগো URL</label>
+            <div class="mt-1 flex rounded-md shadow-sm">
+                <input type="text" name="footer_logo" id="footer_logo" value="<?php echo escape($footer_logo); ?>" class="flex-1 min-w-0 block w-full px-4 py-3 rounded-none rounded-l-md border border-gray-300">
+                <button type="button" onclick="window.open('media.php', '_blank', 'width=800,height=600')" class="inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 rounded-r-md bg-gray-50 text-gray-700 hover:bg-gray-100">
+                    ব্রাউজ
+                </button>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">লোগো না থাকলে সাইটের নাম টেক্সট হিসেবে দেখাবে</p>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">কাস্টম হেডার HTML (ঐচ্ছিক)</label>
+            <textarea name="header_html" class="w-full px-4 py-3 border rounded" rows="4"><?php echo escape($site_header_html); ?></textarea>
+            <p class="text-xs text-gray-500 mt-1">যদি আপনি হেডারে বিশেষ আইটেম যোগ করতে চান (কমার্শিয়াল কোড সতর্কতার সঙ্গে যুক্ত করুন)</p>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">কাস্টম লগইন URL স্লাগ (ঐচ্ছিক)</label>
+            <div class="flex items-center space-x-2 mt-1">
+                <span class="text-gray-500"><?php echo SITE_URL; ?>/admin/</span>
+                <input type="text" name="custom_login_slug" value="<?php echo escape($custom_login_slug); ?>" placeholder="administrator-login" class="flex-1 px-4 py-3 border rounded border-gray-300" />
+            </div>
+            <p class="text-xs text-red-500 mt-1 font-bold">সতর্কতা: এটি পরিবর্তন করলে আপনাকে এই নতুন URL ব্যবহার করে লগইন করতে হবে (যেমন /admin/আপনার-স্লাগ)। ভুলে গেলে লগইন করা যাবে না!</p>
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Gemini API Key (Auto Post AI এর জন্য)</label>
+            <input type="password" name="gemini_api_key" value="<?php echo escape($gemini_api_key); ?>" class="w-full px-4 py-3 border rounded border-gray-300" placeholder="AIzaSy..." />
+            <p class="text-xs text-gray-500 mt-1">Google AI Studio থেকে বিনামূল্যে API Key সংগ্রহ করতে পারেন। এটি Auto Post এর মাধ্যমে স্ক্র্যাপ করা নিউজগুলো রিরাইট (প্যারাফ্রেস) করার জন্য ব্যবহৃত হবে।</p>
+        </div>
+
+        <div class="flex items-center justify-between">
+            <button class="px-6 py-3 bg-indigo-600 text-white rounded">সেভ করুন</button>
+            <a href="<?php echo ADMIN_URL; ?>/settings.php" class="px-4 py-2 bg-gray-200 rounded">রিসেট</a>
+        </div>
+    </form>
+</div>
+
+<script>
+function copyToClipboard(v) {
+    navigator.clipboard.writeText(v).then(function(){ alert('Copied'); });
+}
+</script>
+
+<?php
+$content = ob_get_clean();
+require_once 'layouts/admin.php';
+?>

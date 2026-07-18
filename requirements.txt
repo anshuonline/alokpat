@@ -1,0 +1,401 @@
+```txt id="n5r8kp"
+I want to build a professional Bengali news website named “Alokpath” with a complete CMS/admin panel system similar to WordPress.
+
+Tech Stack:
+- Frontend: HTML, CSS, Tailwind CSS, JavaScript
+- Backend: PHP
+- Database: MySQL (XAMPP)
+
+Database Details:
+- Database name: alokpath
+- I have already created the database in XAMPP.
+
+Project Vision:
+Build a scalable, production-ready Bengali digital news portal with a custom CMS architecture that is modular, developer-friendly, SEO optimized, and easy to maintain in the future.
+
+==================================================
+1. WEBSITE OVERVIEW
+==================================================
+
+- Entire website content will be in Bengali.
+- Modern, minimal, fast-loading UI similar to mainstream Bengali news/media websites.
+- Fully responsive for mobile, tablet, and desktop.
+- SEO-friendly HTML structure.
+- Clean Bengali typography support.
+- Dynamic homepage sections controlled from admin panel.
+- Temporary text logo “ALOKPATH” will be used for now.
+- Later I will add PNG/JPG logo manually.
+
+==================================================
+2. TECH STACK
+==================================================
+
+Frontend:
+- HTML5
+- CSS3
+- Tailwind CSS
+- JavaScript
+
+Backend:
+- PHP (Core PHP, no Laravel)
+
+Database:
+- MySQL (XAMPP)
+
+Architecture:
+- Modular architecture
+- Component-based structure
+- MVC-like folder structure if possible
+
+==================================================
+3. COMPONENT-BASED DEVELOPMENT
+==================================================
+
+Very Important:
+Create reusable modular components so developers can easily edit/update sections later.
+
+Create reusable components such as:
+- Header
+- Footer
+- Navbar
+- Sidebar
+- News card
+- Breaking news ticker
+- Category block
+- Trending section
+- Advertisement block
+- Pagination
+- SEO meta component
+- Comment component
+- Breadcrumb component
+- Related news component
+
+Requirements:
+- Separate reusable files
+- Easy maintenance
+- Easy future customization
+- Developers should be able to edit one component without affecting the entire project.
+
+Suggested folders:
+- /components
+- /layouts
+- /partials
+- /templates
+
+==================================================
+4. ADVERTISEMENT SYSTEM (VERY IMPORTANT)
+==================================================
+
+Very Important:
+The website must be future-ready for Google AdSense and other ad networks.
+
+Requirements:
+- Create advertisement placeholder system from the beginning.
+- Ads should NOT break layout if ad script/code is missing.
+- If ad code is empty, the placeholder should automatically hide and take no extra space.
+- If ad code exists, ads should display properly.
+
+Create dynamic ad positions such as:
+- Header ad
+- Homepage top banner
+- Homepage middle banner
+- Sidebar ads
+- Sticky sidebar ads
+- In-article ads
+- Between paragraph ads
+- Footer ads
+- Category page ads
+- Mobile ads
+
+Admin Panel Ad Management:
+- Admin can add/remove ad scripts from CMS.
+- Admin can enable/disable each ad position.
+- Admin can manage desktop/mobile ads separately.
+- Ad code storage system for:
+  - Google AdSense
+  - Custom banner ads
+  - Third-party ad scripts
+
+Article Ad Placement:
+- Automatically show ads between article paragraphs.
+- Example:
+  - After 2nd paragraph
+  - After 5th paragraph
+- Positions should be configurable from admin panel.
+
+Sidebar Ad System:
+- Sidebar ad widgets/placeholders should already exist.
+- If no ad script is added, no blank space should appear.
+
+Create reusable ad components like:
+- ad-banner.php
+- ad-sidebar.php
+- ad-inline.php
+
+==================================================
+5. ADMIN PANEL / CMS
+==================================================
+
+Create a professional CMS dashboard similar to WordPress.
+
+Admin Features:
+- Dashboard overview
+- Manage website settings
+- Manage homepage sections
+- Manage navigation menus
+- Manage footer
+- Manage advertisements
+- Manage breaking news
+- Manage trending/popular posts
+- Create/Edit/Delete articles
+- Publish/Schedule posts
+- Draft system
+- Category management
+- Tag management
+- Media management
+- Static page management
+- User management
+- SEO management
+- Analytics-ready structure
+
+==================================================
+6. USER ROLES
+==================================================
+
+Only admin-side users are needed.
+
+Roles:
+- Super Admin
+- Admin
+- Editor
+- Writer
+- SEO Manager
+
+No normal public user login/signup system needed.
+
+==================================================
+7. AUTHENTICATION SYSTEM
+==================================================
+
+For now:
+- No OTP verification
+- No email verification
+- No 2FA
+- No public registration system
+
+Use:
+- Username + Password login only
+
+Authentication Requirements:
+- Session-based login system
+- Role-based access control
+- Protected admin routes/pages
+- Secure login/logout system
+- Middleware/auth checking system
+
+Password System:
+- Use MD5 hashing temporarily.
+- Keep authentication module upgrade-ready so developers can later migrate easily to bcrypt/password_hash without major code changes.
+
+==================================================
+8. WRITER / EDITOR FEATURES
+==================================================
+
+Writers and editors should be able to:
+- Login securely
+- Write Bengali articles
+- Edit their own posts
+- Upload images
+- Save drafts
+- Publish posts
+- Use rich text editor
+- Add tags/categories
+- Preview article before publishing
+
+==================================================
+9. ADVANCED SEO PANEL
+==================================================
+
+Very Important:
+Add a dedicated SEO management system for SEO experts.
+
+SEO Manager Features:
+- SEO title
+- Meta description
+- Focus keywords
+- Slug/URL editing
+- Canonical URLs
+- Open Graph tags
+- Twitter card metadata
+- Robots meta controls
+- Sitemap generation
+- robots.txt management
+- Schema markup support
+- Breadcrumb support
+- Structured data support
+
+SEO should be manageable for:
+- Articles
+- Categories
+- Tags
+- Static pages
+
+Additional SEO Features:
+- SEO score indicator
+- Keyword density checker
+- Readability analysis
+- Auto meta generation
+- Auto alt text suggestions
+
+==================================================
+10. NEWS FEATURES
+==================================================
+
+Frontend Features:
+- Breaking news section
+- Trending news
+- Featured articles
+- Category pages
+- Search functionality
+- Related posts
+- Popular posts
+- Pagination or infinite scroll
+- Social media sharing
+- Optional comment system
+- Live updates section (optional)
+
+==================================================
+11. MEDIA MANAGEMENT SYSTEM
+==================================================
+
+Media Features:
+- JPG upload
+- PNG upload
+- WebP upload
+- Featured image support
+- Media library
+- Image alt text
+- Auto image resizing
+- Image compression support
+- Organized uploads by date folders
+
+==================================================
+12. DATABASE ARCHITECTURE
+==================================================
+
+Very Important:
+Create scalable and future-proof database architecture.
+
+Requirements:
+- Modular SQL structure
+- Separate migration/update files
+- Reusable database connection class
+- Organized query system
+- Prepared statements only
+- Easy future updates without breaking system
+
+Use folders like:
+- /database
+- /migrations
+- /models
+
+Database name:
+- alokpath
+
+==================================================
+13. SECURITY
+==================================================
+
+Add proper security structure:
+- Session protection
+- SQL injection prevention
+- XSS protection
+- CSRF protection
+- Secure file uploads
+- Role-based permissions
+- Input validation
+- Route protection
+
+==================================================
+14. PERFORMANCE & OPTIMIZATION
+==================================================
+
+Optimize for:
+- Fast loading
+- SEO performance
+- Lazy loading images
+- Optimized database queries
+- Minified assets
+- Caching-ready structure
+
+==================================================
+15. FILE/FOLDER STRUCTURE
+==================================================
+
+Create clean scalable structure like:
+
+/admin
+/assets
+/uploads
+/includes
+/config
+/components
+/layouts
+/partials
+/templates
+/controllers
+/models
+/helpers
+/database
+/migrations
+/api
+/cache
+
+==================================================
+16. CODING STANDARDS
+==================================================
+
+Requirements:
+- Clean coding structure
+- Reusable functions
+- Modular development
+- Developer-friendly architecture
+- Add comments in important sections
+- Easy maintenance
+- Easy scalability
+- Keep frontend and backend separated logically
+
+==================================================
+17. DESIGN REQUIREMENTS
+==================================================
+
+Design Style:
+- Minimal
+- Professional
+- Modern Bengali news portal
+- Mainstream media style UI
+- Responsive design
+- Clean spacing and typography
+- Optional dark/light mode support
+
+==================================================
+18. DEVELOPMENT GOAL
+==================================================
+
+Goal:
+Build a fully scalable Bengali digital news platform with:
+- Professional CMS
+- Modular architecture
+- Advanced SEO system
+- Developer-friendly structure
+- Future scalability
+- Professional media-company level foundation
+
+The project should be structured in a way that future developers can easily:
+- Add new modules
+- Add new database tables
+- Modify layouts/components
+- Upgrade authentication system
+- Add APIs/mobile apps later
+without breaking the existing system.
+```

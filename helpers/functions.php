@@ -1,0 +1,554 @@
+<?php
+/**
+ * Helper Functions
+ * General utility functions for Alokpath CMS
+ * 
+ * @package Alokpath\Helpers
+ */
+
+/**
+ * Sanitize input data
+ * 
+ * @param mixed $data
+ * @return mixed
+ */
+function sanitize($data) {
+    if (is_array($data)) {
+        return array_map('sanitize', $data);
+    }
+    return htmlspecialchars(strip_tags(trim($data)), ENT_QUOTES, 'UTF-8');
+}
+
+/**
+ * Escape output for HTML
+ * 
+ * @param string $string
+ * @return string
+ */
+function escape($string) {
+    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+}
+
+/**
+ * Generate slug from string
+ * 
+ * @param string $text
+ * @return string
+ */
+function generateSlug($text) {
+    // For Bengali text, use transliteration or keep as-is with URL encoding
+    $text = trim($text);
+    $text = strtolower($text);
+    $text = preg_replace('/[^a-zA-Z0-9\-_\p{Bengali}]/u', '-', $text);
+    $text = preg_replace('/-+/', '-', $text);
+    $text = trim($text, '-');
+    return $text;
+}
+
+/**
+ * Redirect to URL
+ * 
+ * @param string $url
+ * @param int $code
+ */
+function redirect($url, $code = 302) {
+    http_response_code($code);
+    header('Location: ' . $url);
+    exit;
+}
+
+/**
+ * Set flash message
+ * 
+ * @param string $type
+ * @param string $message
+ */
+function setFlash($type, $message) {
+    $_SESSION['flash'] = [
+        'type' => $type,
+        'message' => $message
+    ];
+}
+
+/**
+ * Get and clear flash message
+ * 
+ * @return array|null
+ */
+function getFlash() {
+    if (isset($_SESSION['flash'])) {
+        $flash = $_SESSION['flash'];
+        unset($_SESSION['flash']);
+        return $flash;
+    }
+    return null;
+}
+
+/**
+ * Check if user is logged in
+ * 
+ * @return bool
+ */
+function isLoggedIn() {
+    return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
+}
+
+/**
+ * Get current logged-in user
+ * 
+ * @return array|false
+ */
+function getCurrentUser() {
+    if (isLoggedIn()) {
+        $user = new User();
+        return $user->getById($_SESSION['user_id']);
+    }
+    return false;
+}
+
+/**
+ * Check if user has specific role
+ * 
+ * @param string $role
+ * @return bool
+ */
+function hasRole($role) {
+    $currentUser = getCurrentUser();
+    return $currentUser && $currentUser['role'] === $role;
+}
+
+/**
+ * Check if user has any of the specified roles
+ * 
+ * @param array $roles
+ * @return bool
+ */
+function hasAnyRole($roles) {
+    $currentUser = getCurrentUser();
+    return $currentUser && in_array($currentUser['role'], $roles);
+}
+
+/**
+ * Require authentication
+ */
+function requireAuth() {
+    if (!isLoggedIn()) {
+        setFlash('error', 'প্রথমে লগইন করুন');
+        redirect(ADMIN_URL . '/login.php');
+    }
+}
+
+/**
+ * Require specific role
+ * 
+ * @param string $role
+ */
+function requireRole($role) {
+    requireAuth();
+    if (!hasRole($role)) {
+        setFlash('error', 'আপনার এই কাজ করার অনুমতি নেই');
+        redirect(ADMIN_URL . '/dashboard.php');
+    }
+}
+
+/**
+ * Generate CSRF token
+ * 
+ * @return string
+ */
+function generateCSRFToken() {
+    if (!isset($_SESSION[CSRF_TOKEN_NAME])) {
+        $_SESSION[CSRF_TOKEN_NAME] = bin2hex(random_bytes(32));
+    }
+    return $_SESSION[CSRF_TOKEN_NAME];
+}
+
+/**
+ * Verify CSRF token
+ * 
+ * @param string $token
+ * @return bool
+ */
+function verifyCSRFToken($token) {
+    return isset($_SESSION[CSRF_TOKEN_NAME]) && hash_equals($_SESSION[CSRF_TOKEN_NAME], $token);
+}
+
+/**
+ * Format date in Bengali
+ * 
+ * @param string $date
+ * @param string $format
+ * @return string
+ */
+function formatDateBengali($date, $format = 'd F Y, h:i A') {
+    $timestamp = strtotime($date);
+    $english_date = date($format, $timestamp);
+    
+    // Bengali numerals
+    $bengali_numbers = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    $english_numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    
+    return str_replace($english_numbers, $bengali_numbers, $english_date);
+}
+
+/**
+ * Format number in Bengali
+ * 
+ * @param int|float $number
+ * @return string
+ */
+function formatNumberBengali($number) {
+    $bengali_numbers = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    $english_numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    
+    return str_replace($english_numbers, $bengali_numbers, $number);
+}
+
+/**
+ * Truncate text
+ * 
+ * @param string $text
+ * @param int $length
+ * @param string $suffix
+ * @return string
+ */
+function truncateText($text, $length = 100, $suffix = '...') {
+    if (mb_strlen($text) <= $length) {
+        return $text;
+    }
+    return mb_substr($text, 0, $length) . $suffix;
+}
+
+/**
+ * Get time ago in Bengali
+ * 
+ * @param string $date
+ * @return string
+ */
+function timeAgoBengali($date) {
+    $timestamp = strtotime($date);
+    $difference = time() - $timestamp;
+    
+    if ($difference < 60) {
+        return 'এইমাত্র';
+    } elseif ($difference < 3600) {
+        $mins = floor($difference / 60);
+        return formatNumberBengali($mins) . ' মিনিট আগে';
+    } elseif ($difference < 86400) {
+        $hours = floor($difference / 3600);
+        return formatNumberBengali($hours) . ' ঘণ্টা আগে';
+    } elseif ($difference < 2592000) {
+        $days = floor($difference / 86400);
+        return formatNumberBengali($days) . ' দিন আগে';
+    } else {
+        return formatDateBengali($date, 'd F Y');
+    }
+}
+
+/**
+ * Upload file
+ * 
+ * @param array $file
+ * @param string $directory
+ * @return array|false
+ */
+function uploadFile($file, $directory = 'uploads') {
+    $allowed_extensions = ALLOWED_EXTENSIONS;
+    $max_size = MAX_FILE_SIZE;
+    
+    // Check for upload errors
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        return ['error' => 'ফাইল আপলোডে সমস্যা হয়েছে'];
+    }
+    
+    // Check file size
+    if ($file['size'] > $max_size) {
+        return ['error' => 'ফাইলের সাইজ ' . ($max_size / 1048576) . 'MB এর বেশি'];
+    }
+    
+    // Get file extension
+    $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    
+    // Validate extension
+    if (!in_array($extension, $allowed_extensions)) {
+        return ['error' => 'শুধু ' . implode(', ', $allowed_extensions) . ' ফাইল আপলোড করা যাবে'];
+    }
+    
+    // Create directory structure by date
+    if (UPLOAD_DIR_STRUCTURE) {
+        $directory .= '/' . date('Y/m/d');
+    }
+    
+    $upload_path = BASE_PATH . '/' . $directory;
+    
+    // Create directory if not exists
+    if (!is_dir($upload_path)) {
+        mkdir($upload_path, 0755, true);
+    }
+    
+    // Generate unique base filename
+    $base_filename = uniqid() . '_' . time();
+    $filename = $base_filename . '.' . $extension;
+    $filepath = $upload_path . '/' . $filename;
+    
+    // Check if the file is an image that can be converted to AVIF
+    $image_types = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+    
+    if (in_array($extension, $image_types) && function_exists('imageavif')) {
+        $avif_filename = $base_filename . '.avif';
+        $avif_filepath = $upload_path . '/' . $avif_filename;
+        
+        $image = null;
+        switch ($extension) {
+            case 'jpg':
+            case 'jpeg':
+                $image = @imagecreatefromjpeg($file['tmp_name']);
+                break;
+            case 'png':
+                $image = @imagecreatefrompng($file['tmp_name']);
+                if ($image) {
+                    imagepalettetotruecolor($image);
+                    imagealphablending($image, true);
+                    imagesavealpha($image, true);
+                }
+                break;
+            case 'gif':
+                $image = @imagecreatefromgif($file['tmp_name']);
+                if ($image) {
+                    imagepalettetotruecolor($image);
+                }
+                break;
+            case 'webp':
+                $image = @imagecreatefromwebp($file['tmp_name']);
+                break;
+        }
+        
+        // Attempt AVIF conversion
+        if ($image !== false && $image !== null) {
+            if (@imageavif($image, $avif_filepath, 60)) { // 60 is an optimal quality for AVIF
+                imagedestroy($image);
+                $file_url = SITE_URL . '/' . $directory . '/' . $avif_filename;
+                return [
+                    'filename' => $avif_filename,
+                    'filepath' => $avif_filepath,
+                    'file_url' => $file_url,
+                    'file_size' => filesize($avif_filepath),
+                    'mime_type' => 'image/avif'
+                ];
+            }
+        }
+    }
+    
+    // Fallback: Move uploaded file if conversion failed or file is not an image
+    if (move_uploaded_file($file['tmp_name'], $filepath)) {
+        $file_url = SITE_URL . '/' . $directory . '/' . $filename;
+        return [
+            'filename' => $filename,
+            'filepath' => $filepath,
+            'file_url' => $file_url,
+            'file_size' => $file['size'],
+            'mime_type' => $file['type']
+        ];
+    }
+    
+    return ['error' => 'ফাইল আপলোড করা যায়নি'];
+}
+
+/**
+ * Get image dimensions
+ * 
+ * @param string $filepath
+ * @return array|false
+ */
+function getImageDimensions($filepath) {
+    if (file_exists($filepath)) {
+        $dimensions = getimagesize($filepath);
+        if ($dimensions) {
+            return ['width' => $dimensions[0], 'height' => $dimensions[1]];
+        }
+    }
+    return false;
+}
+
+/**
+ * Compress image
+ * 
+ * @param string $source
+ * @param string $destination
+ * @param int $quality
+ * @return bool
+ */
+function compressImage($source, $destination, $quality = 80) {
+    $info = getimagesize($source);
+    
+    if ($info['mime'] == 'image/jpeg') {
+        $image = imagecreatefromjpeg($source);
+        imagejpeg($image, $destination, $quality);
+        return true;
+    } elseif ($info['mime'] == 'image/png') {
+        $image = imagecreatefrompng($source);
+        imagepng($image, $destination, 9);
+        return true;
+    } elseif ($info['mime'] == 'image/webp') {
+        $image = imagecreatefromwebp($source);
+        imagewebp($image, $destination, $quality);
+        return true;
+    } elseif ($info['mime'] == 'image/avif') {
+        $image = imagecreatefromavif($source);
+        imageavif($image, $destination, $quality);
+        return true;
+    }
+    
+    return false;
+}
+
+/**
+ * Include component file
+ * 
+ * @param string $component
+ * @param array $data
+ */
+function component($component, $data = []) {
+    extract($data);
+    $file = BASE_PATH . '/components/' . $component . '.php';
+    if (file_exists($file)) {
+        include $file;
+    }
+}
+
+/**
+ * Include partial file
+ * 
+ * @param string $partial
+ * @param array $data
+ */
+function partial($partial, $data = []) {
+    extract($data);
+    $file = BASE_PATH . '/partials/' . $partial . '.php';
+    if (file_exists($file)) {
+        include $file;
+    }
+}
+
+/**
+ * Get asset URL
+ * 
+ * @param string $path
+ * @return string
+ */
+function asset($path) {
+    return SITE_URL . '/assets/' . ltrim($path, '/');
+}
+
+/**
+ * Get upload URL
+ * 
+ * @param string $path
+ * @return string
+ */
+function upload_url($path = '') {
+    return UPLOAD_URL . '/' . ltrim($path, '/');
+}
+
+/**
+ * Render ad by position (reads settings)
+ * @param string $position
+ */
+function render_ad($position) {
+    // sanitize position
+    $position = preg_replace('/[^a-z0-9_\-]/i', '', $position);
+    component('ad-banner', ['position' => $position]);
+}
+
+/**
+ * Build pretty URL for a post by slug
+ * @param string $slug
+ * @return string
+ */
+function url_for_post($slug) {
+    // ensure slug is URL-safe
+    $slug = rawurlencode($slug);
+    return rtrim(SITE_URL, '/') . '/article/' . $slug;
+}
+
+/**
+ * Inject inline ads into article HTML after configured paragraph counts.
+ * Reads settings: ad_inject_positions (comma separated like "2,5") and uses ad_inline positions ad_in_article_1, ad_in_article_2...
+ * @param string $html
+ * @param int $postId (optional)
+ * @return string
+ */
+function inject_ads_into_content($html, $postId = null) {
+    $setting = new Setting();
+    $positions_setting = $setting->get('ad_inject_positions');
+    if (!$positions_setting) {
+        return $html;
+    }
+
+    // parse positions like "2,5"
+    $positions = array_filter(array_map('trim', explode(',', $positions_setting)), 'strlen');
+    $positions = array_map('intval', $positions);
+    if (empty($positions)) return $html;
+
+    // Split by paragraphs
+    // Use DOMDocument to be more robust
+    libxml_use_internal_errors(true);
+    $doc = new DOMDocument();
+    $doc->loadHTML('<?xml encoding="utf-8" ?><div>' . $html . '</div>');
+    $container = $doc->getElementsByTagName('div')->item(0);
+    if (!$container) return $html;
+
+    $pCount = 0;
+    $positions = array_map('intval', $positions);
+    sort($positions);
+
+    // iterate children and insert ad nodes when needed
+    $children = [];
+    foreach ($container->childNodes as $node) {
+        $children[] = $node;
+    }
+
+    $inserts = 0;
+    foreach ($children as $node) {
+        if ($node->nodeType === XML_ELEMENT_NODE && strtolower($node->nodeName) === 'p') {
+            $pCount++;
+        }
+
+        // check if next position matches
+        if (in_array($pCount, $positions)) {
+            // build ad HTML from corresponding setting
+            $index = array_search($pCount, $positions) + 1; // 1-based
+            $posName = 'in_article_' . $index; // ad_in_article_1, ad_in_article_2...
+            $adCode = $setting->get("ad_{$posName}_code");
+            $enabled = $setting->get("ad_{$posName}_enabled");
+            if ($enabled && !empty(trim((string)$adCode))) {
+                // safer insertion: parse ad HTML in a temporary DOM and import nodes
+                $adHtml = '<div class="ad ad-inline ad-' . htmlspecialchars($posName) . '">' . $adCode . '</div>';
+                $tmp = new DOMDocument();
+                libxml_use_internal_errors(true);
+                $tmp->loadHTML('<?xml encoding="utf-8" ?>' . $adHtml);
+                $tmpContainer = $tmp->getElementsByTagName('body')->item(0);
+                $ref = $node->nextSibling;
+                if ($tmpContainer) {
+                    foreach ($tmpContainer->childNodes as $child) {
+                        $import = $doc->importNode($child, true);
+                        if ($ref) {
+                            $container->insertBefore($import, $ref);
+                        } else {
+                            $container->appendChild($import);
+                        }
+                    }
+                }
+                $inserts++;
+            }
+        }
+    }
+
+    $newHtml = '';
+    foreach ($container->childNodes as $child) {
+        $newHtml .= $doc->saveHTML($child);
+    }
+
+    return $newHtml;
+}
+
