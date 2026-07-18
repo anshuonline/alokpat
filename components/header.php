@@ -206,22 +206,30 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
             <a href="<?php echo SITE_URL; ?>" class="px-4 py-3 bg-gray-50 text-primary-800 font-bold border-l-4 border-primary-600">প্রচ্ছদ</a>
             
             <?php if (!empty($mobileMenuItems)): ?>
-                <?php foreach ($mobileMenuItems as $item): ?>
-                    <a href="<?php echo escape($item['url']); ?>" 
-                       class="px-4 py-3 text-gray-800 font-bold hover:bg-gray-50 transition border-b border-gray-100 flex items-center justify-between">
-                        <?php echo escape($item['title']); ?>
-                    </a>
-                    
+                <?php foreach ($mobileMenuItems as $index => $item): ?>
                     <?php if (!empty($item['children'])): ?>
-                        <div class="flex flex-col bg-gray-50 py-1">
-                            <?php foreach ($item['children'] as $child): ?>
-                                <a href="<?php echo escape($child['url']); ?>" 
-                                   class="px-8 py-2 text-gray-700 font-medium hover:text-primary-600 transition flex items-center gap-2">
-                                    <i class="fas fa-angle-right text-sm text-gray-400"></i>
-                                    <?php echo escape($child['title']); ?>
-                                </a>
-                            <?php endforeach; ?>
+                        <div>
+                            <button onclick="document.getElementById('mobile-submenu-<?php echo $index; ?>').classList.toggle('hidden'); document.getElementById('mobile-icon-<?php echo $index; ?>').classList.toggle('rotate-180')" 
+                               class="w-full px-4 py-3 text-gray-800 font-bold hover:bg-gray-50 transition border-b border-gray-100 flex items-center justify-between focus:outline-none">
+                                <?php echo escape($item['title']); ?>
+                                <i id="mobile-icon-<?php echo $index; ?>" class="fas fa-chevron-down text-sm transition-transform text-gray-500"></i>
+                            </button>
+                            
+                            <div id="mobile-submenu-<?php echo $index; ?>" class="hidden flex flex-col bg-gray-50 py-1">
+                                <?php foreach ($item['children'] as $child): ?>
+                                    <a href="<?php echo escape($child['url']); ?>" 
+                                       class="px-8 py-2 text-gray-700 font-medium hover:text-primary-600 transition flex items-center gap-2 border-b border-gray-100 last:border-0">
+                                        <i class="fas fa-angle-right text-sm text-gray-400"></i>
+                                        <?php echo escape($child['title']); ?>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
                         </div>
+                    <?php else: ?>
+                        <a href="<?php echo escape($item['url']); ?>" 
+                           class="px-4 py-3 text-gray-800 font-bold hover:bg-gray-50 transition border-b border-gray-100 flex items-center justify-between">
+                            <?php echo escape($item['title']); ?>
+                        </a>
                     <?php endif; ?>
                 <?php endforeach; ?>
             <?php endif; ?>
