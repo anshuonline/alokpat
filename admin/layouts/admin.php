@@ -94,6 +94,11 @@
                     <i class="fas fa-bullhorn w-6"></i>
                     <span class="font-medium">বিজ্ঞাপন</span>
                 </a>
+                <a href="<?php echo ADMIN_URL; ?>/appearance.php" 
+                   class="sidebar-link flex items-center px-4 py-3 rounded-lg text-gray-700 hover:text-blue-600 transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'appearance.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-palette w-6"></i>
+                    <span class="font-medium">এপিয়ারেন্স</span>
+                </a>
                 
                 <a href="<?php echo ADMIN_URL; ?>/settings.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg text-gray-700 hover:text-blue-600 transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'active' : ''; ?>">
