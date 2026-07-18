@@ -1,7 +1,10 @@
 <?php
 require_once '../config/config.php';
 requireAuth();
-requireRole('admin');
+if (!hasAnyRole(['admin', 'super_admin'])) {
+    setFlash('error', 'আপনার এই কাজ করার অনুমতি নেই');
+    redirect(ADMIN_URL . '/dashboard.php');
+}
 
 global $db;
 

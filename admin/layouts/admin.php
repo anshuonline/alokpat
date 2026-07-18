@@ -88,7 +88,7 @@
                     <span class="font-medium">এসইও</span>
                 </a>
                 
-                <?php if(hasRole('admin')): ?>
+                <?php if(hasAnyRole(['admin', 'super_admin'])): ?>
                 <a href="<?php echo ADMIN_URL; ?>/contacts.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg text-gray-700 hover:text-blue-600 transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'contacts.php' ? 'active' : ''; ?>">
                     <i class="fas fa-envelope w-6"></i>
