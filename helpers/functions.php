@@ -465,10 +465,16 @@ function render_ad($position) {
  * @param string $slug
  * @return string
  */
-function url_for_post($slug) {
-    // ensure slug is URL-safe
-    $slug = rawurlencode($slug);
-    return rtrim(SITE_URL, '/') . '/article/' . $slug;
+function url_for_post($post) {
+    if (is_array($post)) {
+        $category_slug = !empty($post['category_slug']) ? $post['category_slug'] : 'article';
+        $slug = $post['slug'] ?? '';
+    } else {
+        // Fallback if someone passes just a string
+        $category_slug = 'article';
+        $slug = $post;
+    }
+    return rtrim(SITE_URL, '/') . '/' . rawurlencode($category_slug) . '/' . rawurlencode($slug) . '.html';
 }
 
 /**
