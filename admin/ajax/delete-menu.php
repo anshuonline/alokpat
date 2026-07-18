@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * AJAX - Delete Menu
  */

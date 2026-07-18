@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Alokpat - Bengali News Portal CMS
  * Main Configuration File
