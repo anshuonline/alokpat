@@ -96,15 +96,12 @@ component('header', ['categories' => $categories]);
         <!-- Meta Row (Date on Left, Socials on Right) -->
         <div class="flex flex-col md:flex-row items-center justify-between border-b border-gray-200 pb-4 mb-8">
             <div class="text-gray-500 text-sm mb-4 md:mb-0 font-medium flex items-center">
-                <a href="<?php echo SITE_URL; ?>/author.php?username=<?php echo escape($article['author_username'] ?? ''); ?>" class="font-bold text-gray-800 hover:text-primary-600 transition flex items-center mr-4 border-r border-gray-300 pr-4">
-                    <?php if (!empty($article['author_avatar'])): ?>
-                        <img src="<?php echo escape($article['author_avatar']); ?>" class="w-6 h-6 rounded-full object-cover mr-2 shadow-sm border border-gray-200" alt="<?php echo escape($article['author_name'] ?? 'Author'); ?>">
-                    <?php else: ?>
-                        <i class="fas fa-user-circle text-lg mr-2 text-primary-500"></i>
-                    <?php endif; ?>
-                    <?php echo escape($article['author_name'] ?? 'অপরিচিত'); ?>
-                </a>
                 <span><i class="far fa-clock mr-1"></i> <?php echo formatDateBengali($article['published_at'] ?? $article['created_at']); ?></span>
+                <?php if (!empty($article['updated_at']) && strtotime($article['updated_at']) > strtotime($article['published_at'] ?? $article['created_at'])): ?>
+                    <span class="ml-4 pl-4 border-l border-gray-300 text-gray-500">
+                        <i class="fas fa-history mr-1"></i> আপডেট: <?php echo formatDateBengali($article['updated_at']); ?>
+                    </span>
+                <?php endif; ?>
             </div>
             
             <div class="flex items-center space-x-3">
