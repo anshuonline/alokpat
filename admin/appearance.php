@@ -131,6 +131,13 @@ $themes = [
         'primary_dark' => '#1e293b',
         'primary_light' => '#64748b',
     ],
+    'neelambari' => [
+        'name' => 'নীলাম্বরী (Neelambari)',
+        'description' => 'গভীর এবং উজ্জ্বল নীল (Deep Radiant Blue)',
+        'primary' => '#1a32d4',
+        'primary_dark' => '#1022a8',
+        'primary_light' => '#2d4bf3',
+    ],
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
