@@ -126,14 +126,14 @@ $categories = $category->getActive();
         <div class="container mx-auto px-4 py-6">
             <div class="flex flex-col md:flex-row items-center justify-between">
                 <p class="text-gray-400 text-sm text-center md:text-left">
-                    &copy; <?php echo date('Y'); ?> <?php echo escape($site_info['site_name'] ?? 'আলোকপাত'); ?>। সর্বস্বত্ব সংরক্ষিত।
+                    &copy; <?php echo date('Y'); ?> <?php echo escape($site_info['site_name'] ?? 'Alokpat'); ?>. All Rights Reserved.
                 </p>
                 <div class="flex flex-wrap gap-x-6 gap-y-2 mt-4 md:mt-0 justify-center md:justify-end">
-                    <a href="<?php echo SITE_URL; ?>/about.php" class="text-gray-400 hover:text-white text-sm transition">আমাদের সম্পর্কে</a>
-                    <a href="<?php echo SITE_URL; ?>/contact.php" class="text-gray-400 hover:text-white text-sm transition">যোগাযোগ</a>
-                    <a href="<?php echo SITE_URL; ?>/privacy.php" class="text-gray-400 hover:text-white text-sm transition">গোপনীয়তা নীতি</a>
-                    <a href="<?php echo SITE_URL; ?>/terms.php" class="text-gray-400 hover:text-white text-sm transition">ব্যবহারের শর্তাবলী</a>
-                    <a href="<?php echo SITE_URL; ?>/disclaimer.php" class="text-gray-400 hover:text-white text-sm transition">দাবিত্যাগ</a>
+                    <a href="<?php echo SITE_URL; ?>/about.php" class="text-gray-400 hover:text-white text-sm transition">About Us</a>
+                    <a href="<?php echo SITE_URL; ?>/contact.php" class="text-gray-400 hover:text-white text-sm transition">Contact</a>
+                    <a href="<?php echo SITE_URL; ?>/privacy.php" class="text-gray-400 hover:text-white text-sm transition">Privacy Policy</a>
+                    <a href="<?php echo SITE_URL; ?>/terms.php" class="text-gray-400 hover:text-white text-sm transition">Terms of Use</a>
+                    <a href="<?php echo SITE_URL; ?>/disclaimer.php" class="text-gray-400 hover:text-white text-sm transition">Disclaimer</a>
                 </div>
             </div>
         </div>
