@@ -18,9 +18,9 @@ if ($_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['HTTP_HOST'] === '127.0.0.
     define('SITE_URL', 'http://localhost/alokpath');
     
     // Error Reporting for Local
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
+    ini_set('display_errors', 0);
+    ini_set('display_startup_errors', 0);
+    error_reporting(0);
 } else {
     // LIVE HOSTINGER ENVIRONMENT
     define('DB_HOST', 'localhost'); // Hostinger internal connection
@@ -30,9 +30,9 @@ if ($_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['HTTP_HOST'] === '127.0.0.
     define('SITE_URL', 'https://alokpat.in');
     
     // Disable Error Reporting for Security on Live
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
+    ini_set('display_errors', 0);
+    ini_set('display_startup_errors', 0);
+    error_reporting(0);
 }
 
 // Global Database Charset
@@ -99,4 +99,5 @@ require_once BASE_PATH . '/models/Setting.php';
 // Initialize Database
 $database = new Database();
 $db = $database->getConnection();
+
 
