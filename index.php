@@ -55,7 +55,7 @@ component('header', ['categories' => $categories]);
         
         
         <!-- Top Split Section (Recent News + Sidebar) -->
-        <div class="max-w-5xl mx-auto mb-10">
+        <div class="w-full mb-10">
             <!-- Recent News Grid (1 Large, 4 Small) -->
             <?php if (!empty($latest_posts)): ?>
             <section class="bg-white p-6 shadow-sm border-t-4 border-gray-400">

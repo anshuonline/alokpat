@@ -200,9 +200,10 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
                     <?php else: ?>
                         <span class="text-gray-500">আপাতত কোন ব্রেকিং নিউজ নেই</span>
                     <?php endif; ?>
-                </div>
-            </div>
-        </div>\s*</div>\s*<!-- Social Icons (Right) -->
+                </div></div>
+        </div>
+        
+        <!-- Social Icons (Right) -->
         <div class="hidden md:flex items-center space-x-4 py-2 px-4">
             <?php if (!empty($site_info['facebook_url'])): ?>
                 <a href="<?php echo escape($site_info['facebook_url']); ?>" target="_blank" class="text-primary-600 hover:opacity-80 transition text-lg">
