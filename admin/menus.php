@@ -89,11 +89,14 @@ ob_start();
                         ক্যাটাগরি (Categories) <i class="fas fa-chevron-down text-sm"></i>
                     </button>
                     <div id="cat-list" class="p-4 border-t border-gray-200">
-                        <div class="max-h-48 overflow-y-auto space-y-2 mb-3 border border-gray-200 p-2 rounded bg-gray-50">
+                        <div class="mb-3">
+                            <input type="text" id="cat-search" onkeyup="filterMenuCategories()" placeholder="ক্যাটাগরি খুঁজুন..." class="w-full border-gray-300 rounded text-sm px-3 py-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div class="max-h-48 overflow-y-auto space-y-2 mb-3 border border-gray-200 p-2 rounded bg-gray-50" id="cat-checkbox-list">
                             <?php foreach ($allCategories as $cat): ?>
-                                <label class="flex items-center space-x-2">
+                                <label class="flex items-center space-x-2 cat-label">
                                     <input type="checkbox" class="cat-checkbox rounded text-blue-600 focus:ring-blue-500" value="<?php echo $cat['id']; ?>" data-name="<?php echo escape($cat['name']); ?>">
-                                    <span class="text-sm text-gray-700"><?php echo escape($cat['name']); ?></span>
+                                    <span class="text-sm text-gray-700 cat-name"><?php echo escape($cat['name']); ?></span>
                                 </label>
                             <?php endforeach; ?>
                         </div>
@@ -370,6 +373,25 @@ ob_start();
                     alert(data.message);
                 }
             });
+        }
+    }
+
+    function filterMenuCategories() {
+        var input, filter, div, labels, span, i, txtValue;
+        input = document.getElementById("cat-search");
+        filter = input.value.toUpperCase();
+        div = document.getElementById("cat-checkbox-list");
+        labels = div.getElementsByClassName("cat-label");
+        for (i = 0; i < labels.length; i++) {
+            span = labels[i].getElementsByClassName("cat-name")[0];
+            if (span) {
+                txtValue = span.textContent || span.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    labels[i].style.display = "";
+                } else {
+                    labels[i].style.display = "none";
+                }
+            }       
         }
     }
 </script>
