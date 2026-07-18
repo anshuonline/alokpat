@@ -68,6 +68,61 @@ component('header', ['categories' => $categories]);
             <?php endif; ?>
         </div>
         
+        <!-- World Cup 2026 Promo Banner -->
+        <div class="w-full mb-10">
+            <a href="<?php echo SITE_URL; ?>/worldcup2026.php" class="block relative rounded-xl overflow-hidden shadow-lg group">
+                <div class="absolute inset-0 bg-gradient-to-r from-red-900 to-black opacity-95 transition-opacity group-hover:opacity-100"></div>
+                <div class="relative p-6 md:p-8 flex flex-col md:flex-row items-center justify-between text-white border border-red-800/50 rounded-xl">
+                    <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                        <i class="fas fa-futbol text-4xl text-amber-500 animate-pulse"></i>
+                        <div>
+                            <h3 class="text-2xl md:text-3xl font-black uppercase tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">FIFA World Cup 2026</h3>
+                            <p class="text-gray-300 font-medium">সম্পূর্ণ লাইভ কভারেজ, পরিসংখ্যান এবং আরও অনেক কিছু &rarr;</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col items-center bg-black/40 p-3 px-5 rounded-lg border border-red-500/30">
+                        <span class="text-xs text-red-400 font-bold uppercase tracking-widest mb-1">Kickoff In</span>
+                        <div id="wc-promo-timer" class="flex space-x-3 text-center">
+                            <div><span class="days text-xl font-bold font-mono">00</span><span class="text-[10px] uppercase block text-gray-400">Days</span></div>
+                            <span class="text-xl font-bold text-gray-600">:</span>
+                            <div><span class="hours text-xl font-bold font-mono">00</span><span class="text-[10px] uppercase block text-gray-400">Hrs</span></div>
+                            <span class="text-xl font-bold text-gray-600">:</span>
+                            <div><span class="minutes text-xl font-bold font-mono">00</span><span class="text-[10px] uppercase block text-gray-400">Min</span></div>
+                            <span class="text-xl font-bold text-gray-600">:</span>
+                            <div><span class="seconds text-xl font-bold font-mono text-amber-500">00</span><span class="text-[10px] uppercase block text-amber-500/70">Sec</span></div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            
+            <script>
+                function updatePromoTimer() {
+                    const target = new Date("June 11, 2026 12:00:00").getTime();
+                    const now = new Date().getTime();
+                    const diff = target - now;
+                    
+                    if (diff > 0) {
+                        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                        
+                        const container = document.getElementById('wc-promo-timer');
+                        if (container) {
+                            container.querySelector('.days').innerText = days.toString().padStart(2, '0');
+                            container.querySelector('.hours').innerText = hours.toString().padStart(2, '0');
+                            container.querySelector('.minutes').innerText = minutes.toString().padStart(2, '0');
+                            container.querySelector('.seconds').innerText = seconds.toString().padStart(2, '0');
+                        }
+                    }
+                }
+                setInterval(updatePromoTimer, 1000);
+                document.addEventListener('DOMContentLoaded', updatePromoTimer);
+                updatePromoTimer();
+            </script>
+        </div>
+        
         <!-- Category Magazine Grids (Full Width Rows) -->
         <div class="space-y-10">
             <?php

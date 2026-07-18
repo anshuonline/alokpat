@@ -28,9 +28,45 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
                 </h1>
             <?php endif; ?>
         </a>
-        <div class="text-gray-700 font-medium text-sm md:text-base">
-            <?php echo formatDateBengali(date('Y-m-d'), 'd F, Y'); ?>
+        <div class="flex items-center justify-center space-x-2 text-gray-700 font-medium text-sm md:text-base mt-2 bg-gray-50 px-4 py-2 rounded-full border border-gray-100 shadow-sm">
+            <i class="far fa-calendar-alt text-primary-600"></i>
+            <span><?php echo formatDateBengali(date('Y-m-d'), 'd F, Y'); ?></span>
+            <span class="mx-1 text-gray-300">|</span>
+            <i class="far fa-clock text-primary-600"></i>
+            <span id="live-clock" class="font-bold text-primary-800"></span>
         </div>
+
+        <script>
+            function updateClock() {
+                const now = new Date();
+                let hours = now.getHours();
+                let minutes = now.getMinutes();
+                let seconds = now.getSeconds();
+                let ampm = hours >= 12 ? 'পিএম' : 'এএম';
+                
+                hours = hours % 12;
+                hours = hours ? hours : 12; // the hour '0' should be '12'
+                
+                minutes = minutes < 10 ? '0' + minutes : minutes;
+                seconds = seconds < 10 ? '0' + seconds : seconds;
+                
+                let timeString = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
+                
+                // Convert English digits to Bengali digits
+                const bnNumbers = {'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'};
+                timeString = timeString.replace(/[0-9]/g, function(w){
+                    return bnNumbers[w];
+                });
+                
+                const clockEl = document.getElementById('live-clock');
+                if (clockEl) {
+                    clockEl.textContent = timeString;
+                }
+            }
+            setInterval(updateClock, 1000);
+            document.addEventListener('DOMContentLoaded', updateClock);
+            updateClock(); // Initial call
+        </script>
     </div>
 </div>
 
