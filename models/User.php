@@ -10,8 +10,8 @@ class User {
     private $table = 'users';
 
     public function __construct() {
-        $database = new Database();
-        $this->conn = $database->getConnection();
+        global $pdo;
+        $this->conn = $pdo;
     }
 
     /**

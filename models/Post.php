@@ -10,8 +10,8 @@ class Post {
     private $table = 'posts';
 
     public function __construct() {
-        $database = new Database();
-        $this->conn = $database->getConnection();
+        global $pdo;
+        $this->conn = $pdo;
     }
 
     /**
