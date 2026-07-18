@@ -19,24 +19,21 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
 <!-- Logo & Date Area (Top) -->
 <div class="bg-white py-6">
     <div class="max-w-6xl mx-auto px-4 flex flex-col items-center justify-center">
-        <!-- Logo -->
         <a href="<?php echo SITE_URL; ?>" class="mb-3">
             <?php if (!empty($site_info['site_logo'])): ?>
                 <img src="<?php echo escape($site_info['site_logo']); ?>" alt="Logo" class="h-16 md:h-20">
             <?php else: ?>
                 <h1 class="text-3xl font-heading font-black text-gray-900 tracking-tight">
-                    <?php echo escape($site_info['site_name'] ?? 'আলোকপাত'); ?>
+                    <?php echo escape($site_info['site_name'] ?? '???????'); ?>
                 </h1>
             <?php endif; ?>
         </a>
-        <!-- Date -->
         <div class="text-gray-700 font-medium text-sm md:text-base">
             <?php echo formatDateBengali(date('Y-m-d'), 'd F, Y'); ?>
         </div>
     </div>
 </div>
 
-<!-- Main Navigation (Blue Bar) -->
 <style>
     .nav-hover-effect {
         position: relative;
@@ -60,30 +57,56 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
     .nav-hover-effect:hover::before {
         transform: scaleY(1);
     }
+    .dropdown-hover-effect:hover {
+        background-color: #f3f4f6; /* gray-100 */
+        color: #1e3a8a;
+    }
 </style>
+
 <nav id="main-nav" class="bg-primary-800 text-white shadow-md sticky z-50 transition-all duration-200 relative" style="position: -webkit-sticky; position: sticky; top: 0;">
     <div class="max-w-6xl mx-auto px-4">
         <div class="flex items-center justify-between">
             
             <!-- Desktop Links -->
             <div class="hidden lg:flex items-center space-x-1 w-full justify-center">
-                <a href="<?php echo SITE_URL; ?>" class="px-4 py-3 nav-hover-effect font-medium text-lg" title="প্রচ্ছদ (Home)">
+                <a href="<?php echo SITE_URL; ?>" class="px-4 py-3 nav-hover-effect font-medium text-lg" title="??????? (Home)">
                     <i class="fas fa-home text-xl"></i>
                 </a>
                 
                 <?php if (!empty($primaryMenuItems)): ?>
                     <?php foreach ($primaryMenuItems as $item): ?>
-                        <a href="<?php echo escape($item['url']); ?>" 
-                           class="px-4 py-3 nav-hover-effect font-medium text-lg whitespace-nowrap">
-                            <?php echo escape($item['title']); ?>
-                        </a>
+                        <?php if (!empty($item['children'])): ?>
+                            <!-- Dropdown Menu Item -->
+                            <div class="relative group h-full">
+                                <a href="<?php echo escape($item['url']); ?>" 
+                                   class="px-4 py-3 nav-hover-effect font-medium text-lg whitespace-nowrap flex items-center gap-1 h-full cursor-pointer">
+                                    <?php echo escape($item['title']); ?>
+                                    <i class="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
+                                </a>
+                                <!-- Dropdown Content -->
+                                <div class="absolute left-0 top-full hidden group-hover:block w-56 bg-white shadow-lg border-t-2 border-primary-600 rounded-b-lg overflow-hidden py-2 z-50">
+                                    <?php foreach ($item['children'] as $child): ?>
+                                        <a href="<?php echo escape($child['url']); ?>" 
+                                           class="block px-4 py-2 text-gray-700 font-medium dropdown-hover-effect transition-colors">
+                                            <?php echo escape($child['title']); ?>
+                                        </a>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        <?php else: ?>
+                            <!-- Regular Menu Item -->
+                            <a href="<?php echo escape($item['url']); ?>" 
+                               class="px-4 py-3 nav-hover-effect font-medium text-lg whitespace-nowrap">
+                                <?php echo escape($item['title']); ?>
+                            </a>
+                        <?php endif; ?>
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
             
             <!-- Search & Mobile Menu Button -->
             <div class="flex items-center space-x-4 py-2 lg:hidden w-full justify-between">
-                <span class="font-bold text-lg">মেনু</span>
+                <span class="font-bold text-lg">????</span>
                 <div class="flex items-center space-x-3">
                     <button onclick="document.getElementById('searchModal').classList.remove('hidden')" 
                             class="hover:text-gray-300 transition p-2">
@@ -101,14 +124,26 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
     <!-- Mobile Menu -->
     <div id="mobileMenu" class="hidden lg:hidden bg-white border-b shadow-2xl absolute top-full left-0 w-full z-40 max-h-[75vh] overflow-y-auto">
         <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col space-y-1">
-            <a href="<?php echo SITE_URL; ?>" class="px-4 py-3 bg-gray-50 text-primary-800 font-bold border-l-4 border-primary-600">প্রচ্ছদ</a>
+            <a href="<?php echo SITE_URL; ?>" class="px-4 py-3 bg-gray-50 text-primary-800 font-bold border-l-4 border-primary-600">???????</a>
             
             <?php if (!empty($mobileMenuItems)): ?>
                 <?php foreach ($mobileMenuItems as $item): ?>
                     <a href="<?php echo escape($item['url']); ?>" 
-                       class="px-4 py-3 text-gray-800 font-medium hover:bg-gray-50 transition border-b border-gray-100 last:border-0">
+                       class="px-4 py-3 text-gray-800 font-bold hover:bg-gray-50 transition border-b border-gray-100 flex items-center justify-between">
                         <?php echo escape($item['title']); ?>
                     </a>
+                    
+                    <?php if (!empty($item['children'])): ?>
+                        <div class="flex flex-col bg-gray-50 py-1">
+                            <?php foreach ($item['children'] as $child): ?>
+                                <a href="<?php echo escape($child['url']); ?>" 
+                                   class="px-8 py-2 text-gray-700 font-medium hover:text-primary-600 transition flex items-center gap-2">
+                                    <i class="fas fa-angle-right text-sm text-gray-400"></i>
+                                    <?php echo escape($child['title']); ?>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
@@ -122,7 +157,7 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
         <!-- Breaking News Ticker (Left) -->
         <div class="flex items-center w-full md:w-3/4 overflow-hidden bg-white">
             <div class="bg-primary-100 text-primary-800 font-bold px-4 py-3 whitespace-nowrap z-10 flex-shrink-0">
-                এই মুহূর্তে
+                ?? ????????
             </div>
             <div class="overflow-hidden flex-1 relative h-full flex items-center px-4">
                 <?php
@@ -137,7 +172,7 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
                             </a>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <span class="text-gray-500">আপাতত কোন ব্রেকিং নিউজ নেই</span>
+                        <span class="text-gray-500">????? ??? ??????? ???? ???</span>
                     <?php endif; ?>
                 </div>
             </div>
@@ -176,7 +211,7 @@ if (empty($site_info['site_header_html'])) {
 <div id="searchModal" class="hidden fixed inset-0 bg-black bg-opacity-60 z-[60] flex items-start justify-center pt-20 px-4 backdrop-blur-sm">
     <div class="bg-white rounded-lg shadow-2xl max-w-2xl w-full p-6 animate-fade-in-down">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-2xl font-bold text-gray-800">অনুসন্ধান করুন</h3>
+            <h3 class="text-2xl font-bold text-gray-800">????????? ????</h3>
             <button onclick="document.getElementById('searchModal').classList.add('hidden')" class="text-gray-400 hover:text-red-600 transition bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center">
                 <i class="fas fa-times"></i>
             </button>
@@ -185,10 +220,10 @@ if (empty($site_info['site_header_html'])) {
             <div class="flex shadow-sm rounded-lg overflow-hidden border border-gray-300 focus-within:border-primary-500 focus-within:ring-1 focus-within:ring-primary-500 transition">
                 <input type="text" 
                        name="q" 
-                       placeholder="খবর খুঁজুন..." 
+                       placeholder="??? ??????..." 
                        class="flex-1 px-4 py-4 w-full focus:outline-none text-lg">
                 <button type="submit" class="bg-primary-700 text-white px-8 py-4 hover:bg-primary-800 transition font-bold">
-                    খুঁজুন
+                    ??????
                 </button>
             </div>
         </form>

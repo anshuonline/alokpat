@@ -82,16 +82,29 @@ class Menu {
             $stmt->execute([$menu_id]);
 
             if (!empty($items)) {
-                $order = 0;
-                $stmt = $this->db->prepare("INSERT INTO menu_items (menu_id, type, type_id, title, url, display_order) VALUES (?, ?, ?, ?, ?, ?)");
+                $idMap = []; // Maps temp JS ids to real DB ids
+                
+                $stmtInsert = $this->db->prepare("INSERT INTO menu_items (menu_id, parent_id, type, type_id, title, url, display_order) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                
                 foreach ($items as $item) {
                     $type = $item['type'] ?? 'custom';
                     $type_id = !empty($item['type_id']) ? (int)$item['type_id'] : null;
                     $title = $item['title'] ?? '';
                     $url = $item['url'] ?? '';
+                    $order = $item['order'] ?? 0;
                     
-                    $stmt->execute([$menu_id, $type, $type_id, $title, $url, $order]);
-                    $order++;
+                    // Determine parent_id
+                    $db_parent_id = null;
+                    if (!empty($item['parent_id']) && isset($idMap[$item['parent_id']])) {
+                        $db_parent_id = $idMap[$item['parent_id']];
+                    }
+                    
+                    $stmtInsert->execute([$menu_id, $db_parent_id, $type, $type_id, $title, $url, $order]);
+                    
+                    // Store the new DB id in the map using the temp JS id
+                    if (!empty($item['id'])) {
+                        $idMap[$item['id']] = $this->db->lastInsertId();
+                    }
                 }
             }
 
@@ -124,15 +137,33 @@ class Menu {
                     $cat = $categoryModel->getById($item['type_id']);
                     if ($cat) {
                         $item['url'] = SITE_URL . '/category.php?slug=' . $cat['slug'];
-                        // If no custom title was provided, use category name
                         if (empty($item['title'])) {
                             $item['title'] = $cat['name'];
                         }
                     }
                 }
+                $item['children'] = [];
             }
         }
         
-        return $items;
+        // Build Tree Structure (1 Level deep)
+        $tree = [];
+        $children = [];
+        
+        foreach ($items as $item) {
+            if (empty($item['parent_id'])) {
+                $tree[$item['id']] = $item;
+            } else {
+                $children[$item['parent_id']][] = $item;
+            }
+        }
+        
+        foreach ($children as $parentId => $childItems) {
+            if (isset($tree[$parentId])) {
+                $tree[$parentId]['children'] = $childItems;
+            }
+        }
+        
+        return array_values($tree);
     }
 }
