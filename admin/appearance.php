@@ -54,7 +54,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $theme_color = trim($_POST['theme_color'] ?? 'default');
     
     if (array_key_exists($theme_color, $themes)) {
-        if ($setting->set('theme_color', $theme_color)) {
+        if ($setting->get('theme_color') === false) {
+            $success = $setting->create('theme_color', $theme_color, 'text', 'Website Theme Color');
+        } else {
+            $success = $setting->update('theme_color', $theme_color);
+        }
+        
+        if ($success !== false) {
             setFlash('success', 'থিম সফলভাবে আপডেট করা হয়েছে');
         } else {
             setFlash('error', 'থিম আপডেট করতে সমস্যা হয়েছে');
