@@ -58,6 +58,12 @@
                     <span class="font-medium">ক্যাটাগরি</span>
                 </a>
                 
+                <a href="<?php echo ADMIN_URL; ?>/menus.php" 
+                   class="sidebar-link flex items-center px-4 py-3 rounded-lg text-gray-700 hover:text-blue-600 transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'menus.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-bars w-6"></i>
+                    <span class="font-medium">মেনু</span>
+                </a>
+                
                 <a href="<?php echo ADMIN_URL; ?>/tags.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg text-gray-700 hover:text-blue-600 transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'tags.php' ? 'active' : ''; ?>">
                     <i class="fas fa-tags w-6"></i>

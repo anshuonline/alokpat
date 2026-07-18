@@ -1,13 +1,19 @@
-<?php
+﻿<?php
 /**
  * Header Component
  * 
- * @param array $categories - Active categories
+ * @param array $categories - Active categories (fallback)
  */
 
 $categories = $categories ?? [];
 $setting = new Setting();
 $site_info = $setting->getSiteInfo();
+$menuModel = new Menu();
+
+// Fetch Dynamic Menus
+$primaryMenuItems = $menuModel->getMenuByLocation('primary');
+$mobileMenuItems = $menuModel->getMenuByLocation('mobile');
+
 ?>
 
 <!-- Logo & Date Area (Top) -->
@@ -61,15 +67,26 @@ $site_info = $setting->getSiteInfo();
             
             <!-- Desktop Links -->
             <div class="hidden lg:flex items-center space-x-1 w-full justify-center">
-                <a href="<?php echo SITE_URL; ?>" class="px-4 py-3 nav-hover-effect font-medium text-lg">
+                <a href="<?php echo SITE_URL; ?>" class="px-4 py-3 nav-hover-effect font-medium text-lg" title="প্রচ্ছদ (Home)">
                     <i class="fas fa-home text-xl"></i>
                 </a>
-                <?php foreach ($categories as $category): ?>
-                    <a href="<?php echo SITE_URL; ?>/category.php?slug=<?php echo escape($category['slug']); ?>" 
-                       class="px-4 py-3 nav-hover-effect font-medium text-lg whitespace-nowrap">
-                        <?php echo escape($category['name']); ?>
-                    </a>
-                <?php endforeach; ?>
+                
+                <?php if (!empty($primaryMenuItems)): ?>
+                    <?php foreach ($primaryMenuItems as $item): ?>
+                        <a href="<?php echo escape($item['url']); ?>" 
+                           class="px-4 py-3 nav-hover-effect font-medium text-lg whitespace-nowrap">
+                            <?php echo escape($item['title']); ?>
+                        </a>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <!-- Fallback if no primary menu is set -->
+                    <?php foreach ($categories as $category): ?>
+                        <a href="<?php echo SITE_URL; ?>/category.php?slug=<?php echo escape($category['slug']); ?>" 
+                           class="px-4 py-3 nav-hover-effect font-medium text-lg whitespace-nowrap">
+                            <?php echo escape($category['name']); ?>
+                        </a>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </div>
             
             <!-- Search & Mobile Menu Button -->
@@ -89,16 +106,27 @@ $site_info = $setting->getSiteInfo();
         </div>
     </div>
     
-    <!-- Mobile Menu (Now anchored to the nav) -->
+    <!-- Mobile Menu -->
     <div id="mobileMenu" class="hidden lg:hidden bg-white border-b shadow-2xl absolute top-full left-0 w-full z-40 max-h-[75vh] overflow-y-auto">
         <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col space-y-1">
             <a href="<?php echo SITE_URL; ?>" class="px-4 py-3 bg-gray-50 text-primary-800 font-bold border-l-4 border-primary-600">প্রচ্ছদ</a>
-            <?php foreach ($categories as $category): ?>
-                <a href="<?php echo SITE_URL; ?>/category.php?slug=<?php echo escape($category['slug']); ?>" 
-                   class="px-4 py-3 text-gray-800 font-medium hover:bg-gray-50 transition border-b border-gray-100 last:border-0">
-                    <?php echo escape($category['name']); ?>
-                </a>
-            <?php endforeach; ?>
+            
+            <?php if (!empty($mobileMenuItems)): ?>
+                <?php foreach ($mobileMenuItems as $item): ?>
+                    <a href="<?php echo escape($item['url']); ?>" 
+                       class="px-4 py-3 text-gray-800 font-medium hover:bg-gray-50 transition border-b border-gray-100 last:border-0">
+                        <?php echo escape($item['title']); ?>
+                    </a>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <!-- Fallback if no mobile menu is set -->
+                <?php foreach ($categories as $category): ?>
+                    <a href="<?php echo SITE_URL; ?>/category.php?slug=<?php echo escape($category['slug']); ?>" 
+                       class="px-4 py-3 text-gray-800 font-medium hover:bg-gray-50 transition border-b border-gray-100 last:border-0">
+                        <?php echo escape($category['name']); ?>
+                    </a>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </div>
 </nav>
@@ -153,8 +181,6 @@ $site_info = $setting->getSiteInfo();
     </div>
 </div>
 
-<!-- Mobile Menu has been moved inside nav for sticky positioning -->
-
 <?php
 // Render header ad if enabled
 if (empty($site_info['site_header_html'])) {
@@ -191,7 +217,6 @@ if (empty($site_info['site_header_html'])) {
         const nav = document.getElementById('main-nav');
         if (!nav) return;
         
-        // Use a placeholder to prevent page jump when nav becomes fixed
         const placeholder = document.createElement('div');
         placeholder.style.display = 'none';
         placeholder.style.height = nav.offsetHeight + 'px';
@@ -199,18 +224,22 @@ if (empty($site_info['site_header_html'])) {
 
         const stickyOffset = nav.offsetTop;
         
-        window.addEventListener('scroll', function() {
-            if (window.pageYOffset >= stickyOffset && stickyOffset > 0) {
+        function handleScroll() {
+            if (window.pageYOffset >= stickyOffset) {
                 nav.classList.add('fixed', 'top-0', 'left-0', 'w-full');
-                nav.classList.remove('sticky'); // Remove sticky to prevent conflicts
-                nav.style.position = 'fixed';
                 placeholder.style.display = 'block';
             } else {
                 nav.classList.remove('fixed', 'top-0', 'left-0', 'w-full');
-                nav.classList.add('sticky');
-                nav.style.position = '';
                 placeholder.style.display = 'none';
             }
+        }
+        
+        if (!CSS.supports('position', 'sticky')) {
+            window.addEventListener('scroll', handleScroll);
+        }
+        
+        document.getElementById('mobileMenuBtn')?.addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
         });
     });
 </script>

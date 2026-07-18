@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Alokpat - Bengali News Portal CMS
  * Main Configuration File
@@ -91,6 +91,7 @@ require_once BASE_PATH . '/database/Database.php';
 require_once BASE_PATH . '/models/User.php';
 require_once BASE_PATH . '/models/Post.php';
 require_once BASE_PATH . '/models/Category.php';
+require_once BASE_PATH . '/models/Menu.php';
 require_once BASE_PATH . '/models/Tag.php';
 require_once BASE_PATH . '/models/Media.php';
 require_once BASE_PATH . '/models/Setting.php';
