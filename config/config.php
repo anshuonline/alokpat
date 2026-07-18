@@ -8,16 +8,38 @@
  * @author Alokpat Team
  */
 
-// Database Configuration
-define('DB_HOST', 'srv2109.hstgr.io');
-define('DB_NAME', 'u388169091_alokpat');
-define('DB_USER', 'u388169091_alokpat');
-define('DB_PASS', '@Alokpat.in1234');
+// Environment Detection (Local vs Live)
+if ($_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['HTTP_HOST'] === '127.0.0.1') {
+    // LOCAL XAMPP ENVIRONMENT
+    define('DB_HOST', 'localhost');
+    define('DB_NAME', 'alokpath');
+    define('DB_USER', 'root');
+    define('DB_PASS', '');
+    define('SITE_URL', 'http://localhost/alokpath');
+    
+    // Error Reporting for Local
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+} else {
+    // LIVE HOSTINGER ENVIRONMENT
+    define('DB_HOST', 'localhost'); // Hostinger internal connection
+    define('DB_NAME', 'u388169091_alokpat');
+    define('DB_USER', 'u388169091_alokpat');
+    define('DB_PASS', '@Alokpat.in1234');
+    define('SITE_URL', 'https://alokpat.in');
+    
+    // Disable Error Reporting for Security on Live
+    ini_set('display_errors', 0);
+    ini_set('display_startup_errors', 0);
+    error_reporting(0);
+}
+
+// Global Database Charset
 define('DB_CHARSET', 'utf8mb4');
 
 // Site Configuration
 define('SITE_NAME', 'Alokpat');
-define('SITE_URL', 'https://alokpat.in');
 define('ADMIN_URL', SITE_URL . '/admin');
 
 // Site Font Configuration (Centralized)
@@ -50,16 +72,11 @@ define('ADMIN_POSTS_PER_PAGE', 15);
 
 // SEO Settings
 define('DEFAULT_META_TITLE', 'Alokpat - Bengali News Portal');
-define('DEFAULT_META_DESCRIPTION', 'à¦†à¦²à§‹à¦•à¦ªà¦¾à¦¤ - à¦¬à¦¾à¦‚à¦²à¦¾ à¦¸à¦‚à¦¬à¦¾à¦¦ à¦à¦¬à¦‚ à¦¨à¦¿à¦‰à¦œ à¦ªà§‹à¦°à§à¦Ÿà¦¾à¦²');
-define('DEFAULT_KEYWORDS', 'à¦–à¦¬à¦° à¦†à¦œ, bengali news, à¦†à¦²à§‹à¦•à¦ªà¦¾à¦¤, alokpat');
+define('DEFAULT_META_DESCRIPTION', 'আলোকপাত - বাংলা সংবাদ এবং নিউজ পোর্টাল');
+define('DEFAULT_KEYWORDS', 'খবর আজ, bengali news, আলোকপাত, alokpat');
 
 // Timezone
 date_default_timezone_set('Asia/Kolkata');
-
-// Error Reporting (Disable in production)
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 // Start Session
 if (session_status() === PHP_SESSION_NONE) {
@@ -81,5 +98,3 @@ require_once BASE_PATH . '/models/Setting.php';
 // Initialize Database
 $database = new Database();
 $db = $database->getConnection();
-
-
