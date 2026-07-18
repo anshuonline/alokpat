@@ -96,6 +96,14 @@
                 </a>
                 <?php endif; ?>
                 
+                <?php if(hasAnyRole(['super_admin'])): ?>
+                <a href="<?php echo ADMIN_URL; ?>/subscribers.php" 
+                   class="sidebar-link flex items-center px-4 py-3 rounded-lg text-gray-700 hover:text-blue-600 transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'subscribers.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-users-cog w-6"></i>
+                    <span class="font-medium">সাবস্ক্রাইবার</span>
+                </a>
+                <?php endif; ?>
+                
                 <a href="<?php echo ADMIN_URL; ?>/ads.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg text-gray-700 hover:text-blue-600 transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'ads.php' ? 'active' : ''; ?>">
                     <i class="fas fa-bullhorn w-6"></i>

@@ -120,7 +120,7 @@ $categories = $category->getActive();
                 <!-- Newsletter Subscription -->
                 <div class="mt-8">
                     <h5 class="text-white font-medium mb-3 text-sm uppercase tracking-wide">নিউজলেটার সাবস্ক্রাইব করুন</h5>
-                    <form class="flex flex-col gap-2" action="#" method="POST" onsubmit="event.preventDefault(); alert('সাবস্ক্রাইব করার জন্য ধন্যবাদ!');">
+                    <form class="flex flex-col gap-2" action="<?php echo SITE_URL; ?>/subscribe.php" method="POST">
                         <input type="email" name="email" placeholder="আপনার ইমেইল এড্রেস" required 
                                class="bg-gray-800 border border-gray-700 text-white px-4 py-2 rounded focus:outline-none focus:border-primary-500 w-full text-sm placeholder-gray-500 transition-colors">
                         <button type="submit" 
