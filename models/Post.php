@@ -24,12 +24,12 @@ class Post {
         try {
             $sql = "INSERT INTO " . $this->table . " 
                     (title, slug, content, excerpt, featured_image, featured_image_alt, author_id, 
-                     category_id, status, is_featured, is_breaking, is_trending, publish_at, 
+                     category_id, status, is_featured, is_breaking, is_trending, published_at, 
                      seo_title, seo_description, seo_keywords, canonical_url, meta_og_title, 
                      meta_og_description, meta_og_image, meta_twitter_card, robots_meta, schema_markup) 
                     VALUES 
                     (:title, :slug, :content, :excerpt, :featured_image, :featured_image_alt, :author_id, 
-                     :category_id, :status, :is_featured, :is_breaking, :is_trending, :publish_at, 
+                     :category_id, :status, :is_featured, :is_breaking, :is_trending, :published_at, 
                      :seo_title, :seo_description, :seo_keywords, :canonical_url, :meta_og_title, 
                      :meta_og_description, :meta_og_image, :meta_twitter_card, :robots_meta, :schema_markup)";
             
@@ -48,7 +48,10 @@ class Post {
             $is_featured = isset($data['is_featured']) ? 1 : 0;
             $is_breaking = isset($data['is_breaking']) ? 1 : 0;
             $is_trending = isset($data['is_trending']) ? 1 : 0;
-            $publish_at = isset($data['publish_at']) ? $data['publish_at'] : null;
+            $published_at = isset($data['published_at']) ? $data['published_at'] : null;
+            if ($status === 'published' && empty($published_at)) {
+                $published_at = date('Y-m-d H:i:s');
+            }
             $seo_title = isset($data['seo_title']) ? sanitize($data['seo_title']) : null;
             $seo_description = isset($data['seo_description']) ? sanitize($data['seo_description']) : null;
             $seo_keywords = isset($data['seo_keywords']) ? sanitize($data['seo_keywords']) : null;
@@ -72,7 +75,7 @@ class Post {
             $stmt->bindParam(':is_featured', $is_featured, PDO::PARAM_INT);
             $stmt->bindParam(':is_breaking', $is_breaking, PDO::PARAM_INT);
             $stmt->bindParam(':is_trending', $is_trending, PDO::PARAM_INT);
-            $stmt->bindParam(':publish_at', $publish_at);
+            $stmt->bindParam(':published_at', $published_at);
             $stmt->bindParam(':seo_title', $seo_title);
             $stmt->bindParam(':seo_description', $seo_description);
             $stmt->bindParam(':seo_keywords', $seo_keywords);
@@ -116,7 +119,7 @@ class Post {
             
             $allowed_fields = [
                 'title', 'slug', 'content', 'excerpt', 'featured_image', 'featured_image_alt',
-                'category_id', 'status', 'is_featured', 'is_breaking', 'is_trending', 'publish_at',
+                'category_id', 'status', 'is_featured', 'is_breaking', 'is_trending', 'published_at',
                 'seo_title', 'seo_description', 'seo_keywords', 'canonical_url',
                 'meta_og_title', 'meta_og_description', 'meta_og_image', 'meta_twitter_card',
                 'robots_meta', 'schema_markup'
@@ -254,7 +257,7 @@ class Post {
                     LEFT JOIN users u ON p.author_id = u.id
                     LEFT JOIN categories c ON p.category_id = c.id
                     $where
-                    ORDER BY p.published_at DESC
+                    ORDER BY COALESCE(p.published_at, p.created_at) DESC
                     LIMIT :limit OFFSET :offset";
             
             $stmt = $this->conn->prepare($sql);
@@ -287,7 +290,7 @@ class Post {
                     LEFT JOIN users u ON p.author_id = u.id
                     LEFT JOIN categories c ON p.category_id = c.id
                     WHERE p.status = 'published' AND p.author_id = :author_id
-                    ORDER BY p.published_at DESC
+                    ORDER BY COALESCE(p.published_at, p.created_at) DESC
                     LIMIT :limit OFFSET :offset";
             
             $stmt = $this->conn->prepare($sql);
@@ -333,7 +336,7 @@ class Post {
                     LEFT JOIN categories c ON p.category_id = c.id
                     WHERE p.is_breaking = 1 
                     AND p.status = 'published'
-                    ORDER BY p.published_at DESC
+                    ORDER BY COALESCE(p.published_at, p.created_at) DESC
                     LIMIT :limit";
             
             $stmt = $this->conn->prepare($sql);
@@ -387,7 +390,7 @@ class Post {
                     LEFT JOIN categories c ON p.category_id = c.id
                     WHERE p.is_featured = 1 
                     AND p.status = 'published'
-                    ORDER BY p.published_at DESC
+                    ORDER BY COALESCE(p.published_at, p.created_at) DESC
                     LIMIT :limit";
             
             $stmt = $this->conn->prepare($sql);
@@ -419,7 +422,7 @@ class Post {
                     LEFT JOIN categories c ON p.category_id = c.id
                     WHERE p.status = 'published'
                     AND (p.title LIKE :search OR p.content LIKE :search OR p.excerpt LIKE :search)
-                    ORDER BY p.published_at DESC
+                    ORDER BY COALESCE(p.published_at, p.created_at) DESC
                     LIMIT :limit OFFSET :offset";
             
             $stmt = $this->conn->prepare($sql);
@@ -451,7 +454,7 @@ class Post {
                     WHERE p.status = 'published'
                     AND p.category_id = :category_id
                     AND p.id != :post_id
-                    ORDER BY p.published_at DESC
+                    ORDER BY COALESCE(p.published_at, p.created_at) DESC
                     LIMIT :limit";
             
             $stmt = $this->conn->prepare($sql);
