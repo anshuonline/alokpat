@@ -242,6 +242,8 @@
 </head>
 <body class="bg-gray-50 font-bengali">
     
+    <?php displayFlash(); ?>
+    
     <?php echo $content ?? ''; ?>
     
     <script>

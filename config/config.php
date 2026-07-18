@@ -95,6 +95,7 @@ require_once BASE_PATH . '/models/Menu.php';
 require_once BASE_PATH . '/models/Tag.php';
 require_once BASE_PATH . '/models/Media.php';
 require_once BASE_PATH . '/models/Setting.php';
+require_once BASE_PATH . '/models/Subscriber.php';
 
 // Initialize Database
 $database = new Database();

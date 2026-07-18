@@ -520,8 +520,8 @@ function removeFeaturedImage() {
 <script>
     tinymce.init({
         selector: '#contentEditor',
-        plugins: 'lists link table code image fullscreen accordion',
-        toolbar: 'blocks | bold italic underline | link customMediaBtn imgSizeBtn insertCtaBtn | alignleft aligncenter alignright | bullist numlist | blockquote table accordion | fullscreen | undo redo',
+        plugins: 'lists link table code image fullscreen accordion media',
+        toolbar: 'blocks | bold italic underline | link customMediaBtn imgSizeBtn insertCtaBtn formatTab | alignleft aligncenter alignright | bullist numlist | blockquote table accordion | fullscreen | undo redo',
         height: 500,
         menubar: false,
         branding: false,
@@ -535,7 +535,8 @@ function removeFeaturedImage() {
         forced_root_block: 'p',
         remove_trailing_brs: true,
         custom_elements: 'figure,figcaption',
-        extended_valid_elements: 'figure[class|style],figcaption[class|style],img[src|alt|width|height|style|class|loading]',
+        extended_valid_elements: 'figure[class|style],figcaption[class|style],img[src|alt|width|height|style|class|loading],iframe[src|title|width|height|name|align|class|frameborder|allow|allowfullscreen|scrolling],script[src|async|defer|type|charset]',
+        media_live_embeds: true,
         paste_data_images: true,
         automatic_uploads: true,
         images_upload_url: 'upload-editor-image.php?<?php echo CSRF_TOKEN_NAME; ?>=<?php echo generateCSRFToken(); ?>',
@@ -557,6 +558,52 @@ function removeFeaturedImage() {
             '.custom-cta-btn:hover { background-color: var(--btn-primary-hover); }'
         ].join('\n'),
         setup: function (editor) {
+
+            // --- Custom: Format Tab (Embed Code) ---
+            editor.ui.registry.addMenuButton('formatTab', {
+                text: 'Format Tab',
+                tooltip: 'Format Options & Embed Code',
+                fetch: function(callback) {
+                    var items = [
+                        {
+                            type: 'menuitem',
+                            text: 'Add Embed Code',
+                            icon: 'embed',
+                            onAction: function() {
+                                editor.windowManager.open({
+                                    title: 'Add Embed Code',
+                                    size: 'large',
+                                    body: {
+                                        type: 'panel',
+                                        items: [
+                                            {
+                                                type: 'htmlpanel',
+                                                html: '<p style="margin-bottom:10px;">Paste your embed code (YouTube, Facebook, Twitter, HTML, etc.) below. The editor will automatically preview it.</p>'
+                                            },
+                                            {
+                                                type: 'textarea',
+                                                name: 'embed_code'
+                                            }
+                                        ]
+                                    },
+                                    buttons: [
+                                        { type: 'cancel', text: 'Cancel' },
+                                        { type: 'submit', text: 'Insert Embed', primary: true }
+                                    ],
+                                    onSubmit: function (api) {
+                                        var data = api.getData();
+                                        if (data.embed_code) {
+                                            editor.insertContent(data.embed_code + '<p>&nbsp;</p>');
+                                        }
+                                        api.close();
+                                    }
+                                });
+                            }
+                        }
+                    ];
+                    callback(items);
+                }
+            });
 
             // --- Custom: Insert CTA Button ---
             editor.ui.registry.addButton('insertCtaBtn', {
