@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Alokpat - Bengali News Portal CMS
  * Main Configuration File
@@ -30,9 +30,9 @@ if ($_SERVER['HTTP_HOST'] === 'localhost' || $_SERVER['HTTP_HOST'] === '127.0.0.
     define('SITE_URL', 'https://alokpat.in');
     
     // Disable Error Reporting for Security on Live
-    ini_set('display_errors', 0);
-    ini_set('display_startup_errors', 0);
-    error_reporting(0);
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
 }
 
 // Global Database Charset
@@ -72,8 +72,8 @@ define('ADMIN_POSTS_PER_PAGE', 15);
 
 // SEO Settings
 define('DEFAULT_META_TITLE', 'Alokpat - Bengali News Portal');
-define('DEFAULT_META_DESCRIPTION', 'আলোকপাত - বাংলা সংবাদ এবং নিউজ পোর্টাল');
-define('DEFAULT_KEYWORDS', 'খবর আজ, bengali news, আলোকপাত, alokpat');
+define('DEFAULT_META_DESCRIPTION', 'à¦†à¦²à§‹à¦•à¦ªà¦¾à¦¤ - à¦¬à¦¾à¦‚à¦²à¦¾ à¦¸à¦‚à¦¬à¦¾à¦¦ à¦à¦¬à¦‚ à¦¨à¦¿à¦‰à¦œ à¦ªà§‹à¦°à§à¦Ÿà¦¾à¦²');
+define('DEFAULT_KEYWORDS', 'à¦–à¦¬à¦° à¦†à¦œ, bengali news, à¦†à¦²à§‹à¦•à¦ªà¦¾à¦¤, alokpat');
 
 // Timezone
 date_default_timezone_set('Asia/Kolkata');
@@ -99,3 +99,4 @@ require_once BASE_PATH . '/models/Setting.php';
 // Initialize Database
 $database = new Database();
 $db = $database->getConnection();
+
