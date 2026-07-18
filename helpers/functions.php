@@ -16,7 +16,7 @@ function sanitize($data) {
     if (is_array($data)) {
         return array_map('sanitize', $data);
     }
-    return htmlspecialchars(strip_tags(trim($data)), ENT_QUOTES, 'UTF-8');
+    return strip_tags(trim($data ?? ''));
 }
 
 /**
@@ -26,7 +26,7 @@ function sanitize($data) {
  * @return string
  */
 function escape($string) {
-    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+    return htmlspecialchars($string ?? '', ENT_QUOTES, 'UTF-8', false);
 }
 
 /**
