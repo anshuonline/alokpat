@@ -121,7 +121,7 @@ class Menu {
             $categoryModel = new Category();
             foreach ($items as &$item) {
                 if ($item['type'] === 'category' && !empty($item['type_id'])) {
-                    $cat = $categoryModel->getCategory($item['type_id']);
+                    $cat = $categoryModel->getById($item['type_id']);
                     if ($cat) {
                         $item['url'] = SITE_URL . '/category.php?slug=' . $cat['slug'];
                         // If no custom title was provided, use category name
