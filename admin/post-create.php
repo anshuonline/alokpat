@@ -330,6 +330,10 @@ ob_start();
                                placeholder="ছবির Alt text (SEO এর জন্য)"
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm">
                     </div>
+                    <div class="mt-3 bg-blue-50 text-blue-700 text-xs p-3 rounded-lg border border-blue-100 flex items-start">
+                        <i class="fas fa-info-circle mt-0.5 mr-2"></i>
+                        <span>পরামর্শিত ছবির সাইজ: <strong>800x450 px</strong> (বা ১৬:৯ অনুপাত)। ছবি স্বয়ংক্রিয়ভাবে কন্টেইনারের সাইজে ফিট হয়ে যাবে (Contain)।</span>
+                    </div>
                 </div>
                 
                 <!-- Flags -->

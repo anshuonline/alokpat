@@ -23,19 +23,24 @@ $metaClass = $theme === 'dark' ? 'text-gray-400' : 'text-gray-500';
 $categoryClass = $theme === 'dark' ? 'bg-gray-800 text-primary-400 border border-gray-700' : 'bg-primary-100 text-primary-600';
 ?>
 
+// Image Logic
+$hasImage = !empty($post['featured_image']);
+$settingModel = new Setting();
+$site_info = $settingModel->getSiteInfo();
+$imgSrc = $hasImage ? escape($post['featured_image']) : escape($site_info['site_logo'] ?? '');
+$imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opacity-30 bg-gray-50';
+
 <?php if ($variant === 'magazine-main'): ?>
     <!-- Magazine Main (Large Image Top, Title Below) -->
     <div class="group h-full flex flex-col <?php echo $bgClass; ?> <?php echo $theme === 'dark' ? 'p-4 rounded-lg' : ''; ?>">
-        <?php if (!empty($post['featured_image'])): ?>
-            <div class="overflow-hidden rounded mb-3">
+        <div class="overflow-hidden rounded mb-3 bg-gray-50 flex items-center justify-center h-64">
                 <a href="<?php echo url_for_post($post['slug']); ?>" class="block w-full h-full">
-                    <img src="<?php echo escape($post['featured_image']); ?>" 
+                    <img src="<?php echo $imgSrc; ?>" 
                          alt="<?php echo escape($post['title']); ?>" 
-                         class="w-full h-64 object-cover group-hover:scale-105 transition duration-500"
+                         class="w-full h-full <?php echo $imgClass; ?> group-hover:scale-105 transition duration-500"
                          loading="lazy">
                 </a>
             </div>
-        <?php endif; ?>
         <h3 class="text-2xl md:text-3xl font-semibold leading-tight <?php echo $titleClass; ?> mb-2 transition">
             <a href="<?php echo url_for_post($post['slug']); ?>">
                 <?php echo escape($post['title']); ?>
@@ -51,16 +56,14 @@ $categoryClass = $theme === 'dark' ? 'bg-gray-800 text-primary-400 border border
 <?php elseif ($variant === 'magazine-list'): ?>
     <!-- Magazine List (Small Thumbnail Left, Title Right, Dashed Border) -->
     <div class="flex items-center py-4 border-b border-dashed <?php echo $theme === 'dark' ? 'border-gray-700' : 'border-gray-300'; ?> group last:border-0">
-        <?php if (!empty($post['featured_image'])): ?>
-            <div class="w-24 h-16 flex-shrink-0 overflow-hidden rounded mr-4">
+        <div class="w-24 h-16 flex-shrink-0 overflow-hidden rounded mr-4 bg-gray-50 flex items-center justify-center">
                 <a href="<?php echo url_for_post($post['slug']); ?>" class="block w-full h-full">
-                    <img src="<?php echo escape($post['featured_image']); ?>" 
+                    <img src="<?php echo $imgSrc; ?>" 
                          alt="<?php echo escape($post['title']); ?>" 
-                         class="w-full h-full object-cover group-hover:scale-110 transition duration-300"
+                         class="w-full h-full <?php echo $imgClass; ?> group-hover:scale-110 transition duration-300"
                          loading="lazy">
                 </a>
             </div>
-        <?php endif; ?>
         <div class="flex-1">
             <h3 class="text-base md:text-lg font-semibold leading-snug <?php echo $titleClass; ?> transition line-clamp-2">
                 <a href="<?php echo url_for_post($post['slug']); ?>">
@@ -73,16 +76,14 @@ $categoryClass = $theme === 'dark' ? 'bg-gray-800 text-primary-400 border border
 <?php elseif ($variant === 'classic-list'): ?>
     <!-- Classic List View (Image Left, Content Right, Dashed Border) -->
     <div class="flex flex-col md:flex-row py-6 border-b border-dashed <?php echo $theme === 'dark' ? 'border-gray-700' : 'border-gray-300'; ?> group last:border-0">
-        <?php if (!empty($post['featured_image'])): ?>
-            <div class="w-full md:w-[280px] h-44 flex-shrink-0 overflow-hidden mb-4 md:mb-0 md:mr-6">
+        <div class="w-full md:w-[280px] h-44 flex-shrink-0 overflow-hidden mb-4 md:mb-0 md:mr-6 bg-gray-50 flex items-center justify-center">
                 <a href="<?php echo url_for_post($post['slug']); ?>" class="block w-full h-full">
-                    <img src="<?php echo escape($post['featured_image']); ?>" 
+                    <img src="<?php echo $imgSrc; ?>" 
                          alt="<?php echo escape($post['title']); ?>" 
-                         class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                         class="w-full h-full <?php echo $imgClass; ?> group-hover:scale-105 transition duration-500"
                          loading="lazy">
                 </a>
             </div>
-        <?php endif; ?>
         <div class="flex-1 flex flex-col justify-center">
             <h3 class="text-xl md:text-2xl font-semibold leading-tight <?php echo $titleClass; ?> mb-2 transition">
                 <a href="<?php echo url_for_post($post['slug']); ?>">
