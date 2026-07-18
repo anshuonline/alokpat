@@ -22,6 +22,26 @@ if (isset($_GET['delete'])) {
     }
     redirect(ADMIN_URL . '/categories.php');
 }
+// Handle AJAX Reorder
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'reorder') {
+    header('Content-Type: application/json');
+    $order = $_POST['order'] ?? [];
+    $db = (new Database())->getConnection();
+    $stmt = $db->prepare("UPDATE categories SET display_order = :order WHERE id = :id");
+    
+    try {
+        $db->beginTransaction();
+        foreach ($order as $index => $id) {
+            $stmt->execute([':order' => $index + 1, ':id' => (int)$id]);
+        }
+        $db->commit();
+        echo json_encode(['success' => true]);
+    } catch (Exception $e) {
+        $db->rollBack();
+        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+    }
+    exit;
+}
 
 // Handle add
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['update_id'])) {
@@ -115,7 +135,7 @@ ob_start();
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">কাজ</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y">
+                <tbody class="divide-y" id="sortable-categories">
                     <?php if (empty($categories)): ?>
                         <tr>
                             <td colspan="8" class="px-6 py-12 text-center text-gray-500">
@@ -124,9 +144,10 @@ ob_start();
                         </tr>
                     <?php else: ?>
                         <?php foreach ($categories as $index => $cat): ?>
-                            <tr class="hover:bg-gray-50 transition">
-                                <td class="px-6 py-4 text-sm text-gray-700">
-                                    <?php echo formatNumberBengali($index + 1); ?>
+                            <tr class="hover:bg-gray-50 transition" data-id="<?php echo $cat['id']; ?>">
+                                <td class="px-6 py-4 text-sm text-gray-700 flex items-center space-x-3">
+                                    <i class="fas fa-grip-vertical text-gray-400 cursor-move hover:text-gray-600" title="Drag to reorder"></i>
+                                    <span><?php echo formatNumberBengali($index + 1); ?></span>
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="font-semibold text-gray-800"><?php echo escape($cat['name']); ?></span>
@@ -431,6 +452,41 @@ ob_start();
         // Show the modal
         document.getElementById('editModal').classList.remove('hidden');
     }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var el = document.getElementById('sortable-categories');
+        if (el) {
+            Sortable.create(el, {
+                handle: '.fa-grip-vertical',
+                animation: 150,
+                ghostClass: 'bg-blue-50',
+                onEnd: function (evt) {
+                    var rows = el.querySelectorAll('tr[data-id]');
+                    var order = Array.from(rows).map(row => row.getAttribute('data-id'));
+                    
+                    var formData = new FormData();
+                    formData.append('action', 'reorder');
+                    order.forEach(id => formData.append('order[]', id));
+                    
+                    fetch('categories.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Automatically reload to update the Bengali numbers
+                            window.location.reload();
+                        } else {
+                            alert('ক্রম পরিবর্তন করতে সমস্যা হয়েছে।');
+                        }
+                    });
+                }
+            });
+        }
+    });
 </script>
 
 <?php
