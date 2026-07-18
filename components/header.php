@@ -177,8 +177,12 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
     <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between">
         
         <!-- Breaking News Ticker (Left) -->
-        <div class="flex items-center w-full md:w-3/4 overflow-hidden bg-white">
-            <div class="bg-primary-100 text-primary-800 font-bold px-4 py-3 whitespace-nowrap z-10 flex-shrink-0">
+        <div class="flex items-center flex-1 w-full overflow-hidden bg-white shadow-inner mr-4 rounded-r-md">
+            <div class="bg-primary-600 text-white font-bold px-4 py-3 whitespace-nowrap z-10 flex-shrink-0 flex items-center gap-2 relative">
+                <span class="relative flex h-3 w-3">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                </span>
                 এই মুহূর্তে
             </div>
             <div class="overflow-hidden flex-1 relative h-full flex items-center px-4">
