@@ -93,12 +93,12 @@ ob_start();
     </div>
     
     <!-- Quick SEO Actions -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         
         <!-- Posts SEO -->
         <a href="<?php echo ADMIN_URL; ?>/posts.php" class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition border-2 border-transparent hover:border-blue-500">
             <div class="flex items-center space-x-4">
-                <div class="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center">
+                <div class="h-16 w-16 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
                     <i class="fas fa-edit text-blue-600 text-3xl"></i>
                 </div>
                 <div>
@@ -111,7 +111,7 @@ ob_start();
         <!-- Categories SEO -->
         <a href="<?php echo ADMIN_URL; ?>/categories.php" class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition border-2 border-transparent hover:border-purple-500">
             <div class="flex items-center space-x-4">
-                <div class="h-16 w-16 rounded-full bg-purple-100 flex items-center justify-center">
+                <div class="h-16 w-16 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
                     <i class="fas fa-folder text-purple-600 text-3xl"></i>
                 </div>
                 <div>
@@ -124,7 +124,7 @@ ob_start();
         <!-- Tags SEO -->
         <a href="<?php echo ADMIN_URL; ?>/tags.php" class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition border-2 border-transparent hover:border-orange-500">
             <div class="flex items-center space-x-4">
-                <div class="h-16 w-16 rounded-full bg-orange-100 flex items-center justify-center">
+                <div class="h-16 w-16 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
                     <i class="fas fa-tags text-orange-600 text-3xl"></i>
                 </div>
                 <div>
@@ -133,6 +133,22 @@ ob_start();
                 </div>
             </div>
         </a>
+        
+        <!-- Sitemap -->
+        <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition border-2 border-transparent hover:border-green-500 flex flex-col justify-between">
+            <div class="flex items-center space-x-4 mb-4">
+                <div class="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                    <i class="fas fa-sitemap text-green-600 text-3xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800">XML সাইটম্যাপ</h3>
+                    <p class="text-sm text-gray-500 mt-1">সার্চ ইঞ্জিনের জন্য ম্যাপ</p>
+                </div>
+            </div>
+            <a href="<?php echo SITE_URL; ?>/sitemap.php" target="_blank" class="w-full text-center py-2 px-4 bg-green-50 text-green-700 hover:bg-green-600 hover:text-white rounded-lg transition-colors font-medium text-sm">
+                সাইটম্যাপ দেখুন <i class="fas fa-external-link-alt ml-1 text-xs"></i>
+            </a>
+        </div>
         
     </div>
     
