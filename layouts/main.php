@@ -141,10 +141,7 @@
     <?php echo $content ?? ''; ?>
     
     <script>
-        // Mobile menu toggle
-        document.getElementById('mobileMenuBtn')?.addEventListener('click', function() {
-            document.getElementById('mobileMenu').classList.toggle('hidden');
-        });
+        // Mobile menu is handled directly by onclick in header.php
         
         // Smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
