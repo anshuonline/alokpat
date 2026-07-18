@@ -30,28 +30,7 @@ component('header', ['categories' => $categories]);
     <!-- Top Sections Container -->
     <div class="max-w-6xl mx-auto px-4 py-6">
         
-        <!-- Featured Section (Top) -->
-        <?php if (!empty($featured_posts)): ?>
-        <section class="mb-10 bg-white p-6 shadow-sm border-t-4 border-primary-600">
-            <div class="flex items-center mb-6 border-b pb-2">
-                <h2 class="text-2xl font-bold text-primary-800">
-                    শীর্ষ সংবাদ
-                </h2>
-            </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Main Featured -->
-                <?php component('news-card', ['post' => $featured_posts[0], 'variant' => 'featured']); ?>
-                
-                <!-- Side Featured -->
-                <div class="space-y-4">
-                    <?php foreach (array_slice($featured_posts, 1, 4) as $index => $feat_post): ?>
-                        <?php component('news-card', ['post' => $feat_post, 'variant' => 'horizontal']); ?>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        </section>
-        <?php endif; ?>
+        <!-- Featured Section Removed -->
         
         
         <!-- Top Split Section (Recent News + Sidebar) -->
