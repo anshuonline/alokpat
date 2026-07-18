@@ -23,8 +23,8 @@ if ($results && is_array($results)) {
         $formatted_results[] = [
             'title' => escape($post['title']),
             'url' => url_for_post($post),
-            'image' => get_image_url($post['featured_image'], 'thumbnail'),
-            'date' => format_date($post['published_at'] ?? $post['created_at'])
+            'image' => !empty($post['featured_image']) ? escape($post['featured_image']) : '',
+            'date' => date('d M Y', strtotime($post['published_at'] ?? $post['created_at']))
         ];
     }
 }

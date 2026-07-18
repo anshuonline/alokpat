@@ -416,19 +416,21 @@ class Post {
         try {
             $searchTerm = '%' . $query . '%';
             
-            $sql = "SELECT p.*, u.full_name as author_name, c.name as category_name
+            $sql = "SELECT p.*, u.full_name as author_name, c.name as category_name, c.slug as category_slug
                     FROM " . $this->table . " p
                     LEFT JOIN users u ON p.author_id = u.id
                     LEFT JOIN categories c ON p.category_id = c.id
                     WHERE p.status = 'published'
-                    AND (p.title LIKE :search OR p.content LIKE :search OR p.excerpt LIKE :search)
+                    AND (p.title LIKE :search1 OR p.content LIKE :search2 OR p.excerpt LIKE :search3)
                     ORDER BY COALESCE(p.published_at, p.created_at) DESC
                     LIMIT :limit OFFSET :offset";
             
             $stmt = $this->conn->prepare($sql);
-            $stmt->bindValue(':search', $searchTerm, PDO::PARAM_STR);
-            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+            $stmt->bindValue(':search1', $searchTerm, PDO::PARAM_STR);
+            $stmt->bindValue(':search2', $searchTerm, PDO::PARAM_STR);
+            $stmt->bindValue(':search3', $searchTerm, PDO::PARAM_STR);
+            $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
             $stmt->execute();
             
             return $stmt->fetchAll();
