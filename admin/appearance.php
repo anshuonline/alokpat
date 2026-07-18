@@ -47,6 +47,20 @@ $themes = [
         'primary_dark' => '#92400e',
         'primary_light' => '#f59e0b',
     ],
+    'violet' => [
+        'name' => 'ভায়োলেট (বেগুনী)',
+        'description' => 'মার্জিত এবং আধুনিক বেগুনী থিম',
+        'primary' => '#7c3aed',
+        'primary_dark' => '#5b21b6',
+        'primary_light' => '#8b5cf6',
+    ],
+    'teal' => [
+        'name' => 'টিল (সবুজাভ নীল)',
+        'description' => 'স্নিগ্ধ এবং পেশাদার টিল থিম',
+        'primary' => '#0d9488',
+        'primary_dark' => '#115e59',
+        'primary_light' => '#14b8a6',
+    ],
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
