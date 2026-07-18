@@ -517,18 +517,7 @@ ob_start();
                               placeholder="Facebook share description"><?php echo isset($_POST['meta_og_description']) ? escape($_POST['meta_og_description']) : ''; ?></textarea>
                 </div>
                 
-                <!-- OG Image -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Open Graph Image URL
-                    </label>
-                    <input type="text" 
-                           name="meta_og_image"
-                           value="<?php echo isset($_POST['meta_og_image']) ? escape($_POST['meta_og_image']) : ''; ?>"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                           placeholder="https://example.com/image.jpg">
-                </div>
-                
+
                 <!-- Robots Meta -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
