@@ -9,7 +9,7 @@
  */
 
 // Database Configuration
-define('DB_HOST', 'localhost');
+define('DB_HOST', 'srv2109.hstgr.io');
 define('DB_NAME', 'u388169091_alokpat');
 define('DB_USER', 'u388169091_alokpat');
 define('DB_PASS', '@Alokpat.in1234');
@@ -81,4 +81,5 @@ require_once BASE_PATH . '/models/Setting.php';
 // Initialize Database
 $database = new Database();
 $db = $database->getConnection();
+
 
