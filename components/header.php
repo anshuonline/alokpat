@@ -187,8 +187,7 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
                 $breaking_news = $post->getBreakingNews(5);
                 if (empty($breaking_news)) {
                     // Fallback to latest 3 posts if no breaking news
-                    $fallback = $post->getPosts(1, 3);
-                    $breaking_news = $fallback['posts'] ?? [];
+                    $breaking_news = $post->getPublished(3);
                 }
                 ?>
                 <div class="breaking-ticker-container w-full h-full"><div class="breaking-ticker">
