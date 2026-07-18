@@ -94,6 +94,29 @@ class User {
     }
 
     /**
+     * Get user by full name
+     * 
+     * @param string $full_name
+     * @return array|false
+     */
+    public function getByFullName($full_name) {
+        try {
+            // Use exact match or replace hyphens with spaces for better URL matching
+            $name_spaced = str_replace('-', ' ', $full_name);
+            $sql = "SELECT * FROM " . $this->table . " WHERE full_name = :full_name OR full_name = :name_spaced LIMIT 1";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':full_name', $full_name);
+            $stmt->bindParam(':name_spaced', $name_spaced);
+            $stmt->execute();
+            
+            return $stmt->fetch();
+        } catch(PDOException $e) {
+            error_log("Get User By Full Name Error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Create new user
      * 
      * @param array $data

@@ -198,14 +198,14 @@ component('header', ['categories' => $categories]);
             </div>
             <div class="flex-1 text-center md:text-left">
                 <h3 class="text-2xl font-bold text-primary-900 mb-2">
-                    <a href="<?php echo SITE_URL; ?>/author.php?id=<?php echo (int)($article['author_id'] ?? 0); ?>" class="hover:text-primary-700 transition">
+                    <a href="<?php echo SITE_URL; ?>/author.php?name=<?php echo urlencode(str_replace(' ', '-', $article['author_name'] ?? '')); ?>" class="hover:text-primary-700 transition">
                         <?php echo escape($article['author_name'] ?? 'অপরিচিত'); ?>
                     </a>
                 </h3>
                 <p class="text-gray-700 leading-relaxed mb-4">
                     <?php echo !empty($article['author_bio']) ? nl2br(escape($article['author_bio'])) : 'এই লেখকের কোন বায়ো বা তথ্য দেওয়া নেই।'; ?>
                 </p>
-                <a href="<?php echo SITE_URL; ?>/author.php?id=<?php echo (int)($article['author_id'] ?? 0); ?>" class="inline-flex items-center justify-center px-5 py-2 border border-primary-300 text-sm font-medium rounded-md text-primary-700 bg-white hover:bg-primary-50 hover:text-primary-800 transition-colors shadow-sm">
+                <a href="<?php echo SITE_URL; ?>/author.php?name=<?php echo urlencode(str_replace(' ', '-', $article['author_name'] ?? '')); ?>" class="inline-flex items-center justify-center px-5 py-2 border border-primary-300 text-sm font-medium rounded-md text-primary-700 bg-white hover:bg-primary-50 hover:text-primary-800 transition-colors shadow-sm">
                     সব লেখা দেখুন <i class="fas fa-arrow-right ml-2 text-xs"></i>
                 </a>
             </div>

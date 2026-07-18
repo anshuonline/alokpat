@@ -88,14 +88,14 @@ else if ($type === 'authors') {
     echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
     
     try {
-        $sql = "SELECT id, created_at FROM users WHERE status = 'active'";
+        $sql = "SELECT id, full_name, created_at FROM users WHERE status = 'active'";
         $stmt = $db->prepare($sql);
         $stmt->execute();
         $authors = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         foreach ($authors as $author) {
             $lastmod = isset($author['created_at']) ? date('Y-m-d\TH:i:sP', strtotime($author['created_at'])) : date('Y-m-d\TH:i:sP');
-            $url = SITE_URL . '/author.php?id=' . $author['id'];
+            $url = SITE_URL . '/author.php?name=' . urlencode(str_replace(' ', '-', $author['full_name']));
             
             echo '  <url>' . "\n";
             echo '      <loc>' . htmlspecialchars($url) . '</loc>' . "\n";
