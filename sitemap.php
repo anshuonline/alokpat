@@ -95,7 +95,7 @@ else if ($type === 'authors') {
         
         foreach ($authors as $author) {
             $lastmod = isset($author['created_at']) ? date('Y-m-d\TH:i:sP', strtotime($author['created_at'])) : date('Y-m-d\TH:i:sP');
-            $url = SITE_URL . '/author.php?name=' . urlencode(str_replace(' ', '-', $author['full_name']));
+            $url = SITE_URL . '/author.php?id=' . $author['id'] . '&name=' . urlencode(str_replace(' ', '-', $author['full_name']));
             
             echo '  <url>' . "\n";
             echo '      <loc>' . htmlspecialchars($url) . '</loc>' . "\n";
