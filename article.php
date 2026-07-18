@@ -144,6 +144,8 @@ component('header', ['categories' => $categories]);
             .article-content figure img { display: inline-block; max-width: 100%; height: auto; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,.1); }
             .article-content figcaption { display: block; font-size: 0.85em; color: #6b7280; margin-top: 0.5em; font-style: italic; text-align: center; }
             .article-content img { max-width: 100%; height: auto; }
+            .article-content iframe { max-width: 100%; border-radius: 8px; }
+            .article-content iframe[src*="youtube.com"], .article-content iframe[src*="youtu.be"] { width: 100%; aspect-ratio: 16 / 9; height: auto; }
             .article-content table { border-collapse: collapse; width: 100%; margin: 1.2em 0; overflow-x: auto; display: block; }
             .article-content table td, .article-content table th { border: 1px solid #d1d5db; padding: 8px 14px; }
             .article-content table th { background: #f3f4f6; font-weight: 700; }
@@ -196,14 +198,14 @@ component('header', ['categories' => $categories]);
             </div>
             <div class="flex-1 text-center md:text-left">
                 <h3 class="text-2xl font-bold text-primary-900 mb-2">
-                    <a href="<?php echo SITE_URL; ?>/author.php?username=<?php echo escape($article['author_username'] ?? ''); ?>" class="hover:text-primary-700 transition">
+                    <a href="<?php echo SITE_URL; ?>/author.php?id=<?php echo (int)($article['author_id'] ?? 0); ?>" class="hover:text-primary-700 transition">
                         <?php echo escape($article['author_name'] ?? 'অপরিচিত'); ?>
                     </a>
                 </h3>
                 <p class="text-gray-700 leading-relaxed mb-4">
                     <?php echo !empty($article['author_bio']) ? nl2br(escape($article['author_bio'])) : 'এই লেখকের কোন বায়ো বা তথ্য দেওয়া নেই।'; ?>
                 </p>
-                <a href="<?php echo SITE_URL; ?>/author.php?username=<?php echo escape($article['author_username'] ?? ''); ?>" class="inline-flex items-center justify-center px-5 py-2 border border-primary-300 text-sm font-medium rounded-md text-primary-700 bg-white hover:bg-primary-50 hover:text-primary-800 transition-colors shadow-sm">
+                <a href="<?php echo SITE_URL; ?>/author.php?id=<?php echo (int)($article['author_id'] ?? 0); ?>" class="inline-flex items-center justify-center px-5 py-2 border border-primary-300 text-sm font-medium rounded-md text-primary-700 bg-white hover:bg-primary-50 hover:text-primary-800 transition-colors shadow-sm">
                     সব লেখা দেখুন <i class="fas fa-arrow-right ml-2 text-xs"></i>
                 </a>
             </div>

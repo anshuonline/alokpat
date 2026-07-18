@@ -7,16 +7,16 @@
 
 require_once 'config/config.php';
 
-$username = $_GET['username'] ?? '';
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-if (empty($username)) {
+if ($id <= 0) {
     redirect(SITE_URL);
 }
 
 $userModel = new User();
 $postModel = new Post();
 
-$author = $userModel->getByUsername($username);
+$author = $userModel->getById($id);
 
 if (!$author) {
     redirect(SITE_URL);
