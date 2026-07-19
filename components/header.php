@@ -204,32 +204,52 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
     <div id="mobileMenu" class="hidden lg:hidden bg-white border-b shadow-2xl absolute top-full left-0 w-full z-40 max-h-[75vh] overflow-y-auto">
         <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col space-y-1">
             <?php
+            $current_full_url = rtrim(SITE_URL, '/') . $_SERVER['REQUEST_URI'];
             $current_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             $site_path = parse_url(SITE_URL, PHP_URL_PATH) ?? '';
             // Determine if we are on the home page
             $is_home = ($current_path === $site_path || $current_path === rtrim($site_path, '/') . '/' || $current_path === rtrim($site_path, '/') . '/index.php');
             
             $home_class = $is_home 
-                ? "px-4 py-3 bg-gray-50 text-primary-800 font-bold border-l-4 border-primary-600" 
+                ? "px-4 py-3 bg-gray-50 text-primary-800 font-bold border-l-4 border-primary-600 block" 
                 : "px-4 py-3 text-gray-800 font-bold hover:bg-gray-50 transition border-b border-gray-100 block";
             ?>
             <a href="<?php echo SITE_URL; ?>" class="<?php echo $home_class; ?>">প্রচ্ছদ</a>
             
             <?php if (!empty($mobileMenuItems)): ?>
-                <?php foreach ($mobileMenuItems as $index => $item): ?>
+                <?php foreach ($mobileMenuItems as $index => $item): 
+                    $is_item_active = ($item['url'] === $current_full_url || rtrim($item['url'], '/') === rtrim($current_full_url, '/'));
+                    // Check if any child is active
+                    $has_active_child = false;
+                    if (!empty($item['children'])) {
+                        foreach ($item['children'] as $child) {
+                            if ($child['url'] === $current_full_url || rtrim($child['url'], '/') === rtrim($current_full_url, '/')) {
+                                $has_active_child = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    $parent_active_class = ($is_item_active || $has_active_child)
+                        ? "px-4 py-3 bg-gray-50 text-primary-800 font-bold border-l-4 border-primary-600 flex items-center justify-between"
+                        : "px-4 py-3 text-gray-800 font-bold hover:bg-gray-50 transition border-b border-gray-100 flex items-center justify-between focus:outline-none";
+                ?>
                     <?php if (!empty($item['children'])): ?>
                         <div>
-                            <button onclick="document.getElementById('mobile-submenu-<?php echo $index; ?>').classList.toggle('hidden'); document.getElementById('mobile-icon-<?php echo $index; ?>').classList.toggle('rotate-180')" 
-                               class="w-full px-4 py-3 text-gray-800 font-bold hover:bg-gray-50 transition border-b border-gray-100 flex items-center justify-between focus:outline-none">
+                            <button onclick="toggleMobileSubmenu(<?php echo $index; ?>, this)" 
+                               class="w-full <?php echo $parent_active_class; ?>">
                                 <?php echo escape($item['title']); ?>
-                                <i id="mobile-icon-<?php echo $index; ?>" class="fas fa-chevron-down text-sm transition-transform text-gray-500"></i>
+                                <i id="mobile-icon-<?php echo $index; ?>" class="fas fa-chevron-down text-sm transition-transform text-gray-500 <?php echo $has_active_child ? 'rotate-180' : ''; ?>"></i>
                             </button>
                             
-                            <div id="mobile-submenu-<?php echo $index; ?>" class="hidden flex flex-col bg-gray-50 py-1">
-                                <?php foreach ($item['children'] as $child): ?>
+                            <div id="mobile-submenu-<?php echo $index; ?>" class="<?php echo $has_active_child ? 'flex' : 'hidden'; ?> flex-col bg-gray-50 py-1">
+                                <?php foreach ($item['children'] as $child): 
+                                    $is_child_active = ($child['url'] === $current_full_url || rtrim($child['url'], '/') === rtrim($current_full_url, '/'));
+                                    $child_active_class = $is_child_active ? "text-primary-600 font-bold bg-gray-100" : "text-gray-700 font-medium hover:text-primary-600";
+                                ?>
                                     <a href="<?php echo escape($child['url']); ?>" 
-                                       class="px-8 py-2 text-gray-700 font-medium hover:text-primary-600 transition flex items-center gap-2 border-b border-gray-100 last:border-0">
-                                        <i class="fas fa-angle-right text-sm text-gray-400"></i>
+                                       class="px-8 py-2 <?php echo $child_active_class; ?> transition flex items-center gap-2 border-b border-gray-100 last:border-0">
+                                        <i class="fas fa-angle-right text-sm <?php echo $is_child_active ? 'text-primary-500' : 'text-gray-400'; ?>"></i>
                                         <?php echo escape($child['title']); ?>
                                     </a>
                                 <?php endforeach; ?>
@@ -237,7 +257,7 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
                         </div>
                     <?php else: ?>
                         <a href="<?php echo escape($item['url']); ?>" 
-                           class="px-4 py-3 text-gray-800 font-bold hover:bg-gray-50 transition border-b border-gray-100 flex items-center justify-between">
+                           class="<?php echo $parent_active_class; ?>">
                             <?php echo escape($item['title']); ?>
                         </a>
                     <?php endif; ?>
@@ -305,16 +325,33 @@ if (empty($site_info['site_header_html'])) {
         if (!CSS.supports('position', 'sticky')) {
             window.addEventListener('scroll', handleScroll);
         }
+        document.getElementById('mobileMenu').classList.add('hidden');
     });
 
-    // Smart Live Search Logic
+    function toggleMobileSubmenu(index, btnElement) {
+        const submenu = document.getElementById('mobile-submenu-' + index);
+        const icon = document.getElementById('mobile-icon-' + index);
+        
+        submenu.classList.toggle('hidden');
+        submenu.classList.toggle('flex');
+        icon.classList.toggle('rotate-180');
+        
+        if (!submenu.classList.contains('hidden')) {
+            // Give the browser a moment to render the expanded menu before calculating height
+            setTimeout(() => {
+                submenu.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 50);
+        }
+    }
+
+    // Advanced Live Search using vanilla JS
     document.addEventListener("DOMContentLoaded", function() {
-        const searchInput = document.getElementById('desktopSearchInput');
+        const desktopSearchInput = document.getElementById('desktopSearchInput');
         const resultsContainer = document.getElementById('desktopSearchResults');
         let searchTimeout;
 
-        if (searchInput && resultsContainer) {
-            searchInput.addEventListener('input', function() {
+        if (desktopSearchInput && resultsContainer) {
+            desktopSearchInput.addEventListener('input', function() {
                 const query = this.value.trim();
                 
                 clearTimeout(searchTimeout);
