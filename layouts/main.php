@@ -51,7 +51,7 @@
     component('favicon');
     ?>
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.3.0/css/glightbox.min.css" />
     <?php
     // The font settings are now centrally managed in config.php
     ?>
@@ -287,7 +287,7 @@
         })();
     </script>
     
-    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.3.0/js/glightbox.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Find all images inside the post content that aren't already wrapped in a link
