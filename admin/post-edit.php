@@ -349,7 +349,7 @@ ob_start();
                     </label>
                     <?php
                     $selected_tag_ids = [];
-                    if (isset($_POST['tags'])) {
+                    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tags'])) {
                         $selected_tag_ids = $_POST['tags'];
                     } elseif (isset($post['tags']) && is_array($post['tags'])) {
                         $selected_tag_ids = array_column($post['tags'], 'id');
