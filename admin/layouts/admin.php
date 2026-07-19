@@ -29,7 +29,7 @@
     <div class="flex h-screen">
         
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar fixed left-0 top-0 h-full w-64 bg-white shadow-xl z-50 overflow-y-auto">
+        <aside id="sidebar" class="sidebar fixed left-0 top-0 h-full w-64 bg-white shadow-xl z-50 flex flex-col">
             <div class="p-6 border-b">
                 <a href="<?php echo ADMIN_URL; ?>/dashboard.php" class="block">
                     <h1 class="text-2xl font-black text-gray-900 tracking-tight">
@@ -39,7 +39,7 @@
                 </a>
             </div>
             
-            <nav class="p-4 space-y-1">
+            <nav class="p-4 space-y-1 flex-1 overflow-y-auto">
                 <a href="<?php echo ADMIN_URL; ?>/dashboard.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg text-gray-700 hover:text-blue-600 transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : ''; ?>">
                     <i class="fas fa-home w-6"></i>
@@ -128,7 +128,7 @@
                 </a>
             </nav>
             
-            <div class="absolute bottom-0 left-0 right-0 p-4 border-t bg-white">
+            <div class="p-4 border-t bg-white shrink-0">
                 <a href="<?php echo ADMIN_URL; ?>/logout.php" 
                    class="flex items-center px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-all">
                     <i class="fas fa-sign-out-alt w-6"></i>
