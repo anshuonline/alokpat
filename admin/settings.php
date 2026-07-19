@@ -36,6 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Social Links
     $facebook_url = trim($_POST['facebook_url'] ?? '');
     $whatsapp_channel_url = trim($_POST['whatsapp_channel_url'] ?? '');
+    $twitter_url = trim($_POST['twitter_url'] ?? '');
+    $youtube_url = trim($_POST['youtube_url'] ?? '');
 
     // Persist settings (create if missing)
     $pairs = [
@@ -52,6 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'google_search_console' => $google_search_console,
         'facebook_url' => $facebook_url,
         'whatsapp_channel_url' => $whatsapp_channel_url,
+        'twitter_url' => $twitter_url,
+        'youtube_url' => $youtube_url,
         'custom_login_slug' => $custom_login_slug,
     ];
 
@@ -84,6 +88,8 @@ $google_search_console = $setting->get('google_search_console') ?: '';
 
 $facebook_url = $setting->get('facebook_url') ?: '';
 $whatsapp_channel_url = $setting->get('whatsapp_channel_url') ?: '';
+$twitter_url = $setting->get('twitter_url') ?: '';
+$youtube_url = $setting->get('youtube_url') ?: '';
 
 $custom_login_slug = $setting->get('custom_login_slug') ?: '';
 
@@ -165,6 +171,16 @@ ob_start();
             <div>
                 <label class="block text-sm font-medium text-gray-700"><i class="fab fa-whatsapp text-green-500 mr-1"></i> WhatsApp Channel URL</label>
                 <input type="url" name="whatsapp_channel_url" value="<?php echo escape($whatsapp_channel_url); ?>" placeholder="https://whatsapp.com/channel/..." class="w-full px-4 py-3 mt-1 border rounded border-gray-300" />
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700"><i class="fab fa-x-twitter text-gray-800 mr-1"></i> X (Twitter) URL</label>
+                <input type="url" name="twitter_url" value="<?php echo escape($twitter_url); ?>" placeholder="https://x.com/yourhandle" class="w-full px-4 py-3 mt-1 border rounded border-gray-300" />
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700"><i class="fab fa-youtube text-red-600 mr-1"></i> YouTube Channel URL</label>
+                <input type="url" name="youtube_url" value="<?php echo escape($youtube_url); ?>" placeholder="https://youtube.com/@yourchannel" class="w-full px-4 py-3 mt-1 border rounded border-gray-300" />
             </div>
         </div>
         

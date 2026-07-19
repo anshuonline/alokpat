@@ -96,19 +96,35 @@ component('header', ['categories' => $categories]);
             $setting_model = new Setting();
             $fb_url = $setting_model->get('facebook_url');
             $wa_url = $setting_model->get('whatsapp_channel_url');
+            $tw_url = $setting_model->get('twitter_url');
+            $yt_url = $setting_model->get('youtube_url');
             
-            if (!empty($fb_url) || !empty($wa_url)):
+            if (!empty($fb_url) || !empty($wa_url) || !empty($tw_url) || !empty($yt_url)):
             ?>
-            <div class="flex flex-wrap items-center justify-center gap-3 mt-4">
+            <div class="flex flex-wrap items-center justify-end gap-2 mt-2 mb-6">
+                <span class="text-gray-500 text-sm font-medium mr-1">Follow us:</span>
+                
                 <?php if (!empty($wa_url)): ?>
-                <a href="<?php echo escape($wa_url); ?>" target="_blank" class="inline-flex items-center px-4 py-2 bg-green-500 text-white rounded-full font-medium hover:bg-green-600 transition shadow-sm">
-                    <i class="fab fa-whatsapp text-lg mr-2"></i> আমাদের হোয়াটসঅ্যাপ চ্যানেলে যোগ দিন
+                <a href="<?php echo escape($wa_url); ?>" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-green-500 text-white text-sm rounded-full font-medium hover:bg-green-600 transition shadow-sm" title="WhatsApp">
+                    <i class="fab fa-whatsapp mr-1.5"></i> WhatsApp
                 </a>
                 <?php endif; ?>
                 
                 <?php if (!empty($fb_url)): ?>
-                <a href="<?php echo escape($fb_url); ?>" target="_blank" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition shadow-sm">
-                    <i class="fab fa-facebook text-lg mr-2"></i> আমাদের ফেসবুক পেজ ফলো করুন
+                <a href="<?php echo escape($fb_url); ?>" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white text-sm rounded-full font-medium hover:bg-blue-700 transition shadow-sm" title="Facebook">
+                    <i class="fab fa-facebook-f mr-1.5"></i> Facebook
+                </a>
+                <?php endif; ?>
+                
+                <?php if (!empty($tw_url)): ?>
+                <a href="<?php echo escape($tw_url); ?>" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-gray-800 text-white text-sm rounded-full font-medium hover:bg-gray-900 transition shadow-sm" title="X (Twitter)">
+                    <i class="fab fa-x-twitter mr-1.5"></i> X
+                </a>
+                <?php endif; ?>
+                
+                <?php if (!empty($yt_url)): ?>
+                <a href="<?php echo escape($yt_url); ?>" target="_blank" class="inline-flex items-center px-3 py-1.5 bg-red-600 text-white text-sm rounded-full font-medium hover:bg-red-700 transition shadow-sm" title="YouTube">
+                    <i class="fab fa-youtube mr-1.5"></i> YouTube
                 </a>
                 <?php endif; ?>
             </div>
