@@ -12,11 +12,33 @@ $category = new Category();
 $post = new Post();
 
 $categories = $category->getCategoriesWithCount();
+
+// Apply homepage categories setting if available
+$setting = new Setting();
+$homepage_categories_json = $setting->get('homepage_categories_order');
+if (!empty($homepage_categories_json)) {
+    $homepage_categories_order = json_decode($homepage_categories_json, true);
+    if (is_array($homepage_categories_order) && !empty($homepage_categories_order)) {
+        $filtered_categories = [];
+        // Extract category lookup array for fast access
+        $cat_lookup = [];
+        foreach ($categories as $cat) {
+            $cat_lookup[$cat['id']] = $cat;
+        }
+        
+        // Add categories in the exact order specified in settings
+        foreach ($homepage_categories_order as $cat_id) {
+            if (isset($cat_lookup[$cat_id])) {
+                $filtered_categories[] = $cat_lookup[$cat_id];
+            }
+        }
+        $categories = $filtered_categories;
+    }
+}
 $featured_posts = $post->getFeatured(5);
 $trending_posts = $post->getTrending(10);
 $latest_posts = $post->getPublished(5); // Fetch exactly 5 for the 1+4 layout
 
-$setting = new Setting();
 $home_seo_title = $setting->get('home_seo_title');
 $page_title = $home_seo_title ?: 'প্রচ্ছদ';
 

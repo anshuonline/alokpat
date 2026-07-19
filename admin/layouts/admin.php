@@ -115,6 +115,12 @@
                     <span class="font-medium">এপিয়ারেন্স</span>
                 </a>
                 
+                <a href="<?php echo ADMIN_URL; ?>/homepage-settings.php" 
+                   class="sidebar-link flex items-center px-4 py-3 rounded-lg text-gray-700 hover:text-blue-600 transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'homepage-settings.php' ? 'active' : ''; ?>">
+                    <i class="fas fa-home w-6"></i>
+                    <span class="font-medium">হোমপেজ সেটিংস</span>
+                </a>
+                
                 <a href="<?php echo ADMIN_URL; ?>/settings.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg text-gray-700 hover:text-blue-600 transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'active' : ''; ?>">
                     <i class="fas fa-cog w-6"></i>
