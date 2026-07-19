@@ -7,7 +7,7 @@
     <?php component('favicon'); ?>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="<?php echo SITE_FONT_URL; ?>" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         body {
             font-family: <?php echo SITE_FONT_CSS; ?>;

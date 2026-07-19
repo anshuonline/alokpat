@@ -56,7 +56,7 @@
     // The font settings are now centrally managed in config.php
     ?>
     <link href="<?php echo SITE_FONT_URL; ?>" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <?php
     $theme_color = $setting->get('theme_color') ?: 'default';
     
