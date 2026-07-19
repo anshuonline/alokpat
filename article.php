@@ -78,10 +78,9 @@ component('header', ['categories' => $categories]);
         
         <!-- Title & Excerpt (Centered) -->
         <div class="mb-8 text-center w-full">
-            <h1 class="text-3xl md:text-5xl font-bold text-gray-900 leading-snug mb-4">
+            <h1 class="text-3xl md:text-5xl font-bold text-gray-900 leading-[1.6] mb-4">
                 <?php echo escape($article['title']); ?>
             </h1>
-            
             <?php 
             // Display excerpt/meta_description below title as a deck
             $excerpt = $article['meta_description'] ?? $article['excerpt'] ?? $article['meta_og_description'] ?? '';
