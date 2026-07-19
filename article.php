@@ -101,29 +101,29 @@ component('header', ['categories' => $categories]);
             
             if (!empty($fb_url) || !empty($wa_url) || !empty($tw_url) || !empty($yt_url)):
             ?>
-            <div class="flex flex-col sm:flex-row flex-wrap sm:justify-end gap-2 mt-2 mb-6 w-full">
+            <div class="flex flex-row items-center justify-between sm:justify-end gap-1 sm:gap-2 mt-2 mb-6 w-full">
                 
                 <?php if (!empty($wa_url)): ?>
-                <a href="<?php echo escape($wa_url); ?>" target="_blank" class="inline-flex items-center justify-center w-full sm:w-auto px-4 py-2 sm:px-3 sm:py-1.5 bg-green-500 text-white text-sm rounded-full font-medium hover:bg-green-600 transition shadow-sm" title="WhatsApp">
-                    <i class="fab fa-whatsapp mr-1.5"></i> WhatsApp
+                <a href="<?php echo escape($wa_url); ?>" target="_blank" class="inline-flex items-center justify-center flex-1 sm:flex-none px-1 sm:px-3 py-1.5 sm:py-1.5 bg-green-500 text-white text-[11px] sm:text-sm rounded-full font-medium hover:bg-green-600 transition shadow-sm" title="WhatsApp">
+                    <i class="fab fa-whatsapp sm:mr-1.5"></i> <span class="ml-1 sm:ml-0 hidden min-[380px]:inline">WhatsApp</span>
                 </a>
                 <?php endif; ?>
                 
                 <?php if (!empty($fb_url)): ?>
-                <a href="<?php echo escape($fb_url); ?>" target="_blank" class="inline-flex items-center justify-center w-full sm:w-auto px-4 py-2 sm:px-3 sm:py-1.5 bg-blue-600 text-white text-sm rounded-full font-medium hover:bg-blue-700 transition shadow-sm" title="Facebook">
-                    <i class="fab fa-facebook-f mr-1.5"></i> Facebook
+                <a href="<?php echo escape($fb_url); ?>" target="_blank" class="inline-flex items-center justify-center flex-1 sm:flex-none px-1 sm:px-3 py-1.5 sm:py-1.5 bg-blue-600 text-white text-[11px] sm:text-sm rounded-full font-medium hover:bg-blue-700 transition shadow-sm" title="Facebook">
+                    <i class="fab fa-facebook-f sm:mr-1.5"></i> <span class="ml-1 sm:ml-0 hidden min-[380px]:inline">Facebook</span>
                 </a>
                 <?php endif; ?>
                 
                 <?php if (!empty($tw_url)): ?>
-                <a href="<?php echo escape($tw_url); ?>" target="_blank" class="inline-flex items-center justify-center w-full sm:w-auto px-4 py-2 sm:px-3 sm:py-1.5 bg-gray-800 text-white text-sm rounded-full font-medium hover:bg-gray-900 transition shadow-sm" title="X (Twitter)">
-                    <i class="fab fa-x-twitter mr-1.5"></i> X
+                <a href="<?php echo escape($tw_url); ?>" target="_blank" class="inline-flex items-center justify-center flex-1 sm:flex-none px-1 sm:px-3 py-1.5 sm:py-1.5 bg-gray-800 text-white text-[11px] sm:text-sm rounded-full font-medium hover:bg-gray-900 transition shadow-sm" title="X (Twitter)">
+                    <i class="fab fa-x-twitter sm:mr-1.5"></i> <span class="ml-1 sm:ml-0 hidden min-[380px]:inline">X</span>
                 </a>
                 <?php endif; ?>
                 
                 <?php if (!empty($yt_url)): ?>
-                <a href="<?php echo escape($yt_url); ?>" target="_blank" class="inline-flex items-center justify-center w-full sm:w-auto px-4 py-2 sm:px-3 sm:py-1.5 bg-red-600 text-white text-sm rounded-full font-medium hover:bg-red-700 transition shadow-sm" title="YouTube">
-                    <i class="fab fa-youtube mr-1.5"></i> YouTube
+                <a href="<?php echo escape($yt_url); ?>" target="_blank" class="inline-flex items-center justify-center flex-1 sm:flex-none px-1 sm:px-3 py-1.5 sm:py-1.5 bg-red-600 text-white text-[11px] sm:text-sm rounded-full font-medium hover:bg-red-700 transition shadow-sm" title="YouTube">
+                    <i class="fab fa-youtube sm:mr-1.5"></i> <span class="ml-1 sm:ml-0 hidden min-[380px]:inline">YouTube</span>
                 </a>
                 <?php endif; ?>
             </div>
