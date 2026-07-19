@@ -21,25 +21,10 @@ $error = '';
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save_homepage_settings'])) {
         $selected_categories = $_POST['homepage_categories'] ?? [];
-        $category_orders = $_POST['category_order'] ?? [];
         
-        // Build an array of selected categories with their orders
-        $sorted_categories = [];
-        foreach ($selected_categories as $cat_id) {
-            $order = isset($category_orders[$cat_id]) ? (int)$category_orders[$cat_id] : 0;
-            $sorted_categories[] = [
-                'id' => (int)$cat_id,
-                'order' => $order
-            ];
-        }
-        
-        // Sort by order
-        usort($sorted_categories, function($a, $b) {
-            return $a['order'] <=> $b['order'];
-        });
-        
-        // Extract just the ordered IDs
-        $final_order = array_column($sorted_categories, 'id');
+        // Form array order is preserved by browser, so we just use it directly!
+        $final_order = array_map('intval', $selected_categories);
+        $final_order = array_filter($final_order);
         
         $key = 'homepage_categories_order';
         $value = json_encode($final_order);
@@ -122,7 +107,7 @@ ob_start();
 <div class="bg-white rounded-lg shadow-sm border border-gray-200">
     <div class="p-6 border-b border-gray-200">
         <h2 class="text-lg font-semibold text-gray-800">হোমপেজে প্রদর্শিত ক্যাটাগরি</h2>
-        <p class="text-sm text-gray-500 mt-1">এখানে আপনি নির্ধারণ করতে পারবেন হোমপেজে কোন কোন ক্যাটাগরিগুলো দেখানো হবে এবং কোনটার পর কোনটা দেখানো হবে। চেকমার্ক দিয়ে নির্বাচন করুন এবং অর্ডারিং নম্বর দিয়ে সিরিয়াল ঠিক করুন (ছোট নম্বর আগে দেখাবে)।</p>
+        <p class="text-sm text-gray-500 mt-1">এখানে আপনি নির্ধারণ করতে পারবেন হোমপেজে কোন কোন ক্যাটাগরিগুলো দেখানো হবে। চেক বক্সে টিক দিন এবং ক্যাটাগরির নামের বামপাশে ধরে <strong>ড্র্যাগ (Drag)</strong> করে উপরে-নিচে নিয়ে সিরিয়াল ঠিক করুন।</p>
     </div>
     
     <div class="p-6">
@@ -132,14 +117,14 @@ ob_start();
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-10">
+                                <i class="fas fa-arrows-alt-v"></i>
+                            </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">
                                 দেখান
                             </th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 ক্যাটাগরির নাম
-                            </th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
-                                অর্ডার (সিরিয়াল)
                             </th>
                         </tr>
                     </thead>
@@ -147,16 +132,15 @@ ob_start();
                         <?php foreach ($display_categories as $cat): ?>
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">
+                                <i class="fas fa-grip-vertical cursor-grab text-gray-400 hover:text-gray-600 handle px-2 text-lg"></i>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
                                 <input type="checkbox" name="homepage_categories[]" value="<?php echo $cat['id']; ?>" 
-                                       class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                       class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
                                        <?php echo $cat['selected'] ? 'checked' : ''; ?>>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="text-sm font-medium text-gray-900"><?php echo escape($cat['name']); ?></span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <input type="number" name="category_order[<?php echo $cat['id']; ?>]" value="<?php echo $cat['order']; ?>"
-                                       class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm px-3 py-2 border">
                             </td>
                         </tr>
                         <?php endforeach; ?>
@@ -172,6 +156,20 @@ ob_start();
         </form>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var el = document.getElementById("sortable-tbody");
+        if (el) {
+            new Sortable(el, {
+                animation: 150,
+                handle: ".handle",
+                ghostClass: "bg-blue-50"
+            });
+        }
+    });
+</script>
 
 <?php
 $content = ob_get_clean();
