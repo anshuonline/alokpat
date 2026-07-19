@@ -116,8 +116,8 @@ component('header', ['categories' => $categories]);
                 <?php endif; ?>
                 
                 <?php if (!empty($tw_url)): ?>
-                <a href="<?php echo escape($tw_url); ?>" target="_blank" class="inline-flex items-center justify-center flex-1 sm:flex-none px-1 sm:px-3 py-1.5 sm:py-1.5 bg-gray-800 text-white text-[11px] sm:text-sm rounded-full font-medium hover:bg-gray-900 transition shadow-sm" title="X (Twitter)">
-                    <i class="fab fa-x-twitter sm:mr-1.5"></i> <span class="ml-1 sm:ml-0 hidden min-[380px]:inline">X</span>
+                <a href="<?php echo escape($tw_url); ?>" target="_blank" class="inline-flex items-center justify-center flex-1 sm:flex-none px-1 sm:px-3 py-1.5 sm:py-1.5 bg-gray-900 text-white text-[11px] sm:text-sm rounded-full font-medium hover:bg-black transition shadow-sm" title="X (Twitter)">
+                    <i class="fa-brands fa-x-twitter sm:mr-1.5"></i> <span class="ml-1 sm:ml-0 hidden min-[380px]:inline">X</span>
                 </a>
                 <?php endif; ?>
                 
@@ -143,9 +143,9 @@ component('header', ['categories' => $categories]);
         <?php endif; ?>
         
         <!-- Meta Row (Date on Left, Socials on Right) -->
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between border-y border-gray-100 py-4 mb-8 gap-4 md:gap-0">
-            <div class="text-gray-500 text-sm font-medium flex flex-wrap items-center gap-2 md:gap-4">
-                <span class="flex items-center bg-gray-50 px-3 py-1.5 rounded-md border border-gray-100"><i class="far fa-clock mr-1.5"></i> <?php echo formatDateBengali($article['published_at'] ?? $article['created_at']); ?></span>
+        <div class="flex flex-col md:flex-row items-center justify-between border-y border-gray-100 py-4 mb-8 gap-4 md:gap-0">
+            <div class="text-gray-500 text-sm font-medium flex flex-col sm:flex-row items-center gap-2 md:gap-4 w-full md:w-auto">
+                <span class="flex items-center justify-center bg-gray-50 px-3 py-1.5 rounded-md border border-gray-100 w-full sm:w-auto"><i class="far fa-clock mr-1.5"></i> <?php echo formatDateBengali($article['published_at'] ?? $article['created_at']); ?></span>
                 <?php 
                 if (!empty($article['updated_at'])) {
                     $pub_date = formatDateBengali($article['published_at'] ?? $article['created_at']);
@@ -153,7 +153,7 @@ component('header', ['categories' => $categories]);
                     
                     if ($upd_date !== $pub_date && strtotime($article['updated_at']) > strtotime($article['published_at'] ?? $article['created_at'])): 
                 ?>
-                    <span class="flex items-center bg-gray-50 px-3 py-1.5 rounded-md border border-gray-100 text-gray-500">
+                    <span class="flex items-center justify-center bg-gray-50 px-3 py-1.5 rounded-md border border-gray-100 text-gray-500 w-full sm:w-auto">
                         <i class="fas fa-history mr-1.5"></i> আপডেট: <?php echo $upd_date; ?>
                     </span>
                 <?php 
@@ -162,7 +162,7 @@ component('header', ['categories' => $categories]);
                 ?>
             </div>
             
-            <div class="flex items-center space-x-2 md:space-x-3 w-full md:w-auto justify-end">
+            <div class="flex items-center space-x-2 md:space-x-3 w-full md:w-auto justify-center md:justify-end">
                 <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(url_for_post($article)); ?>" 
                    target="_blank"
                    class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition shadow-sm hover:shadow-md" title="Share on Facebook">
