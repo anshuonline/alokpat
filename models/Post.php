@@ -620,9 +620,10 @@ class Post {
                 $stmt = $this->conn->prepare($sql);
                 
                 foreach ($tagIds as $tagId) {
-                    $stmt->bindParam(':post_id', $postId);
-                    $stmt->bindParam(':tag_id', $tagId);
-                    $stmt->execute();
+                    $stmt->execute([
+                        ':post_id' => $postId,
+                        ':tag_id' => $tagId
+                    ]);
                 }
             }
             
