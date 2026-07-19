@@ -20,7 +20,6 @@ $error = '';
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save_homepage_settings'])) {
-    if (validateCSRF($_POST['csrf_token'] ?? '')) {
         $selected_categories = $_POST['homepage_categories'] ?? [];
         $category_orders = $_POST['category_order'] ?? [];
         
@@ -47,9 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save_homepage_settings
         } else {
             $error = "সেটিংস সেভ করতে সমস্যা হয়েছে।";
         }
-    } else {
-        $error = "CSRF টোকেন ইনভ্যালিড।";
-    }
 }
 
 // Fetch all active categories
@@ -122,7 +118,6 @@ ob_start();
     
     <div class="p-6">
         <form action="" method="POST">
-            <?php echo generateCSRFField(); ?>
             
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
