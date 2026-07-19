@@ -213,12 +213,55 @@ component('header', ['categories' => $categories]);
             .article-content details[open] summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 1px solid #e5e7eb; }
             .article-content details > div { padding: 16px; }
         </style>
-        <article class="article-content max-w-none text-gray-800 leading-relaxed mb-12">
-            <?php
-            // Inject inline ads into article content based on settings
-            echo inject_ads_into_content($article['content'], $article['id']);
-            ?>
-        </article>
+        <div id="article-content-wrapper" class="relative overflow-hidden max-h-[600px] transition-all duration-500 ease-in-out mb-12">
+            <article id="article-content-inner" class="article-content max-w-none text-gray-800 leading-relaxed pb-8">
+                <?php
+                // Inject inline ads into article content based on settings
+                echo inject_ads_into_content($article['content'], $article['id']);
+                ?>
+            </article>
+            
+            <!-- Read More Fade & Button -->
+            <div id="read-more-overlay" class="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-white via-white/80 to-transparent flex items-end justify-center pb-4 z-10 hidden">
+                <button onclick="expandArticle()" class="bg-primary-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-primary-700 hover:shadow-xl transition-all transform hover:-translate-y-1 flex items-center gap-2 border border-primary-500">
+                    <span>আরও পড়ুন (Read More)</span>
+                    <i class="fas fa-chevron-down animate-bounce mt-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const wrapper = document.getElementById('article-content-wrapper');
+                const inner = document.getElementById('article-content-inner');
+                const overlay = document.getElementById('read-more-overlay');
+                
+                // Show Read More only if content height exceeds the max-height
+                if (inner.offsetHeight > 600) {
+                    overlay.classList.remove('hidden');
+                } else {
+                    wrapper.classList.remove('max-h-[600px]');
+                    wrapper.classList.remove('overflow-hidden');
+                }
+            });
+            
+            function expandArticle() {
+                const wrapper = document.getElementById('article-content-wrapper');
+                const overlay = document.getElementById('read-more-overlay');
+                
+                // Expand to full scrollHeight smoothly
+                wrapper.style.maxHeight = wrapper.scrollHeight + 'px';
+                overlay.style.opacity = '0';
+                overlay.style.pointerEvents = 'none';
+                
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    wrapper.classList.remove('max-h-[600px]');
+                    wrapper.classList.remove('overflow-hidden');
+                    wrapper.style.maxHeight = 'none';
+                }, 500);
+            }
+        </script>
         
         <!-- Tags -->
         <?php if (!empty($article['tags'])): ?>
