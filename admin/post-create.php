@@ -717,7 +717,7 @@ document.querySelector('form')?.addEventListener('submit', function () {
 $(document).ready(function() {
     $('#postTags').select2({
         tags: true,
-        tokenSeparators: [',', ' '],
+        tokenSeparators: [','],
         placeholder: "ট্যাগ খুঁজুন বা নতুন লিখুন",
         width: '100%'
     });

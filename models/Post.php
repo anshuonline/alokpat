@@ -264,13 +264,45 @@ class Post {
             if ($categoryId) {
                 $stmt->bindParam(':category_id', $categoryId, PDO::PARAM_INT);
             }
-            $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-            $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
             $stmt->execute();
             
             return $stmt->fetchAll();
         } catch(PDOException $e) {
             error_log("Get Published Posts Error: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Get published posts by tag
+     * 
+     * @param int $limit
+     * @param int $offset
+     * @param int $tagId
+     * @return array
+     */
+    public function getPublishedByTag($limit = 10, $offset = 0, $tagId) {
+        try {
+            $sql = "SELECT p.*, u.full_name as author_name, c.name as category_name, c.slug as category_slug
+                    FROM " . $this->table . " p
+                    LEFT JOIN users u ON p.author_id = u.id
+                    LEFT JOIN categories c ON p.category_id = c.id
+                    INNER JOIN post_tags pt ON p.id = pt.post_id
+                    WHERE p.status = 'published' AND pt.tag_id = :tag_id
+                    ORDER BY COALESCE(p.published_at, p.created_at) DESC
+                    LIMIT :limit OFFSET :offset";
+            
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':tag_id', $tagId, PDO::PARAM_INT);
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $stmt->fetchAll();
+        } catch(PDOException $e) {
+            error_log("Get Published By Tag Error: " . $e->getMessage());
             return [];
         }
     }
