@@ -203,7 +203,17 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
     <!-- Mobile Menu -->
     <div id="mobileMenu" class="hidden lg:hidden bg-white border-b shadow-2xl absolute top-full left-0 w-full z-40 max-h-[75vh] overflow-y-auto">
         <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col space-y-1">
-            <a href="<?php echo SITE_URL; ?>" class="px-4 py-3 bg-gray-50 text-primary-800 font-bold border-l-4 border-primary-600">প্রচ্ছদ</a>
+            <?php
+            $current_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+            $site_path = parse_url(SITE_URL, PHP_URL_PATH) ?? '';
+            // Determine if we are on the home page
+            $is_home = ($current_path === $site_path || $current_path === rtrim($site_path, '/') . '/' || $current_path === rtrim($site_path, '/') . '/index.php');
+            
+            $home_class = $is_home 
+                ? "px-4 py-3 bg-gray-50 text-primary-800 font-bold border-l-4 border-primary-600" 
+                : "px-4 py-3 text-gray-800 font-bold hover:bg-gray-50 transition border-b border-gray-100 block";
+            ?>
+            <a href="<?php echo SITE_URL; ?>" class="<?php echo $home_class; ?>">প্রচ্ছদ</a>
             
             <?php if (!empty($mobileMenuItems)): ?>
                 <?php foreach ($mobileMenuItems as $index => $item): ?>
