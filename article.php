@@ -78,7 +78,7 @@ component('header', ['categories' => $categories]);
         
         <!-- Title & Excerpt (Centered) -->
         <div class="mb-8 text-center w-full">
-            <h1 class="text-3xl md:text-5xl font-bold text-gray-900 leading-[1.6] mb-4">
+            <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4" style="line-height: 1.6;">
                 <?php echo escape($article['title']); ?>
             </h1>
             <?php 
