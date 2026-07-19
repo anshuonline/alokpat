@@ -143,9 +143,9 @@ component('header', ['categories' => $categories]);
         <?php endif; ?>
         
         <!-- Meta Row (Date on Left, Socials on Right) -->
-        <div class="flex flex-col md:flex-row items-center justify-between border-b border-gray-200 pb-4 mb-8">
-            <div class="text-gray-500 text-sm mb-4 md:mb-0 font-medium flex items-center">
-                <span><i class="far fa-clock mr-1"></i> <?php echo formatDateBengali($article['published_at'] ?? $article['created_at']); ?></span>
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between border-y border-gray-100 py-4 mb-8 gap-4 md:gap-0">
+            <div class="text-gray-500 text-sm font-medium flex flex-wrap items-center gap-2 md:gap-4">
+                <span class="flex items-center bg-gray-50 px-3 py-1.5 rounded-md border border-gray-100"><i class="far fa-clock mr-1.5"></i> <?php echo formatDateBengali($article['published_at'] ?? $article['created_at']); ?></span>
                 <?php 
                 if (!empty($article['updated_at'])) {
                     $pub_date = formatDateBengali($article['published_at'] ?? $article['created_at']);
@@ -153,8 +153,8 @@ component('header', ['categories' => $categories]);
                     
                     if ($upd_date !== $pub_date && strtotime($article['updated_at']) > strtotime($article['published_at'] ?? $article['created_at'])): 
                 ?>
-                    <span class="ml-4 pl-4 border-l border-gray-300 text-gray-500">
-                        <i class="fas fa-history mr-1"></i> আপডেট: <?php echo $upd_date; ?>
+                    <span class="flex items-center bg-gray-50 px-3 py-1.5 rounded-md border border-gray-100 text-gray-500">
+                        <i class="fas fa-history mr-1.5"></i> আপডেট: <?php echo $upd_date; ?>
                     </span>
                 <?php 
                     endif; 
@@ -162,25 +162,25 @@ component('header', ['categories' => $categories]);
                 ?>
             </div>
             
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-2 md:space-x-3 w-full md:w-auto justify-end">
                 <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(url_for_post($article)); ?>" 
                    target="_blank"
-                   class="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition" title="Share on Facebook">
-                    <i class="fab fa-facebook-f"></i>
+                   class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition shadow-sm hover:shadow-md" title="Share on Facebook">
+                    <i class="fab fa-facebook-f text-lg"></i>
                 </a>
                 <a href="https://wa.me/?text=<?php echo urlencode($article['title'] . ' ' . url_for_post($article)); ?>" 
                    target="_blank"
-                   class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 transition" title="Share on WhatsApp">
-                    <i class="fab fa-whatsapp"></i>
+                   class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 transition shadow-sm hover:shadow-md" title="Share on WhatsApp">
+                    <i class="fab fa-whatsapp text-xl"></i>
                 </a>
                 <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode(url_for_post($article)); ?>&text=<?php echo urlencode($article['title']); ?>" 
                    target="_blank"
-                   class="w-8 h-8 rounded-full bg-blue-400 text-white flex items-center justify-center hover:bg-blue-500 transition" title="Share on Twitter">
-                    <i class="fab fa-twitter"></i>
+                   class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-900 text-white flex items-center justify-center hover:bg-black transition shadow-sm hover:shadow-md" title="Share on X">
+                    <i class="fa-brands fa-x-twitter text-lg"></i>
                 </a>
                 <button onclick="navigator.clipboard.writeText('<?php echo url_for_post($article); ?>'); alert('Link copied!');"
-                   class="w-8 h-8 rounded-full bg-gray-600 text-white flex items-center justify-center hover:bg-gray-700 transition" title="Copy Link">
-                    <i class="fas fa-link"></i>
+                   class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-600 text-white flex items-center justify-center hover:bg-gray-700 transition shadow-sm hover:shadow-md" title="Copy Link">
+                    <i class="fas fa-link text-lg"></i>
                 </button>
             </div>
         </div>
