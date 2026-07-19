@@ -235,7 +235,7 @@ ob_start();
             
             <div class="bg-white rounded-lg p-4">
                 <h4 class="font-bold text-green-700 mb-2">✓ Open Graph Tags</h4>
-                <p class="text-sm text-gray-600">Social sharing এর জন্য OG tags পূরণ করুন</p>
+                <p class="text-sm text-gray-600">Featured Image নিজে থেকেই OG Image হিসেবে কাজ করবে</p>
             </div>
             
             <div class="bg-white rounded-lg p-4">
@@ -272,7 +272,7 @@ ob_start();
                         $has_seo_title = !empty($post_item['seo_title']);
                         $has_seo_desc = !empty($post_item['seo_description']);
                         $has_keywords = !empty($post_item['seo_keywords']);
-                        $has_og_image = !empty($post_item['meta_og_image']);
+                        $has_og_image = (!empty($post_item['meta_og_image']) || !empty($post_item['featured_image']));
                     ?>
                         <tr class="hover:bg-gray-50 transition">
                             <td class="px-6 py-4">
