@@ -33,6 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $google_analytics_code = trim($_POST['google_analytics_code'] ?? '');
     $google_search_console = trim($_POST['google_search_console'] ?? '');
 
+    // Social Links
+    $facebook_url = trim($_POST['facebook_url'] ?? '');
+    $whatsapp_channel_url = trim($_POST['whatsapp_channel_url'] ?? '');
+
     // Persist settings (create if missing)
     $pairs = [
         'site_name' => $site_name,
@@ -46,6 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'home_seo_keywords' => $home_seo_keywords,
         'google_analytics_code' => $google_analytics_code,
         'google_search_console' => $google_search_console,
+        'facebook_url' => $facebook_url,
+        'whatsapp_channel_url' => $whatsapp_channel_url,
         'custom_login_slug' => $custom_login_slug,
     ];
 
@@ -75,6 +81,9 @@ $home_seo_keywords = $setting->get('home_seo_keywords') ?: '';
 
 $google_analytics_code = $setting->get('google_analytics_code') ?: '';
 $google_search_console = $setting->get('google_search_console') ?: '';
+
+$facebook_url = $setting->get('facebook_url') ?: '';
+$whatsapp_channel_url = $setting->get('whatsapp_channel_url') ?: '';
 
 $custom_login_slug = $setting->get('custom_login_slug') ?: '';
 
@@ -141,6 +150,22 @@ ob_start();
             <label class="block text-sm font-medium text-gray-700">Google Analytics (GA4) Tracking Code</label>
             <textarea name="google_analytics_code" class="w-full px-4 py-3 border rounded border-gray-300" rows="5" placeholder="<!-- Google tag (gtag.js) -->..."><?php echo escape($google_analytics_code); ?></textarea>
             <p class="text-xs text-gray-500 mt-1">Google Analytics থেকে পাওয়া সম্পূর্ণ &lt;script&gt; ট্যাগটি এখানে পেস্ট করুন।</p>
+        </div>
+        
+        <hr class="my-6">
+
+        <h3 class="text-lg font-bold text-gray-900 mb-4 border-b pb-2">Social Links / সোশ্যাল লিংক</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700"><i class="fab fa-facebook text-blue-600 mr-1"></i> Facebook Page URL</label>
+                <input type="url" name="facebook_url" value="<?php echo escape($facebook_url); ?>" placeholder="https://facebook.com/yourpage" class="w-full px-4 py-3 mt-1 border rounded border-gray-300" />
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700"><i class="fab fa-whatsapp text-green-500 mr-1"></i> WhatsApp Channel URL</label>
+                <input type="url" name="whatsapp_channel_url" value="<?php echo escape($whatsapp_channel_url); ?>" placeholder="https://whatsapp.com/channel/..." class="w-full px-4 py-3 mt-1 border rounded border-gray-300" />
+            </div>
         </div>
         
         <hr class="my-6">

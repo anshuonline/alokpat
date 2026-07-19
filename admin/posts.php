@@ -23,6 +23,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_action'])) {
             $id = (int)$id;
             if ($action === 'delete') {
                 if ($post->delete($id)) $count++;
+            } elseif ($action === 'force_delete') {
+                if ($post->forceDelete($id)) $count++;
+            } elseif ($action === 'restore') {
+                if ($post->restore($id)) $count++;
             } elseif (in_array($action, ['published', 'draft', 'archived'])) {
                 $stmt = $db->prepare("UPDATE posts SET status = ? WHERE id = ?");
                 if ($stmt->execute([$action, $id])) $count++;
@@ -67,6 +71,12 @@ if ($filter === 'published') {
     $conditions[] = "p.status = 'draft'";
 } elseif ($filter === 'breaking') {
     $conditions[] = "p.is_breaking = 1";
+    $conditions[] = "p.status != 'trashed'";
+} elseif ($filter === 'trash') {
+    $conditions[] = "p.status = 'trashed'";
+} else {
+    // all
+    $conditions[] = "p.status != 'trashed'";
 }
 
 if (!empty($search)) {
@@ -146,6 +156,10 @@ ob_start();
                class="px-4 py-2 rounded-lg text-sm <?php echo $filter === 'breaking' ? 'bg-red-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?> transition">
                 ব্রেকিং (<?php echo formatNumberBengali(count($post->getBreakingNews())); ?>)
             </a>
+            <a href="?filter=trash" 
+               class="px-4 py-2 rounded-lg text-sm <?php echo $filter === 'trash' ? 'bg-gray-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'; ?> transition">
+                ট্র্যাশ (<?php echo formatNumberBengali($post->getCount('trashed')); ?>)
+            </a>
         </div>
         
         <form action="" method="GET" class="w-full md:w-auto flex">
@@ -170,7 +184,9 @@ ob_start();
                 <option value="published">পাবলিশ করুন (Publish)</option>
                 <option value="draft">ড্রাফট করুন (Draft)</option>
                 <option value="archived">প্রাইভেট/আর্কাইভ (Archive)</option>
-                <option value="delete">মুছে ফেলুন (Delete)</option>
+                <option value="delete">ট্র্যাশে পাঠান (Trash)</option>
+                <option value="restore">রিস্টোর করুন (Restore)</option>
+                <option value="force_delete">স্থায়ীভাবে মুছুন (Perm. Delete)</option>
             </select>
             <button type="submit" onclick="return confirm('আপনি কি নিশ্চিত?')" class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-700 transition">এপ্লাই</button>
         </div>
@@ -246,13 +262,15 @@ ob_start();
                                         'published' => 'bg-green-100 text-green-800',
                                         'draft' => 'bg-yellow-100 text-yellow-800',
                                         'scheduled' => 'bg-blue-100 text-blue-800',
-                                        'archived' => 'bg-gray-100 text-gray-800'
+                                        'archived' => 'bg-gray-100 text-gray-800',
+                                        'trashed' => 'bg-red-100 text-red-800'
                                     ];
                                     $status_labels = [
                                         'published' => 'প্রকাশিত',
                                         'draft' => 'খসড়া',
                                         'scheduled' => 'নির্ধারিত',
-                                        'archived' => 'সংরক্ষিত'
+                                        'archived' => 'সংরক্ষিত',
+                                        'trashed' => 'ট্র্যাশড'
                                     ];
                                     ?>
                                     <span class="px-2 py-1 text-xs font-semibold rounded <?php echo $status_classes[$post_item['status']]; ?>">
@@ -272,18 +290,29 @@ ob_start();
                                 </td>
                                 <td class="px-6 py-4 text-sm">
                                     <div class="flex space-x-2">
-                                        <a href="<?php echo ADMIN_URL; ?>/post-edit.php?id=<?php echo $post_item['id']; ?>" 
-                                           class="text-blue-600 hover:text-blue-800" title="সম্পাদনা">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <a href="<?php echo ADMIN_URL; ?>/post-duplicate.php?id=<?php echo $post_item['id']; ?>" 
-                                           class="text-gray-600 hover:text-gray-800" title="ডুপ্লিকেট">
-                                            <i class="fas fa-copy"></i>
-                                        </a>
-                                        <a href="<?php echo ADMIN_URL; ?>/post-delete.php?id=<?php echo $post_item['id']; ?>" 
-                                           class="text-red-600 hover:text-red-800 delete-confirm" title="মুছুন">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
+                                        <?php if ($post_item['status'] === 'trashed'): ?>
+                                            <a href="<?php echo ADMIN_URL; ?>/post-restore.php?id=<?php echo $post_item['id']; ?>" 
+                                               class="text-green-600 hover:text-green-800" title="রিস্টোর করুন">
+                                                <i class="fas fa-undo"></i>
+                                            </a>
+                                            <a href="<?php echo ADMIN_URL; ?>/post-force-delete.php?id=<?php echo $post_item['id']; ?>" 
+                                               class="text-red-600 hover:text-red-800 delete-confirm" title="স্থায়ীভাবে মুছুন">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        <?php else: ?>
+                                            <a href="<?php echo ADMIN_URL; ?>/post-edit.php?id=<?php echo $post_item['id']; ?>" 
+                                               class="text-blue-600 hover:text-blue-800" title="সম্পাদনা">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="<?php echo ADMIN_URL; ?>/post-duplicate.php?id=<?php echo $post_item['id']; ?>" 
+                                               class="text-gray-600 hover:text-gray-800" title="ডুপ্লিকেট">
+                                                <i class="fas fa-copy"></i>
+                                            </a>
+                                            <a href="<?php echo ADMIN_URL; ?>/post-delete.php?id=<?php echo $post_item['id']; ?>" 
+                                               class="text-red-600 hover:text-red-800 delete-confirm" title="ট্র্যাশে পাঠান">
+                                                <i class="fas fa-trash"></i>
+                                            </a>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>

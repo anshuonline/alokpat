@@ -184,7 +184,7 @@ class Setting {
             'site_name', 'site_name_en', 'site_tagline', 'site_logo', 'footer_logo',
             'site_email', 'site_phone', 'site_address', 'site_header_html',
             'google_analytics_id', 'facebook_url', 'twitter_url', 'youtube_url', 'instagram_url',
-            'enable_comments', 'enable_sharing', 'posts_per_page'
+            'whatsapp_channel_url', 'enable_comments', 'enable_sharing', 'posts_per_page'
         ];
         
         return $this->getMultiple($keys);

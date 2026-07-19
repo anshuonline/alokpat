@@ -480,12 +480,57 @@ class Post {
      */
     public function delete($id) {
         try {
+            $sql = "UPDATE " . $this->table . " SET status = 'trashed' WHERE id = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':id', $id);
+            return $stmt->execute();
+        } catch(PDOException $e) {
+            error_log("Delete Post Error (Soft Delete): " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Permanently delete a post
+     * 
+     * @param int $id
+     * @return bool
+     */
+    public function forceDelete($id) {
+        try {
+            // First get the post to delete the featured image if it exists
+            $post = $this->getById($id);
+            if ($post && !empty($post['featured_image'])) {
+                $image_path = dirname(dirname(__DIR__)) . '/' . ltrim($post['featured_image'], '/');
+                if (file_exists($image_path)) {
+                    unlink($image_path);
+                }
+            }
+
             $sql = "DELETE FROM " . $this->table . " WHERE id = :id";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':id', $id);
             return $stmt->execute();
         } catch(PDOException $e) {
-            error_log("Delete Post Error: " . $e->getMessage());
+            error_log("Force Delete Post Error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Restore a trashed post
+     * 
+     * @param int $id
+     * @return bool
+     */
+    public function restore($id) {
+        try {
+            $sql = "UPDATE " . $this->table . " SET status = 'draft' WHERE id = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':id', $id);
+            return $stmt->execute();
+        } catch(PDOException $e) {
+            error_log("Restore Post Error: " . $e->getMessage());
             return false;
         }
     }
@@ -500,11 +545,17 @@ class Post {
         try {
             $sql = "SELECT COUNT(*) as total FROM " . $this->table;
             if ($status) {
-                $sql .= " WHERE status = :status";
+                if ($status === 'all_including_trash') {
+                    // count everything
+                } else {
+                    $sql .= " WHERE status = :status";
+                }
+            } else {
+                $sql .= " WHERE status != 'trashed'";
             }
             
             $stmt = $this->conn->prepare($sql);
-            if ($status) {
+            if ($status && $status !== 'all_including_trash') {
                 $stmt->bindParam(':status', $status);
             }
             $stmt->execute();
