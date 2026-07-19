@@ -41,7 +41,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save_homepage_settings
         // Extract just the ordered IDs
         $final_order = array_column($sorted_categories, 'id');
         
-        if ($setting_model->set('homepage_categories_order', json_encode($final_order), 'json', 'Ordered category IDs for homepage')) {
+        $key = 'homepage_categories_order';
+        $value = json_encode($final_order);
+        
+        if ($setting_model->get($key) === false) {
+            $success_query = $setting_model->create($key, $value, 'json', 'Ordered category IDs for homepage');
+        } else {
+            $success_query = $setting_model->updateMultiple([$key => $value]);
+        }
+        
+        if ($success_query) {
             $success = "হোমপেজ সেটিংস সফলভাবে আপডেট করা হয়েছে।";
         } else {
             $error = "সেটিংস সেভ করতে সমস্যা হয়েছে।";
