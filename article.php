@@ -100,9 +100,9 @@ component('header', ['categories' => $categories]);
             
             if (!empty($fb_url) || !empty($wa_url) || !empty($tw_url) || !empty($yt_url)):
             ?>
-            <div class="flex flex-row items-center justify-between mt-2 mb-6 w-full">
-                <span class="text-gray-700 font-bold text-sm md:text-base mr-2 whitespace-nowrap">Follow Us:</span>
-                <div class="flex flex-row items-center justify-end gap-1 sm:gap-2 flex-1">
+            <div class="flex flex-col sm:flex-row items-center sm:justify-between mt-2 mb-6 w-full gap-2 sm:gap-0">
+                <span class="text-gray-700 font-bold text-sm md:text-base whitespace-nowrap">Follow Us:</span>
+                <div class="flex flex-row items-center justify-center sm:justify-end gap-1 sm:gap-2 w-full sm:w-auto flex-1">
                 <?php if (!empty($wa_url)): ?>
                 <a href="<?php echo escape($wa_url); ?>" target="_blank" class="inline-flex items-center justify-center flex-1 sm:flex-none px-1 sm:px-3 py-1.5 sm:py-1.5 bg-green-500 text-white text-[11px] sm:text-sm rounded-full font-medium hover:bg-green-600 transition shadow-sm" title="WhatsApp">
                     <i class="fab fa-whatsapp sm:mr-1.5"></i> <span class="ml-1 sm:ml-0 hidden min-[380px]:inline">WhatsApp</span>
