@@ -41,11 +41,11 @@ if (!empty($post['is_breaking'])) {
 <?php if ($variant === 'magazine-main'): ?>
     <!-- Magazine Main (Large Image Top, Title Below) -->
     <div class="group h-full flex flex-col <?php echo $bgClass; ?> <?php echo $theme === 'dark' ? 'p-4 rounded-lg' : ''; ?>">
-        <div class="relative overflow-hidden rounded mb-3 bg-gray-50 flex items-center justify-center h-64">
+        <div class="relative overflow-hidden rounded mb-3 bg-gray-50 flex items-center justify-center aspect-video w-full">
             <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
                 <img src="<?php echo $imgSrc; ?>" 
                      alt="<?php echo escape($post['title']); ?>" 
-                     class="w-full h-full <?php echo $imgClass; ?> group-hover:scale-105 transition duration-500"
+                     class="w-full h-full <?php echo $imgClass; ?> object-cover group-hover:scale-105 transition duration-500"
                      loading="lazy">
             </a>
             <?php echo $badgeHtml; ?>
@@ -65,11 +65,11 @@ if (!empty($post['is_breaking'])) {
 <?php elseif ($variant === 'magazine-list'): ?>
     <!-- Magazine List (Small Thumbnail Left, Title Right, Dashed Border) -->
     <div class="flex items-center py-4 border-b border-dashed <?php echo $theme === 'dark' ? 'border-gray-700' : 'border-gray-300'; ?> group last:border-0">
-        <div class="relative w-24 h-16 flex-shrink-0 overflow-hidden rounded mr-4 bg-gray-50 flex items-center justify-center">
+        <div class="relative w-28 aspect-video flex-shrink-0 overflow-hidden rounded mr-4 bg-gray-50 flex items-center justify-center">
             <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
                 <img src="<?php echo $imgSrc; ?>" 
                      alt="<?php echo escape($post['title']); ?>" 
-                     class="w-full h-full <?php echo $imgClass; ?> group-hover:scale-110 transition duration-300"
+                     class="w-full h-full <?php echo $imgClass; ?> object-cover group-hover:scale-110 transition duration-300"
                      loading="lazy">
             </a>
             <?php echo $badgeHtml; ?>
@@ -86,11 +86,11 @@ if (!empty($post['is_breaking'])) {
 <?php elseif ($variant === 'classic-list'): ?>
     <!-- Classic List View (Image Left, Content Right, Dashed Border) -->
     <div class="flex flex-col md:flex-row py-6 border-b border-dashed <?php echo $theme === 'dark' ? 'border-gray-700' : 'border-gray-300'; ?> group last:border-0">
-        <div class="relative w-full md:w-[280px] h-44 flex-shrink-0 overflow-hidden mb-4 md:mb-0 md:mr-6 bg-gray-50 flex items-center justify-center">
+        <div class="relative w-full md:w-[280px] aspect-video flex-shrink-0 overflow-hidden mb-4 md:mb-0 md:mr-6 bg-gray-50 flex items-center justify-center">
             <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
                 <img src="<?php echo $imgSrc; ?>" 
                      alt="<?php echo escape($post['title']); ?>" 
-                     class="w-full h-full <?php echo $imgClass; ?> group-hover:scale-105 transition duration-500"
+                     class="w-full h-full <?php echo $imgClass; ?> object-cover group-hover:scale-105 transition duration-500"
                      loading="lazy">
             </a>
             <?php echo $badgeHtml; ?>
@@ -133,7 +133,7 @@ if (!empty($post['is_breaking'])) {
     <div class="<?php echo $bgClass; ?> rounded-lg shadow-md hover:shadow-xl transition overflow-hidden">
         <div class="flex">
             <?php if (!empty($post['featured_image'])): ?>
-                <div class="relative w-48 h-32 flex-shrink-0 overflow-hidden">
+                <div class="relative w-40 sm:w-48 aspect-video flex-shrink-0 overflow-hidden">
                     <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
                         <img src="<?php echo escape($post['featured_image']); ?>" 
                              alt="<?php echo escape($post['featured_image_alt'] ?? $post['title']); ?>" 
@@ -176,16 +176,16 @@ if (!empty($post['is_breaking'])) {
 
 <?php elseif ($variant === 'featured'): ?>
     <!-- Featured Card -->
-    <div class="relative rounded-xl shadow-xl overflow-hidden group">
+    <div class="relative rounded-xl shadow-xl overflow-hidden group aspect-video">
         <?php if (!empty($post['featured_image'])): ?>
             <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
                 <img src="<?php echo escape($post['featured_image']); ?>" 
                      alt="<?php echo escape($post['featured_image_alt'] ?? $post['title']); ?>" 
-                     class="w-full h-96 object-cover group-hover:scale-105 transition duration-500"
+                     class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                      loading="lazy">
             </a>
         <?php else: ?>
-            <div class="w-full h-96 bg-gradient-to-br from-primary-500 to-purple-600"></div>
+            <div class="w-full h-full bg-gradient-to-br from-primary-500 to-purple-600"></div>
         <?php endif; ?>
         
         <?php echo $badgeHtml; ?>
@@ -231,27 +231,27 @@ if (!empty($post['is_breaking'])) {
 
 <?php else: ?>
     <!-- Default Vertical Card -->
-    <div class="<?php echo $bgClass; ?> rounded-lg shadow-md hover:shadow-xl transition overflow-hidden">
+    <div class="<?php echo $bgClass; ?> rounded-lg shadow-md hover:shadow-xl transition overflow-hidden flex flex-col h-full">
         <?php if (!empty($post['featured_image'])): ?>
-            <div class="relative overflow-hidden group">
+            <div class="relative overflow-hidden group aspect-video">
                 <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
                     <img src="<?php echo escape($post['featured_image']); ?>" 
                          alt="<?php echo escape($post['featured_image_alt'] ?? $post['title']); ?>" 
-                         class="w-full h-52 object-cover group-hover:scale-110 transition duration-500"
+                         class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
                          loading="lazy">
                 </a>
                 <?php echo $badgeHtml; ?>
             </div>
         <?php else: ?>
-            <div class="relative overflow-hidden group h-52 bg-gray-50 flex items-center justify-center">
+            <div class="relative overflow-hidden group aspect-video bg-gray-50 flex items-center justify-center">
                 <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full flex items-center justify-center">
-                    <img src="<?php echo $imgSrc; ?>" alt="logo" class="h-20 opacity-30">
+                    <img src="<?php echo $imgSrc; ?>" alt="logo" class="h-20 opacity-30 object-contain">
                 </a>
                 <?php echo $badgeHtml; ?>
             </div>
         <?php endif; ?>
         
-        <div class="p-4">
+        <div class="p-4 flex flex-col flex-1">
             <?php if (!empty($post['category_name'])): ?>
                 <a href="<?php echo SITE_URL; ?>/category.php?slug=<?php echo escape($post['category_slug']); ?>" 
                    class="inline-block px-2 py-1 <?php echo $categoryClass; ?> text-xs font-semibold rounded mb-2 hover:opacity-80 transition">
@@ -271,7 +271,7 @@ if (!empty($post['is_breaking'])) {
                 </p>
             <?php endif; ?>
             
-            <div class="flex items-center justify-between mt-4 pt-4 border-t <?php echo $theme === 'dark' ? 'border-gray-800' : 'border-gray-100'; ?> text-xs <?php echo $metaClass; ?>">
+            <div class="flex items-center justify-between mt-auto pt-4 border-t <?php echo $theme === 'dark' ? 'border-gray-800' : 'border-gray-100'; ?> text-xs <?php echo $metaClass; ?>">
                 <span>
                     <i class="fas fa-user mr-1"></i>
                     <?php echo escape($post['author_name'] ?? $post['author'] ?? 'অপরিচিত'); ?>

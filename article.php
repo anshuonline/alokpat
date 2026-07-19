@@ -95,10 +95,10 @@ component('header', ['categories' => $categories]);
         
         <!-- Featured Image -->
         <?php if (!empty($article['featured_image'])): ?>
-            <div class="mb-6">
+            <div class="mb-6 aspect-video">
                 <img src="<?php echo escape($article['featured_image']); ?>" 
                      alt="<?php echo escape($article['featured_image_alt'] ?? $article['title']); ?>" 
-                     class="w-full rounded-lg shadow-sm">
+                     class="w-full h-full object-cover rounded-lg shadow-sm">
             </div>
         <?php endif; ?>
         
@@ -230,10 +230,10 @@ component('header', ['categories' => $categories]);
                     <?php foreach (array_slice($related_posts, 0, 3) as $related): ?>
                         <div class="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden">
                             <?php if (!empty($related['featured_image'])): ?>
-                                <a href="<?php echo url_for_post($related); ?>" class="block">
+                                <a href="<?php echo url_for_post($related); ?>" class="block aspect-video">
                                     <img src="<?php echo escape($related['featured_image']); ?>" 
                                          alt="<?php echo escape($related['title']); ?>" 
-                                         class="w-full h-40 object-cover">
+                                         class="w-full h-full object-cover">
                                 </a>
                             <?php endif; ?>
                             <div class="p-4">

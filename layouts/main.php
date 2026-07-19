@@ -260,6 +260,11 @@
             });
         });
     </script>
+    <!-- Social Embed Scripts (Twitter, Facebook, Instagram) -->
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v17.0"></script>
+    <script async src="//www.instagram.com/embed.js"></script>
+
     <script>
         // Debug: log selected font names and computed font-family
         (function(){
