@@ -50,7 +50,7 @@ if (!empty($post['is_breaking'])) {
             </a>
             <?php echo $badgeHtml; ?>
         </div>
-        <h3 class="text-2xl md:text-3xl font-semibold leading-tight <?php echo $titleClass; ?> mb-2 transition">
+        <h3 class="text-xl md:text-2xl font-semibold leading-tight <?php echo $titleClass; ?> mb-2 transition">
             <a href="<?php echo url_for_post($post); ?>">
                 <?php echo escape($post['title']); ?>
             </a>
