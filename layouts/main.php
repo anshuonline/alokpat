@@ -51,6 +51,7 @@
     component('favicon');
     ?>
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css" />
     <?php
     // The font settings are now centrally managed in config.php
     ?>
@@ -286,5 +287,42 @@
         })();
     </script>
     
+    <script src="https://cdn.jsdelivr.net/npm/glightbox/dist/js/glightbox.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Find all images inside the post content that aren't already wrapped in a link
+            const contentImages = document.querySelectorAll('.article-content img');
+            contentImages.forEach(img => {
+                const parent = img.parentElement;
+                // If the parent is not an anchor tag, wrap it
+                if (parent && parent.tagName.toLowerCase() !== 'a') {
+                    const a = document.createElement('a');
+                    a.href = img.src;
+                    a.classList.add('glightbox');
+                    a.setAttribute('data-title', img.alt || '');
+                    
+                    // Replace image with anchor tag containing the image
+                    parent.insertBefore(a, img);
+                    a.appendChild(img);
+                } else if (parent && parent.tagName.toLowerCase() === 'a') {
+                    // If it's already a link (e.g., to an image file), add glightbox class
+                    if (parent.href.match(/\.(jpeg|jpg|gif|png|webp)$/i)) {
+                        parent.classList.add('glightbox');
+                        if (!parent.getAttribute('data-title')) {
+                            parent.setAttribute('data-title', img.alt || '');
+                        }
+                    }
+                }
+            });
+
+            // Initialize GLightbox
+            const lightbox = GLightbox({
+                selector: '.glightbox',
+                touchNavigation: true,
+                loop: true,
+                zoomable: true
+            });
+        });
+    </script>
 </body>
 </html>

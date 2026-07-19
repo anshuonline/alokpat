@@ -96,9 +96,11 @@ component('header', ['categories' => $categories]);
         <!-- Featured Image -->
         <?php if (!empty($article['featured_image'])): ?>
             <div class="mb-6 aspect-video">
-                <img src="<?php echo escape($article['featured_image']); ?>" 
-                     alt="<?php echo escape($article['featured_image_alt'] ?? $article['title']); ?>" 
-                     class="w-full h-full object-cover rounded-lg shadow-sm">
+                <a href="<?php echo escape($article['featured_image']); ?>" class="glightbox" data-title="<?php echo escape($article['featured_image_alt'] ?? $article['title']); ?>">
+                    <img src="<?php echo escape($article['featured_image']); ?>" 
+                         alt="<?php echo escape($article['featured_image_alt'] ?? $article['title']); ?>" 
+                         class="w-full h-full object-cover rounded-lg shadow-sm cursor-zoom-in">
+                </a>
             </div>
         <?php endif; ?>
         
