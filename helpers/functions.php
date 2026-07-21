@@ -363,7 +363,7 @@ function uploadFile($file, $directory = 'uploads') {
         
         // Attempt AVIF conversion
         if ($image !== false && $image !== null) {
-            if (@imageavif($image, $avif_filepath, 60)) { // 60 is an optimal quality for AVIF
+            if (@imageavif($image, $avif_filepath, 80)) { // 80 is a high quality for AVIF
                 imagedestroy($image);
                 $file_url = SITE_URL . '/' . $directory . '/' . $avif_filename;
                 return [
