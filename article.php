@@ -122,31 +122,33 @@ component('header', ['categories' => $categories]);
             <?php endif; ?>
             
             <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
-                <div class="text-sm md:text-base font-bold text-gray-800 flex items-center">
+                <button onclick="document.getElementById('authorModal').classList.remove('hidden')" class="text-sm md:text-base font-bold text-blue-600 hover:text-blue-800 flex items-center transition cursor-pointer">
                     <i class="fas fa-pen-nib mr-2 text-gray-500"></i>
                     <?php echo escape($article['author_name']); ?>
-                </div>
+                </button>
                 <div class="flex items-center gap-2 no-print">
                     <a href="<?php echo SITE_URL; ?>/print.php?slug=<?php echo escape($article['slug']); ?>" target="_blank" class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition" title="Print Article">
                         <i class="fas fa-print"></i>
                     </a>
-                    <button onclick="toggleFontSize()" class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition font-bold text-sm tracking-tighter" title="Change Font Size">
-                        AA
-                    </button>
+                    <div class="flex border border-gray-300 rounded overflow-hidden shadow-sm">
+                        <button onclick="setFontSize('small')" class="w-8 h-8 flex items-center justify-center bg-white text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition font-bold text-xs border-r border-gray-300" title="Small Font">A-</button>
+                        <button onclick="setFontSize('medium')" class="w-8 h-8 flex items-center justify-center bg-white text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition font-bold text-sm border-r border-gray-300" title="Medium Font">A</button>
+                        <button onclick="setFontSize('large')" class="w-8 h-8 flex items-center justify-center bg-white text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition font-bold text-base" title="Large Font">A+</button>
+                    </div>
                 </div>
             </div>
             
             <script>
-                function toggleFontSize() {
+                function setFontSize(size) {
                     const article = document.getElementById('article-content-inner');
-                    if (article.classList.contains('large-text')) {
-                        article.classList.remove('large-text');
-                    } else {
-                        article.classList.add('large-text');
+                    article.classList.remove('small-text', 'medium-text', 'large-text');
+                    if (size !== 'medium') {
+                        article.classList.add(size + '-text');
                     }
                 }
             </script>
             <style>
+                .small-text p { font-size: 1.1rem !important; line-height: 1.7 !important; }
                 .large-text p { font-size: 1.5rem !important; line-height: 2 !important; }
             </style>
             <?php 
@@ -528,6 +530,36 @@ component('header', ['categories' => $categories]);
             </div>
         <?php endif; ?>
         
+    </div>
+    
+    <!-- Author Modal -->
+    <div id="authorModal" class="fixed inset-0 bg-black/60 z-[999] hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full overflow-hidden relative">
+            <button onclick="document.getElementById('authorModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 bg-gray-100 w-8 h-8 rounded-full flex items-center justify-center transition">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="p-8 text-center">
+                <?php if (!empty($article['author_avatar'])): ?>
+                    <img src="<?php echo escape($article['author_avatar']); ?>" alt="<?php echo escape($article['author_name']); ?>" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-blue-100 object-cover">
+                <?php else: ?>
+                    <div class="w-24 h-24 rounded-full mx-auto mb-4 bg-blue-100 text-blue-600 flex items-center justify-center text-4xl font-bold border-4 border-blue-50">
+                        <?php echo mb_substr($article['author_name'], 0, 1); ?>
+                    </div>
+                <?php endif; ?>
+                
+                <h3 class="text-2xl font-bold text-gray-800 mb-2"><?php echo escape($article['author_name']); ?></h3>
+                
+                <?php if (!empty($article['author_bio'])): ?>
+                    <p class="text-gray-600 mb-6 text-sm leading-relaxed"><?php echo escape($article['author_bio']); ?></p>
+                <?php else: ?>
+                    <p class="text-gray-500 mb-6 text-sm">আলোকপাত এর একজন নিয়মিত লেখক ও সাংবাদিক।</p>
+                <?php endif; ?>
+                
+                <a href="<?php echo SITE_URL; ?>/author.php?username=<?php echo escape($article['author_username']); ?>" class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition shadow-sm w-full">
+                    লেখকের সকল লেখা পড়ুন
+                </a>
+            </div>
+        </div>
     </div>
 </main>
 
