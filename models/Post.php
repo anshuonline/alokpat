@@ -203,8 +203,31 @@ class Post {
             
             return $post;
         } catch(PDOException $e) {
-            error_log("Get Post By ID Error: " . $e->getMessage());
-            return false;
+            // Fallback without social columns
+            try {
+                $sql = "SELECT p.*, u.full_name as author_name, u.username as author_username, u.avatar as author_avatar, u.bio as author_bio,
+                               c.name as category_name, c.slug as category_slug
+                        FROM " . $this->table . " p
+                        LEFT JOIN users u ON p.author_id = u.id
+                        LEFT JOIN categories c ON p.category_id = c.id
+                        WHERE p.id = :id
+                        LIMIT 1";
+                
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(':id', $id);
+                $stmt->execute();
+                
+                $post = $stmt->fetch();
+                
+                if ($post) {
+                    $post['tags'] = $this->getTags($id);
+                }
+                
+                return $post;
+            } catch(PDOException $e2) {
+                error_log("Get Post By ID Error: " . $e2->getMessage());
+                return false;
+            }
         }
     }
 
@@ -240,8 +263,33 @@ class Post {
             
             return $post;
         } catch(PDOException $e) {
-            error_log("Get Post By Slug Error: " . $e->getMessage());
-            return false;
+            // Fallback without social columns
+            try {
+                $sql = "SELECT p.*, u.full_name as author_name, u.username as author_username, u.avatar as author_avatar, u.bio as author_bio,
+                               c.name as category_name, c.slug as category_slug
+                        FROM " . $this->table . " p
+                        LEFT JOIN users u ON p.author_id = u.id
+                        LEFT JOIN categories c ON p.category_id = c.id
+                        WHERE p.slug = :slug
+                        AND (p.status = 'published' OR p.status = 'unlisted' OR (p.status = 'scheduled' AND p.published_at <= NOW()))
+                        LIMIT 1";
+                
+                $stmt = $this->conn->prepare($sql);
+                $stmt->bindParam(':slug', $slug);
+                $stmt->execute();
+                
+                $post = $stmt->fetch();
+                
+                if ($post) {
+                    $this->incrementViews($post['id']);
+                    $post['tags'] = $this->getTags($post['id']);
+                }
+                
+                return $post;
+            } catch(PDOException $e2) {
+                error_log("Get Post By Slug Error: " . $e2->getMessage());
+                return false;
+            }
         }
     }
 
