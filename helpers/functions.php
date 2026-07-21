@@ -332,9 +332,9 @@ function uploadFile($file, $directory = 'uploads') {
     // Check if the file is an image that can be converted to AVIF
     $image_types = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
     
-    if (in_array($extension, $image_types) && function_exists('imageavif')) {
-        $avif_filename = $base_filename . '.avif';
-        $avif_filepath = $upload_path . '/' . $avif_filename;
+    if (in_array($extension, $image_types) && function_exists('imagewebp')) {
+        $webp_filename = $base_filename . '.webp';
+        $webp_filepath = $upload_path . '/' . $webp_filename;
         
         $image = null;
         switch ($extension) {
@@ -357,21 +357,21 @@ function uploadFile($file, $directory = 'uploads') {
                 }
                 break;
             case 'webp':
-                $image = @imagecreatefromwebp($file['tmp_name']);
+                // Already WebP, just move it below
                 break;
         }
         
-        // Attempt AVIF conversion
+        // Attempt WebP conversion
         if ($image !== false && $image !== null) {
-            if (@imageavif($image, $avif_filepath, 80)) { // 80 is a high quality for AVIF
+            if (@imagewebp($image, $webp_filepath, 80)) { // 80 is a good balance for WebP
                 imagedestroy($image);
-                $file_url = SITE_URL . '/' . $directory . '/' . $avif_filename;
+                $file_url = SITE_URL . '/' . $directory . '/' . $webp_filename;
                 return [
-                    'filename' => $avif_filename,
-                    'filepath' => $avif_filepath,
+                    'filename' => $webp_filename,
+                    'filepath' => $webp_filepath,
                     'file_url' => $file_url,
-                    'file_size' => filesize($avif_filepath),
-                    'mime_type' => 'image/avif'
+                    'file_size' => filesize($webp_filepath),
+                    'mime_type' => 'image/webp'
                 ];
             }
         }
