@@ -187,7 +187,7 @@ ob_start();
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                     <div class="flex space-x-3">
-                                        <button onclick="editUser(<?php echo htmlspecialchars(json_encode($u)); ?>)" 
+                                        <button onclick="editUser(<?php echo htmlspecialchars((string)json_encode($u, JSON_INVALID_UTF8_IGNORE)); ?>)" 
                                                 class="text-blue-500 hover:text-blue-800 transition" title="সম্পাদনা">
                                             <i class="fas fa-edit text-lg"></i>
                                         </button>
