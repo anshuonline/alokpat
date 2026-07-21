@@ -182,7 +182,7 @@ class Post {
      */
     public function getById($id) {
         try {
-            $sql = "SELECT p.*, u.full_name as author_name, u.username as author_username, u.avatar as author_avatar, u.bio as author_bio,
+            $sql = "SELECT p.*, u.full_name as author_name, u.username as author_username, u.avatar as author_avatar, u.bio as author_bio, u.facebook_url as author_facebook, u.twitter_url as author_twitter, u.youtube_url as author_youtube,
                            c.name as category_name, c.slug as category_slug
                     FROM " . $this->table . " p
                     LEFT JOIN users u ON p.author_id = u.id
@@ -216,7 +216,7 @@ class Post {
      */
     public function getBySlug($slug) {
         try {
-            $sql = "SELECT p.*, u.full_name as author_name, u.username as author_username, u.avatar as author_avatar, u.bio as author_bio,
+            $sql = "SELECT p.*, u.full_name as author_name, u.username as author_username, u.avatar as author_avatar, u.bio as author_bio, u.facebook_url as author_facebook, u.twitter_url as author_twitter, u.youtube_url as author_youtube,
                            c.name as category_name, c.slug as category_slug
                     FROM " . $this->table . " p
                     LEFT JOIN users u ON p.author_id = u.id

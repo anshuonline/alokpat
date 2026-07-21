@@ -72,8 +72,26 @@ component('header', ['categories' => $categories]);
             <i class="fas fa-newspaper mr-1"></i> সর্বমোট <?php echo formatNumberBengali($total); ?> টি সংবাদ
         </div>
         <?php if (!empty($author['bio'])): ?>
-            <p class="text-gray-600 max-w-2xl mx-auto"><?php echo escape($author['bio']); ?></p>
+            <p class="text-gray-600 max-w-2xl mx-auto mb-4"><?php echo escape($author['bio']); ?></p>
         <?php endif; ?>
+        
+        <div class="flex items-center justify-center gap-4 mt-2">
+            <?php if (!empty($author['facebook_url'])): ?>
+                <a href="<?php echo escape($author['facebook_url']); ?>" target="_blank" class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition shadow-sm" title="Facebook">
+                    <i class="fab fa-facebook-f text-lg"></i>
+                </a>
+            <?php endif; ?>
+            <?php if (!empty($author['twitter_url'])): ?>
+                <a href="<?php echo escape($author['twitter_url']); ?>" target="_blank" class="w-10 h-10 rounded-full bg-gray-50 text-gray-900 flex items-center justify-center hover:bg-black hover:text-white transition shadow-sm" title="X (Twitter)">
+                    <i class="fa-brands fa-x-twitter text-lg"></i>
+                </a>
+            <?php endif; ?>
+            <?php if (!empty($author['youtube_url'])): ?>
+                <a href="<?php echo escape($author['youtube_url']); ?>" target="_blank" class="w-10 h-10 rounded-full bg-red-50 text-red-600 flex items-center justify-center hover:bg-red-600 hover:text-white transition shadow-sm" title="YouTube">
+                    <i class="fab fa-youtube text-lg"></i>
+                </a>
+            <?php endif; ?>
+        </div>
     </div>
     
     <!-- Posts List -->

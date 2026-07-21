@@ -284,6 +284,21 @@ ob_start();
                 <textarea name="bio" id="bio" rows="4" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="Write something about the author..."></textarea>
             </div>
             
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ফেসবুক ইউআরএল</label>
+                    <input type="url" name="facebook_url" id="facebook_url" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="https://facebook.com/...">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">টুইটার/X ইউআরএল</label>
+                    <input type="url" name="twitter_url" id="twitter_url" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="https://x.com/...">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ইউটিউব ইউআরএল</label>
+                    <input type="url" name="youtube_url" id="youtube_url" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition" placeholder="https://youtube.com/...">
+                </div>
+            </div>
+            
             <div class="flex items-center mt-4 p-4 bg-gray-50 rounded-lg">
                 <label class="flex items-center cursor-pointer">
                     <input type="checkbox" name="status" id="status" value="active" checked class="form-checkbox h-5 w-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 transition duration-150 ease-in-out">
@@ -315,6 +330,9 @@ ob_start();
         document.getElementById('role').value = 'writer';
         document.getElementById('phone').value = '';
         document.getElementById('bio').value = '';
+        document.getElementById('facebook_url').value = '';
+        document.getElementById('twitter_url').value = '';
+        document.getElementById('youtube_url').value = '';
         document.getElementById('status').checked = true;
         document.getElementById('passwordHint').innerText = "(নতুন তৈরি করলে আবশ্যিক নয়, ফাঁকা রাখলে '123456' হবে)";
         document.getElementById('currentAvatarPreview').classList.add('hidden');
@@ -332,6 +350,9 @@ ob_start();
         document.getElementById('role').value = user.role;
         document.getElementById('phone').value = user.phone ? user.phone : '';
         document.getElementById('bio').value = user.bio ? user.bio : '';
+        document.getElementById('facebook_url').value = user.facebook_url ? user.facebook_url : '';
+        document.getElementById('twitter_url').value = user.twitter_url ? user.twitter_url : '';
+        document.getElementById('youtube_url').value = user.youtube_url ? user.youtube_url : '';
         document.getElementById('status').checked = user.status === 'active';
         document.getElementById('passwordHint').innerText = "(ফাঁকা রাখলে বর্তমান পাসওয়ার্ডই থাকবে)";
         

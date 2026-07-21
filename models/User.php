@@ -125,9 +125,9 @@ class User {
     public function create($data) {
         try {
             $sql = "INSERT INTO " . $this->table . " 
-                    (username, email, password, full_name, role, avatar, status, bio, phone) 
+                    (username, email, password, full_name, role, avatar, status, bio, phone, facebook_url, twitter_url, youtube_url) 
                     VALUES 
-                    (:username, :email, :password, :full_name, :role, :avatar, :status, :bio, :phone)";
+                    (:username, :email, :password, :full_name, :role, :avatar, :status, :bio, :phone, :facebook_url, :twitter_url, :youtube_url)";
             
             $stmt = $this->conn->prepare($sql);
             
@@ -143,6 +143,9 @@ class User {
             $stmt->bindValue(':status', isset($data['status']) ? sanitize($data['status']) : 'active');
             $stmt->bindValue(':bio', isset($data['bio']) ? sanitize($data['bio']) : null);
             $stmt->bindValue(':phone', isset($data['phone']) ? sanitize($data['phone']) : null);
+            $stmt->bindValue(':facebook_url', isset($data['facebook_url']) ? sanitize($data['facebook_url']) : null);
+            $stmt->bindValue(':twitter_url', isset($data['twitter_url']) ? sanitize($data['twitter_url']) : null);
+            $stmt->bindValue(':youtube_url', isset($data['youtube_url']) ? sanitize($data['youtube_url']) : null);
             
             if ($stmt->execute()) {
                 return $this->conn->lastInsertId();
@@ -167,7 +170,7 @@ class User {
             $fields = [];
             $params = [':id' => $id];
             
-            $allowed_fields = ['username', 'email', 'password', 'full_name', 'role', 'avatar', 'status', 'bio', 'phone'];
+            $allowed_fields = ['username', 'email', 'password', 'full_name', 'role', 'avatar', 'status', 'bio', 'phone', 'facebook_url', 'twitter_url', 'youtube_url'];
             
             foreach ($allowed_fields as $field) {
                 if (isset($data[$field])) {
@@ -226,7 +229,7 @@ class User {
      */
     public function getAll($limit = 20, $offset = 0) {
         try {
-            $sql = "SELECT id, username, email, full_name, role, avatar, status, bio, phone, created_at, updated_at, last_login 
+            $sql = "SELECT id, username, email, full_name, role, avatar, status, bio, phone, facebook_url, twitter_url, youtube_url, created_at, updated_at, last_login 
                     FROM " . $this->table . " 
                     ORDER BY created_at DESC 
                     LIMIT :limit OFFSET :offset";

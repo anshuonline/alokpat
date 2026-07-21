@@ -555,6 +555,24 @@ component('header', ['categories' => $categories]);
                     <p class="text-gray-500 mb-6 text-sm">আলোকপাত এর একজন নিয়মিত লেখক ও সাংবাদিক।</p>
                 <?php endif; ?>
                 
+                <div class="flex items-center justify-center gap-3 mb-6">
+                    <?php if (!empty($article['author_facebook'])): ?>
+                        <a href="<?php echo escape($article['author_facebook']); ?>" target="_blank" class="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition shadow-sm" title="Facebook">
+                            <i class="fab fa-facebook-f text-sm"></i>
+                        </a>
+                    <?php endif; ?>
+                    <?php if (!empty($article['author_twitter'])): ?>
+                        <a href="<?php echo escape($article['author_twitter']); ?>" target="_blank" class="w-8 h-8 rounded-full bg-gray-50 text-gray-900 flex items-center justify-center hover:bg-black hover:text-white transition shadow-sm" title="X (Twitter)">
+                            <i class="fa-brands fa-x-twitter text-sm"></i>
+                        </a>
+                    <?php endif; ?>
+                    <?php if (!empty($article['author_youtube'])): ?>
+                        <a href="<?php echo escape($article['author_youtube']); ?>" target="_blank" class="w-8 h-8 rounded-full bg-red-50 text-red-600 flex items-center justify-center hover:bg-red-600 hover:text-white transition shadow-sm" title="YouTube">
+                            <i class="fab fa-youtube text-sm"></i>
+                        </a>
+                    <?php endif; ?>
+                </div>
+                
                 <a href="<?php echo SITE_URL; ?>/author.php?id=<?php echo escape($article['author_id']); ?>&name=<?php echo urlencode($article['author_name']); ?>" class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition shadow-sm w-full">
                     লেখকের সকল লেখা পড়ুন
                 </a>
