@@ -46,53 +46,57 @@ ob_start();
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         
         <!-- Total Posts -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition hover:border-black">
-            <div class="flex items-center justify-between">
+        <div class="relative overflow-hidden bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-6 text-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgba(59,130,246,0.4)] hover:-translate-y-1 transition-all duration-300 group">
+            <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
+            <div class="flex items-center justify-between relative z-10">
                 <div>
-                    <p class="text-sm font-semibold text-gray-500 mb-1 uppercase tracking-wider">মোট সংবাদ</p>
-                    <p class="text-3xl font-black text-black"><?php echo formatNumberBengali($total_posts); ?></p>
+                    <p class="text-blue-100 mb-1 font-medium uppercase tracking-wider text-sm">মোট সংবাদ</p>
+                    <p class="text-4xl font-black drop-shadow-sm"><?php echo formatNumberBengali($total_posts); ?></p>
                 </div>
-                <div class="h-14 w-14 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center">
-                    <i class="fas fa-newspaper text-black text-2xl"></i>
+                <div class="h-16 w-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:rotate-12 transition-transform duration-300">
+                    <i class="fas fa-newspaper text-white text-3xl drop-shadow-md"></i>
                 </div>
             </div>
         </div>
         
         <!-- Published Posts -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition hover:border-black">
-            <div class="flex items-center justify-between">
+        <div class="relative overflow-hidden bg-gradient-to-br from-emerald-400 to-teal-600 rounded-2xl p-6 text-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgba(16,185,129,0.4)] hover:-translate-y-1 transition-all duration-300 group">
+            <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
+            <div class="flex items-center justify-between relative z-10">
                 <div>
-                    <p class="text-sm font-semibold text-gray-500 mb-1 uppercase tracking-wider">প্রকাশিত</p>
-                    <p class="text-3xl font-black text-black"><?php echo formatNumberBengali($published_posts); ?></p>
+                    <p class="text-emerald-50 mb-1 font-medium uppercase tracking-wider text-sm">প্রকাশিত</p>
+                    <p class="text-4xl font-black drop-shadow-sm"><?php echo formatNumberBengali($published_posts); ?></p>
                 </div>
-                <div class="h-14 w-14 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center">
-                    <i class="fas fa-check-circle text-black text-2xl"></i>
+                <div class="h-16 w-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:rotate-12 transition-transform duration-300">
+                    <i class="fas fa-check-circle text-white text-3xl drop-shadow-md"></i>
                 </div>
             </div>
         </div>
         
         <!-- Draft Posts -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition hover:border-black">
-            <div class="flex items-center justify-between">
+        <div class="relative overflow-hidden bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl p-6 text-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgba(245,158,11,0.4)] hover:-translate-y-1 transition-all duration-300 group">
+            <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
+            <div class="flex items-center justify-between relative z-10">
                 <div>
-                    <p class="text-sm font-semibold text-gray-500 mb-1 uppercase tracking-wider">খসড়া</p>
-                    <p class="text-3xl font-black text-black"><?php echo formatNumberBengali($draft_posts); ?></p>
+                    <p class="text-amber-50 mb-1 font-medium uppercase tracking-wider text-sm">খসড়া</p>
+                    <p class="text-4xl font-black drop-shadow-sm"><?php echo formatNumberBengali($draft_posts); ?></p>
                 </div>
-                <div class="h-14 w-14 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center">
-                    <i class="fas fa-file-alt text-black text-2xl"></i>
+                <div class="h-16 w-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:rotate-12 transition-transform duration-300">
+                    <i class="fas fa-file-alt text-white text-3xl drop-shadow-md"></i>
                 </div>
             </div>
         </div>
         
         <!-- Categories -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition hover:border-black">
-            <div class="flex items-center justify-between">
+        <div class="relative overflow-hidden bg-gradient-to-br from-fuchsia-500 to-purple-600 rounded-2xl p-6 text-white shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:shadow-[0_8px_30px_rgba(192,38,211,0.4)] hover:-translate-y-1 transition-all duration-300 group">
+            <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-10 rounded-full blur-xl group-hover:scale-150 transition-transform duration-500"></div>
+            <div class="flex items-center justify-between relative z-10">
                 <div>
-                    <p class="text-sm font-semibold text-gray-500 mb-1 uppercase tracking-wider">ক্যাটাগরি</p>
-                    <p class="text-3xl font-black text-black"><?php echo formatNumberBengali($total_categories); ?></p>
+                    <p class="text-fuchsia-100 mb-1 font-medium uppercase tracking-wider text-sm">ক্যাটাগরি</p>
+                    <p class="text-4xl font-black drop-shadow-sm"><?php echo formatNumberBengali($total_categories); ?></p>
                 </div>
-                <div class="h-14 w-14 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center">
-                    <i class="fas fa-folder text-black text-2xl"></i>
+                <div class="h-16 w-16 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20 group-hover:rotate-12 transition-transform duration-300">
+                    <i class="fas fa-folder text-white text-3xl drop-shadow-md"></i>
                 </div>
             </div>
         </div>
@@ -104,19 +108,31 @@ ob_start();
         <h3 class="text-lg font-black text-black mb-4 uppercase tracking-widest border-b border-gray-100 pb-2">দ্রুত কাজ</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <a href="<?php echo ADMIN_URL; ?>/post-create.php" 
-               class="flex items-center p-4 border-2 border-gray-300 border-dashed rounded-lg hover:border-black hover:bg-gray-50 transition group">
-                <i class="fas fa-plus-circle text-gray-500 group-hover:text-black text-2xl mr-3 transition-colors"></i>
-                <span class="font-bold text-gray-700 group-hover:text-black transition-colors">নতুন সংবাদ লিখুন</span>
+               class="relative overflow-hidden bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-[0_8px_30px_rgba(16,185,129,0.15)] hover:border-emerald-200 hover:-translate-y-1 transition-all duration-300 group flex items-center">
+                <div class="absolute inset-0 bg-gradient-to-r from-emerald-50 to-teal-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div class="h-12 w-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mr-4 group-hover:scale-110 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 z-10 shadow-sm">
+                    <i class="fas fa-plus-circle text-xl"></i>
+                </div>
+                <span class="font-bold text-gray-700 group-hover:text-emerald-800 transition-colors z-10">নতুন সংবাদ লিখুন</span>
+                <i class="fas fa-arrow-right ml-auto text-emerald-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 z-10"></i>
             </a>
             <a href="<?php echo ADMIN_URL; ?>/posts.php" 
-               class="flex items-center p-4 border-2 border-gray-300 border-dashed rounded-lg hover:border-black hover:bg-gray-50 transition group">
-                <i class="fas fa-list text-gray-500 group-hover:text-black text-2xl mr-3 transition-colors"></i>
-                <span class="font-bold text-gray-700 group-hover:text-black transition-colors">সকল সংবাদ দেখুন</span>
+               class="relative overflow-hidden bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-[0_8px_30px_rgba(59,130,246,0.15)] hover:border-blue-200 hover:-translate-y-1 transition-all duration-300 group flex items-center">
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-50 to-indigo-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div class="h-12 w-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mr-4 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 z-10 shadow-sm">
+                    <i class="fas fa-list text-xl"></i>
+                </div>
+                <span class="font-bold text-gray-700 group-hover:text-blue-800 transition-colors z-10">সকল সংবাদ দেখুন</span>
+                <i class="fas fa-arrow-right ml-auto text-blue-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 z-10"></i>
             </a>
             <a href="<?php echo ADMIN_URL; ?>/media.php" 
-               class="flex items-center p-4 border-2 border-gray-300 border-dashed rounded-lg hover:border-black hover:bg-gray-50 transition group">
-                <i class="fas fa-upload text-gray-500 group-hover:text-black text-2xl mr-3 transition-colors"></i>
-                <span class="font-bold text-gray-700 group-hover:text-black transition-colors">মিডিয়া আপলোড</span>
+               class="relative overflow-hidden bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-[0_8px_30px_rgba(168,85,247,0.15)] hover:border-purple-200 hover:-translate-y-1 transition-all duration-300 group flex items-center">
+                <div class="absolute inset-0 bg-gradient-to-r from-purple-50 to-fuchsia-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div class="h-12 w-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mr-4 group-hover:scale-110 group-hover:bg-purple-600 group-hover:text-white transition-all duration-300 z-10 shadow-sm">
+                    <i class="fas fa-upload text-xl"></i>
+                </div>
+                <span class="font-bold text-gray-700 group-hover:text-purple-800 transition-colors z-10">মিডিয়া আপলোড</span>
+                <i class="fas fa-arrow-right ml-auto text-purple-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300 z-10"></i>
             </a>
         </div>
     </div>
