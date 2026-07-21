@@ -363,7 +363,7 @@ function uploadFile($file, $directory = 'uploads') {
         
         // Attempt WebP conversion
         if ($image !== false && $image !== null) {
-            if (@imagewebp($image, $webp_filepath, 80)) { // 80 is a good balance for WebP
+            if (@imagewebp($image, $webp_filepath, 90)) { // 90 is a high quality for WebP
                 imagedestroy($image);
                 $file_url = SITE_URL . '/' . $directory . '/' . $webp_filename;
                 return [
