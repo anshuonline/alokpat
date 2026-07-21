@@ -241,23 +241,8 @@ class User {
             
             return $stmt->fetchAll();
         } catch(PDOException $e) {
-            // Fallback if social columns don't exist yet
-            try {
-                $sql = "SELECT id, username, email, full_name, role, avatar, status, bio, phone, created_at, updated_at, last_login 
-                        FROM " . $this->table . " 
-                        ORDER BY created_at DESC 
-                        LIMIT :limit OFFSET :offset";
-                
-                $stmt = $this->conn->prepare($sql);
-                $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-                $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-                $stmt->execute();
-                
-                return $stmt->fetchAll();
-            } catch(PDOException $e2) {
-                error_log("Get All Users Error: " . $e2->getMessage());
-                return [];
-            }
+            error_log("Get All Users Error: " . $e->getMessage());
+            return [];
         }
     }
 
