@@ -463,8 +463,11 @@ class Post {
                     FROM " . $this->table . " p
                     LEFT JOIN users u ON p.author_id = u.id
                     LEFT JOIN categories c ON p.category_id = c.id
+                    LEFT JOIN post_tags pt ON p.id = pt.post_id
+                    LEFT JOIN tags t ON pt.tag_id = t.id
                     WHERE (p.status = 'published' OR (p.status = 'scheduled' AND p.published_at <= NOW()))
-                    AND (p.title LIKE :search1 OR p.content LIKE :search2 OR p.excerpt LIKE :search3)
+                    AND (p.title LIKE :search1 OR p.content LIKE :search2 OR p.excerpt LIKE :search3 OR t.name LIKE :search4)
+                    GROUP BY p.id
                     ORDER BY COALESCE(p.published_at, p.created_at) DESC
                     LIMIT :limit OFFSET :offset";
             
@@ -472,6 +475,7 @@ class Post {
             $stmt->bindValue(':search1', $searchTerm, PDO::PARAM_STR);
             $stmt->bindValue(':search2', $searchTerm, PDO::PARAM_STR);
             $stmt->bindValue(':search3', $searchTerm, PDO::PARAM_STR);
+            $stmt->bindValue(':search4', $searchTerm, PDO::PARAM_STR);
             $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
             $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
             $stmt->execute();

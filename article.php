@@ -98,7 +98,7 @@ component('header', ['categories' => $categories]);
             }
             if ($showFlags):
                 if (!empty($article['is_live'])): ?>
-                    <span class="inline-flex items-center px-3 py-1 bg-green-600 text-white text-sm font-bold rounded-full mb-3 animate-pulse shadow-sm">
+                    <span class="inline-flex items-center px-3 py-1 bg-red-600 text-white text-sm font-bold rounded-full mb-3 animate-pulse shadow-sm">
                         <span class="w-2 h-2 rounded-full bg-white mr-1.5"></span>লাইভ (Live)
                     </span>
                 <?php elseif (!empty($article['is_breaking'])): ?>

@@ -38,7 +38,7 @@ if (!empty($post['flags_expiry'])) {
 
 if ($showFlags) {
     if (!empty($post['is_live'])) {
-        $badgeHtml = '<div class="absolute top-2 left-2 z-10"><span class="px-2 py-0.5 sm:px-3 sm:py-1 bg-green-600 text-white text-[10px] sm:text-xs font-bold rounded shadow-lg animate-pulse flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-white mr-1.5"></span>লাইভ</span></div>';
+        $badgeHtml = '<div class="absolute top-2 left-2 z-10"><span class="px-2 py-0.5 sm:px-3 sm:py-1 bg-red-600 text-white text-[10px] sm:text-xs font-bold rounded shadow-lg animate-pulse flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-white mr-1.5"></span>লাইভ</span></div>';
     } elseif (!empty($post['is_breaking'])) {
         $badgeHtml = '<div class="absolute top-2 left-2 z-10"><span class="px-2 py-0.5 sm:px-3 sm:py-1 bg-red-600 text-white text-[10px] sm:text-xs font-bold rounded shadow-lg animate-pulse flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-white mr-1.5"></span>ব্রেকিং</span></div>';
     } elseif (!empty($post['is_trending'])) {
