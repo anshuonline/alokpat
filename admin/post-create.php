@@ -268,6 +268,7 @@ ob_start();
                                         <input type="radio" 
                                                name="status" 
                                                value="draft" 
+                                               onchange="toggleScheduleInput()"
                                                <?php echo (!isset($_POST['status']) || $_POST['status'] === 'draft') ? 'checked' : ''; ?>
                                                class="mr-2 h-4 w-4 text-blue-600">
                                         <span class="text-sm">খসড়া (Draft)</span>
@@ -277,10 +278,25 @@ ob_start();
                                         <input type="radio" 
                                                name="status" 
                                                value="published" 
+                                               onchange="toggleScheduleInput()"
                                                <?php echo (isset($_POST['status']) && $_POST['status'] === 'published') ? 'checked' : ''; ?>
                                                class="mr-2 h-4 w-4 text-blue-600">
                                         <span class="text-sm">প্রকাশিত (Published)</span>
                                     </label>
+                                    
+                                    <label class="flex items-center p-2 rounded hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-200 transition">
+                                        <input type="radio" 
+                                               name="status" 
+                                               value="scheduled" 
+                                               onchange="toggleScheduleInput()"
+                                               <?php echo (isset($_POST['status']) && $_POST['status'] === 'scheduled') ? 'checked' : ''; ?>
+                                               class="mr-2 h-4 w-4 text-blue-600">
+                                        <span class="text-sm font-semibold">⏰ শিডিউল (Scheduled)</span>
+                                    </label>
+                                </div>
+                                <div id="scheduleTimeContainer" class="mt-3 p-3 bg-gray-50 rounded border <?php echo (isset($_POST['status']) && $_POST['status'] === 'scheduled') ? 'block' : 'hidden'; ?>">
+                                    <label class="block text-xs font-semibold text-gray-700 mb-1">প্রকাশের সময় নির্ধারণ করুন:</label>
+                                    <input type="datetime-local" name="published_at" value="<?php echo isset($_POST['published_at']) ? $_POST['published_at'] : ''; ?>" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
                                 </div>
                             </div>
                             
@@ -381,6 +397,23 @@ ob_start();
                                                class="mr-2 h-4 w-4 text-orange-500 rounded">
                                         <span class="text-sm">🔥 ট্রেন্ডিং</span>
                                     </label>
+
+                                    <label class="flex items-center p-2 rounded hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-200 transition">
+                                        <input type="checkbox" 
+                                               name="is_live" 
+                                               value="1"
+                                               <?php echo isset($_POST['is_live']) ? 'checked' : ''; ?>
+                                               class="mr-2 h-4 w-4 text-green-600 rounded">
+                                        <span class="text-sm text-green-600 font-semibold">🔴 লাইভ (Live)</span>
+                                    </label>
+                                </div>
+
+                                <div class="mt-4 pt-3 border-t border-gray-200">
+                                    <label class="block text-xs font-semibold text-gray-700 mb-1">
+                                        <i class="far fa-clock mr-1 text-gray-500"></i> কতক্ষণ এই আইকনগুলো দেখাবে? (ঐচ্ছিক)
+                                    </label>
+                                    <input type="datetime-local" name="flags_expiry" value="<?php echo isset($_POST['flags_expiry']) ? $_POST['flags_expiry'] : ''; ?>" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                                    <p class="text-[11px] text-gray-500 mt-1">খালি রাখলে আজীবন দেখাবে।</p>
                                 </div>
                             </div>
 
@@ -540,6 +573,18 @@ function switchTab(tabName) {
     const activeBtn = document.getElementById('tab-btn-' + tabName);
     activeBtn.classList.remove('border-transparent', 'text-gray-500');
     activeBtn.classList.add('border-blue-600', 'text-blue-600', 'bg-gray-50');
+}
+
+function toggleScheduleInput() {
+    const status = document.querySelector('input[name="status"]:checked').value;
+    const container = document.getElementById('scheduleTimeContainer');
+    if (status === 'scheduled') {
+        container.classList.remove('hidden');
+        container.classList.add('block');
+    } else {
+        container.classList.remove('block');
+        container.classList.add('hidden');
+    }
 }
 </script>
 

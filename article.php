@@ -78,6 +78,23 @@ component('header', ['categories' => $categories]);
         
         <!-- Title & Excerpt (Centered) -->
         <div class="mb-8 text-center w-full">
+            <?php
+            $showFlags = true;
+            if (!empty($article['flags_expiry']) && strtotime($article['flags_expiry']) <= time()) {
+                $showFlags = false;
+            }
+            if ($showFlags):
+                if (!empty($article['is_live'])): ?>
+                    <span class="inline-flex items-center px-3 py-1 bg-green-600 text-white text-sm font-bold rounded-full mb-3 animate-pulse shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-white mr-1.5"></span>লাইভ (Live)
+                    </span>
+                <?php elseif (!empty($article['is_breaking'])): ?>
+                    <span class="inline-flex items-center px-3 py-1 bg-red-600 text-white text-sm font-bold rounded-full mb-3 animate-pulse shadow-sm">
+                        <span class="w-2 h-2 rounded-full bg-white mr-1.5"></span>ব্রেকিং (Breaking)
+                    </span>
+                <?php endif; 
+            endif;
+            ?>
             <h1 class="text-3xl md:text-[3.8rem]" style="line-height: 1.1; font-weight: 700; color: #111827; margin-bottom: 1rem;">
                 <?php echo escape($article['title']); ?>
             </h1>

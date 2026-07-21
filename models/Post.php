@@ -26,12 +26,12 @@ class Post {
                     (title, slug, content, excerpt, featured_image, featured_image_alt, author_id, 
                      category_id, status, is_featured, is_breaking, is_trending, published_at, 
                      seo_title, seo_description, seo_keywords, canonical_url, meta_og_title, 
-                     meta_og_description, meta_og_image, meta_twitter_card, robots_meta, schema_markup) 
+                     meta_og_description, meta_og_image, meta_twitter_card, robots_meta, schema_markup, is_live, flags_expiry) 
                     VALUES 
                     (:title, :slug, :content, :excerpt, :featured_image, :featured_image_alt, :author_id, 
                      :category_id, :status, :is_featured, :is_breaking, :is_trending, :published_at, 
                      :seo_title, :seo_description, :seo_keywords, :canonical_url, :meta_og_title, 
-                     :meta_og_description, :meta_og_image, :meta_twitter_card, :robots_meta, :schema_markup)";
+                     :meta_og_description, :meta_og_image, :meta_twitter_card, :robots_meta, :schema_markup, :is_live, :flags_expiry)";
             
             $stmt = $this->conn->prepare($sql);
             
@@ -48,7 +48,9 @@ class Post {
             $is_featured = isset($data['is_featured']) ? 1 : 0;
             $is_breaking = isset($data['is_breaking']) ? 1 : 0;
             $is_trending = isset($data['is_trending']) ? 1 : 0;
-            $published_at = isset($data['published_at']) ? $data['published_at'] : null;
+            $is_live = isset($data['is_live']) ? 1 : 0;
+            $flags_expiry = !empty($data['flags_expiry']) ? $data['flags_expiry'] : null;
+            $published_at = !empty($data['published_at']) ? $data['published_at'] : null;
             if ($status === 'published' && empty($published_at)) {
                 $published_at = date('Y-m-d H:i:s');
             }
@@ -86,6 +88,8 @@ class Post {
             $stmt->bindParam(':meta_twitter_card', $meta_twitter_card);
             $stmt->bindParam(':robots_meta', $robots_meta);
             $stmt->bindParam(':schema_markup', $schema_markup);
+            $stmt->bindParam(':is_live', $is_live, PDO::PARAM_INT);
+            $stmt->bindParam(':flags_expiry', $flags_expiry);
             
             if ($stmt->execute()) {
                 $postId = $this->conn->lastInsertId();
@@ -119,18 +123,20 @@ class Post {
             
             $allowed_fields = [
                 'title', 'slug', 'content', 'excerpt', 'featured_image', 'featured_image_alt',
-                'category_id', 'status', 'is_featured', 'is_breaking', 'is_trending', 'published_at',
+                'category_id', 'status', 'is_featured', 'is_breaking', 'is_trending', 'is_live', 'flags_expiry', 'published_at',
                 'seo_title', 'seo_description', 'seo_keywords', 'canonical_url',
                 'meta_og_title', 'meta_og_description', 'meta_og_image', 'meta_twitter_card',
                 'robots_meta', 'schema_markup'
             ];
             
             foreach ($allowed_fields as $field) {
-                if (isset($data[$field])) {
+                if (isset($data[$field]) || array_key_exists($field, $data)) {
                     $fields[] = $field . " = :" . $field;
                     
-                    if (in_array($field, ['is_featured', 'is_breaking', 'is_trending'])) {
-                        $params[':' . $field] = $data[$field] ? 1 : 0;
+                    if (in_array($field, ['is_featured', 'is_breaking', 'is_trending', 'is_live'])) {
+                        $params[':' . $field] = !empty($data[$field]) ? 1 : 0;
+                    } elseif ($field === 'flags_expiry' || $field === 'published_at') {
+                        $params[':' . $field] = !empty($data[$field]) ? $data[$field] : null;
                     } elseif ($field === 'content') {
                         // Don't sanitize content (keep HTML tags)
                         $params[':' . $field] = $data[$field];
@@ -214,7 +220,7 @@ class Post {
                     LEFT JOIN users u ON p.author_id = u.id
                     LEFT JOIN categories c ON p.category_id = c.id
                     WHERE p.slug = :slug
-                    AND p.status = 'published'
+                    AND (p.status = 'published' OR (p.status = 'scheduled' AND p.published_at <= NOW()))
                     LIMIT 1";
             
             $stmt = $this->conn->prepare($sql);
@@ -247,7 +253,7 @@ class Post {
      */
     public function getPublished($limit = 10, $offset = 0, $categoryId = null) {
         try {
-            $where = "WHERE p.status = 'published'";
+            $where = "WHERE (p.status = 'published' OR (p.status = 'scheduled' AND p.published_at <= NOW()))";
             if ($categoryId) {
                 $where .= " AND p.category_id = :category_id";
             }
@@ -290,7 +296,7 @@ class Post {
                     LEFT JOIN users u ON p.author_id = u.id
                     LEFT JOIN categories c ON p.category_id = c.id
                     INNER JOIN post_tags pt ON p.id = pt.post_id
-                    WHERE p.status = 'published' AND pt.tag_id = :tag_id
+                    WHERE (p.status = 'published' OR (p.status = 'scheduled' AND p.published_at <= NOW())) AND pt.tag_id = :tag_id
                     ORDER BY COALESCE(p.published_at, p.created_at) DESC
                     LIMIT :limit OFFSET :offset";
             
@@ -321,7 +327,7 @@ class Post {
                     FROM " . $this->table . " p
                     LEFT JOIN users u ON p.author_id = u.id
                     LEFT JOIN categories c ON p.category_id = c.id
-                    WHERE p.status = 'published' AND p.author_id = :author_id
+                    WHERE (p.status = 'published' OR (p.status = 'scheduled' AND p.published_at <= NOW())) AND p.author_id = :author_id
                     ORDER BY COALESCE(p.published_at, p.created_at) DESC
                     LIMIT :limit OFFSET :offset";
             
@@ -343,7 +349,7 @@ class Post {
      */
     public function getCountByAuthor($authorId) {
         try {
-            $sql = "SELECT COUNT(*) as total FROM " . $this->table . " WHERE status = 'published' AND author_id = :author_id";
+            $sql = "SELECT COUNT(*) as total FROM " . $this->table . " WHERE (status = 'published' OR (status = 'scheduled' AND published_at <= NOW())) AND author_id = :author_id";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':author_id', $authorId, PDO::PARAM_INT);
             $stmt->execute();
@@ -367,7 +373,8 @@ class Post {
                     FROM " . $this->table . " p
                     LEFT JOIN categories c ON p.category_id = c.id
                     WHERE p.is_breaking = 1 
-                    AND p.status = 'published'
+                    AND (p.flags_expiry IS NULL OR p.flags_expiry > NOW())
+                    AND (p.status = 'published' OR (p.status = 'scheduled' AND p.published_at <= NOW()))
                     ORDER BY COALESCE(p.published_at, p.created_at) DESC
                     LIMIT :limit";
             
@@ -394,7 +401,8 @@ class Post {
                     FROM " . $this->table . " p
                     LEFT JOIN categories c ON p.category_id = c.id
                     WHERE p.is_trending = 1 
-                    AND p.status = 'published'
+                    AND (p.flags_expiry IS NULL OR p.flags_expiry > NOW())
+                    AND (p.status = 'published' OR (p.status = 'scheduled' AND p.published_at <= NOW()))
                     ORDER BY p.view_count DESC
                     LIMIT :limit";
             
@@ -421,7 +429,8 @@ class Post {
                     FROM " . $this->table . " p
                     LEFT JOIN categories c ON p.category_id = c.id
                     WHERE p.is_featured = 1 
-                    AND p.status = 'published'
+                    AND (p.flags_expiry IS NULL OR p.flags_expiry > NOW())
+                    AND (p.status = 'published' OR (p.status = 'scheduled' AND p.published_at <= NOW()))
                     ORDER BY COALESCE(p.published_at, p.created_at) DESC
                     LIMIT :limit";
             
@@ -452,7 +461,7 @@ class Post {
                     FROM " . $this->table . " p
                     LEFT JOIN users u ON p.author_id = u.id
                     LEFT JOIN categories c ON p.category_id = c.id
-                    WHERE p.status = 'published'
+                    WHERE (p.status = 'published' OR (p.status = 'scheduled' AND p.published_at <= NOW()))
                     AND (p.title LIKE :search1 OR p.content LIKE :search2 OR p.excerpt LIKE :search3)
                     ORDER BY COALESCE(p.published_at, p.created_at) DESC
                     LIMIT :limit OFFSET :offset";
@@ -485,7 +494,7 @@ class Post {
             $sql = "SELECT p.*, c.slug as category_slug
                     FROM " . $this->table . " p
                     LEFT JOIN categories c ON p.category_id = c.id
-                    WHERE p.status = 'published'
+                    WHERE (p.status = 'published' OR (p.status = 'scheduled' AND p.published_at <= NOW()))
                     AND p.category_id = :category_id
                     AND p.id != :post_id
                     ORDER BY COALESCE(p.published_at, p.created_at) DESC

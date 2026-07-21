@@ -29,12 +29,23 @@ $imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opa
 
 // Badge Logic
 $badgeHtml = '';
-if (!empty($post['is_breaking'])) {
-    $badgeHtml = '<div class="absolute top-2 left-2 z-10"><span class="px-2 py-0.5 sm:px-3 sm:py-1 bg-red-600 text-white text-[10px] sm:text-xs font-bold rounded shadow-lg animate-pulse flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-white mr-1.5"></span>ব্রেকিং</span></div>';
-} elseif (!empty($post['is_trending'])) {
-    $badgeHtml = '<div class="absolute top-2 left-2 z-10"><span class="px-2 py-0.5 sm:px-3 sm:py-1 bg-orange-500 text-white text-[10px] sm:text-xs font-bold rounded shadow-lg flex items-center"><i class="fas fa-fire mr-1.5"></i>ট্রেন্ডিং</span></div>';
-} elseif (!empty($post['is_featured'])) {
-    $badgeHtml = '<div class="absolute top-2 left-2 z-10"><span class="px-2 py-0.5 sm:px-3 sm:py-1 bg-primary-600 text-white text-[10px] sm:text-xs font-bold rounded shadow-lg flex items-center"><i class="fas fa-star text-[10px] mr-1.5 text-yellow-300"></i>ফিচার্ড</span></div>';
+$showFlags = true;
+if (!empty($post['flags_expiry'])) {
+    if (strtotime($post['flags_expiry']) <= time()) {
+        $showFlags = false;
+    }
+}
+
+if ($showFlags) {
+    if (!empty($post['is_live'])) {
+        $badgeHtml = '<div class="absolute top-2 left-2 z-10"><span class="px-2 py-0.5 sm:px-3 sm:py-1 bg-green-600 text-white text-[10px] sm:text-xs font-bold rounded shadow-lg animate-pulse flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-white mr-1.5"></span>লাইভ</span></div>';
+    } elseif (!empty($post['is_breaking'])) {
+        $badgeHtml = '<div class="absolute top-2 left-2 z-10"><span class="px-2 py-0.5 sm:px-3 sm:py-1 bg-red-600 text-white text-[10px] sm:text-xs font-bold rounded shadow-lg animate-pulse flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-white mr-1.5"></span>ব্রেকিং</span></div>';
+    } elseif (!empty($post['is_trending'])) {
+        $badgeHtml = '<div class="absolute top-2 left-2 z-10"><span class="px-2 py-0.5 sm:px-3 sm:py-1 bg-orange-500 text-white text-[10px] sm:text-xs font-bold rounded shadow-lg flex items-center"><i class="fas fa-fire mr-1.5"></i>ট্রেন্ডিং</span></div>';
+    } elseif (!empty($post['is_featured'])) {
+        $badgeHtml = '<div class="absolute top-2 left-2 z-10"><span class="px-2 py-0.5 sm:px-3 sm:py-1 bg-primary-600 text-white text-[10px] sm:text-xs font-bold rounded shadow-lg flex items-center"><i class="fas fa-star text-[10px] mr-1.5 text-yellow-300"></i>ফিচার্ড</span></div>';
+    }
 }
 ?>
 

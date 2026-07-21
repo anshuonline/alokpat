@@ -317,12 +317,21 @@ ob_start();
                                     <i class="fas fa-paper-plane mr-1 text-gray-500"></i> প্রকাশের ধরন
                                 </h3>
                                 
+                                <?php 
+                                $current_status = 'draft';
+                                if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['status'])) {
+                                    $current_status = $_POST['status'];
+                                } elseif (isset($post['status'])) {
+                                    $current_status = $post['status'];
+                                }
+                                ?>
                                 <div class="space-y-2">
                                     <label class="flex items-center p-2 rounded hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-200 transition">
                                         <input type="radio" 
                                                name="status" 
                                                value="draft" 
-                                               <?php echo (!isset($_POST['status']) || $_POST['status'] === 'draft') ? 'checked' : ''; ?>
+                                               onchange="toggleScheduleInput()"
+                                               <?php echo ($current_status === 'draft') ? 'checked' : ''; ?>
                                                class="mr-2 h-4 w-4 text-blue-600">
                                         <span class="text-sm">খসড়া (Draft)</span>
                                     </label>
@@ -331,10 +340,34 @@ ob_start();
                                         <input type="radio" 
                                                name="status" 
                                                value="published" 
-                                               <?php echo (isset($_POST['status']) && $_POST['status'] === 'published') ? 'checked' : ''; ?>
+                                               onchange="toggleScheduleInput()"
+                                               <?php echo ($current_status === 'published') ? 'checked' : ''; ?>
                                                class="mr-2 h-4 w-4 text-blue-600">
                                         <span class="text-sm">প্রকাশিত (Published)</span>
                                     </label>
+                                    
+                                    <label class="flex items-center p-2 rounded hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-200 transition">
+                                        <input type="radio" 
+                                               name="status" 
+                                               value="scheduled" 
+                                               onchange="toggleScheduleInput()"
+                                               <?php echo ($current_status === 'scheduled') ? 'checked' : ''; ?>
+                                               class="mr-2 h-4 w-4 text-blue-600">
+                                        <span class="text-sm font-semibold">⏰ শিডিউল (Scheduled)</span>
+                                    </label>
+                                </div>
+                                
+                                <?php 
+                                $published_at_val = '';
+                                if (isset($_POST['published_at'])) {
+                                    $published_at_val = $_POST['published_at'];
+                                } elseif (!empty($post['published_at'])) {
+                                    $published_at_val = date('Y-m-d\TH:i', strtotime($post['published_at']));
+                                }
+                                ?>
+                                <div id="scheduleTimeContainer" class="mt-3 p-3 bg-gray-50 rounded border <?php echo ($current_status === 'scheduled') ? 'block' : 'hidden'; ?>">
+                                    <label class="block text-xs font-semibold text-gray-700 mb-1">প্রকাশের সময় নির্ধারণ করুন:</label>
+                                    <input type="datetime-local" name="published_at" value="<?php echo $published_at_val; ?>" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
                                 </div>
                             </div>
                             
@@ -417,12 +450,25 @@ ob_start();
                                     <i class="fas fa-star mr-1 text-gray-500"></i> বিশেষ চিহ্ন
                                 </h3>
                                 
+                                <?php
+                                $is_featured_chk = (isset($_POST['is_featured']) && $_POST['is_featured']) || (!isset($_POST['is_featured']) && $_SERVER['REQUEST_METHOD'] !== 'POST' && !empty($post['is_featured']));
+                                $is_breaking_chk = (isset($_POST['is_breaking']) && $_POST['is_breaking']) || (!isset($_POST['is_breaking']) && $_SERVER['REQUEST_METHOD'] !== 'POST' && !empty($post['is_breaking']));
+                                $is_trending_chk = (isset($_POST['is_trending']) && $_POST['is_trending']) || (!isset($_POST['is_trending']) && $_SERVER['REQUEST_METHOD'] !== 'POST' && !empty($post['is_trending']));
+                                $is_live_chk = (isset($_POST['is_live']) && $_POST['is_live']) || (!isset($_POST['is_live']) && $_SERVER['REQUEST_METHOD'] !== 'POST' && !empty($post['is_live']));
+                                
+                                $flags_expiry_val = '';
+                                if (isset($_POST['flags_expiry'])) {
+                                    $flags_expiry_val = $_POST['flags_expiry'];
+                                } elseif (!empty($post['flags_expiry'])) {
+                                    $flags_expiry_val = date('Y-m-d\TH:i', strtotime($post['flags_expiry']));
+                                }
+                                ?>
                                 <div class="space-y-2">
                                     <label class="flex items-center p-2 rounded hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-200 transition">
                                         <input type="checkbox" 
                                                name="is_featured" 
                                                value="1"
-                                               <?php echo (isset($_POST['is_featured']) && $_POST['is_featured']) ? 'checked' : ''; ?>
+                                               <?php echo $is_featured_chk ? 'checked' : ''; ?>
                                                class="mr-2 h-4 w-4 text-blue-600 rounded">
                                         <span class="text-sm">⭐ ফিচার্ড</span>
                                     </label>
@@ -431,7 +477,7 @@ ob_start();
                                         <input type="checkbox" 
                                                name="is_breaking" 
                                                value="1"
-                                               <?php echo (isset($_POST['is_breaking']) && $_POST['is_breaking']) ? 'checked' : ''; ?>
+                                               <?php echo $is_breaking_chk ? 'checked' : ''; ?>
                                                class="mr-2 h-4 w-4 text-red-600 rounded">
                                         <span class="text-sm text-red-600 font-semibold">🔴 ব্রেকিং নিউজ</span>
                                     </label>
@@ -440,10 +486,27 @@ ob_start();
                                         <input type="checkbox" 
                                                name="is_trending" 
                                                value="1"
-                                               <?php echo (isset($_POST['is_trending']) && $_POST['is_trending']) ? 'checked' : ''; ?>
+                                               <?php echo $is_trending_chk ? 'checked' : ''; ?>
                                                class="mr-2 h-4 w-4 text-orange-500 rounded">
                                         <span class="text-sm">🔥 ট্রেন্ডিং</span>
                                     </label>
+
+                                    <label class="flex items-center p-2 rounded hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-200 transition">
+                                        <input type="checkbox" 
+                                               name="is_live" 
+                                               value="1"
+                                               <?php echo $is_live_chk ? 'checked' : ''; ?>
+                                               class="mr-2 h-4 w-4 text-green-600 rounded">
+                                        <span class="text-sm text-green-600 font-semibold">🔴 লাইভ (Live)</span>
+                                    </label>
+                                </div>
+                                
+                                <div class="mt-4 pt-3 border-t border-gray-200">
+                                    <label class="block text-xs font-semibold text-gray-700 mb-1">
+                                        <i class="far fa-clock mr-1 text-gray-500"></i> কতক্ষণ এই আইকনগুলো দেখাবে? (ঐচ্ছিক)
+                                    </label>
+                                    <input type="datetime-local" name="flags_expiry" value="<?php echo $flags_expiry_val; ?>" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                                    <p class="text-[11px] text-gray-500 mt-1">খালি রাখলে আজীবন দেখাবে।</p>
                                 </div>
                             </div>
 
@@ -610,6 +673,18 @@ function switchTab(tabName) {
     const activeBtn = document.getElementById('tab-btn-' + tabName);
     activeBtn.classList.remove('border-transparent', 'text-gray-500');
     activeBtn.classList.add('border-blue-600', 'text-blue-600', 'bg-gray-50');
+}
+
+function toggleScheduleInput() {
+    const status = document.querySelector('input[name="status"]:checked').value;
+    const container = document.getElementById('scheduleTimeContainer');
+    if (status === 'scheduled') {
+        container.classList.remove('hidden');
+        container.classList.add('block');
+    } else {
+        container.classList.remove('block');
+        container.classList.add('hidden');
+    }
 }
 </script>
 
