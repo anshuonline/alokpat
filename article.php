@@ -26,6 +26,7 @@ $page_title = $article['seo_title'] ?? $article['title'];
 // Load live updates if it is a live blog
 $live_updates = [];
 if (($article['post_type'] ?? 'standard') === 'live_blog') {
+    require_once 'models/PostUpdate.php';
     $postUpdateModel = new PostUpdate();
     $live_updates = $postUpdateModel->getByPostId($article['id']);
 }

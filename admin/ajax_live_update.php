@@ -6,6 +6,7 @@
  * @package Alokpath\Admin
  */
 require_once '../config/config.php';
+require_once '../models/PostUpdate.php';
 requireAuth();
 
 header('Content-Type: application/json');
