@@ -44,6 +44,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'status' => isset($_POST['status']) ? 'active' : 'inactive',
         'bio' => $_POST['bio'] ?? '',
         'phone' => $_POST['phone'] ?? '',
+        'facebook_url' => $_POST['facebook_url'] ?? '',
+        'twitter_url' => $_POST['twitter_url'] ?? '',
+        'youtube_url' => $_POST['youtube_url'] ?? '',
     ];
 
     if (!empty($_POST['password'])) {
