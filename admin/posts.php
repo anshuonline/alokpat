@@ -367,8 +367,6 @@ ob_start();
             </div>
         <?php endif; ?>
     </div>
-    
-</div>
 
 <script>
     document.querySelectorAll('.delete-confirm').forEach(link => {
