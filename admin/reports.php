@@ -26,28 +26,28 @@ global $db;
 $users = $db->query("SELECT id, full_name, role FROM users WHERE role IN ('admin', 'super_admin', 'editor', 'writer')")->fetchAll();
 
 // Build query
-$where = ["status = 'published'"];
+$where = ["p.status = 'published'"];
 $params = [];
 
 if (!empty($start_date)) {
-    $where[] = "DATE(published_at) >= :start_date";
+    $where[] = "DATE(p.published_at) >= :start_date";
     $params[':start_date'] = $start_date;
 }
 
 if (!empty($end_date)) {
-    $where[] = "DATE(published_at) <= :end_date";
+    $where[] = "DATE(p.published_at) <= :end_date";
     $params[':end_date'] = $end_date;
 }
 
 if (!empty($author_id)) {
-    $where[] = "author_id = :author_id";
+    $where[] = "p.author_id = :author_id";
     $params[':author_id'] = $author_id;
 }
 
 $where_clause = implode(' AND ', $where);
 
 // Total posts count
-$stmt_total = $db->prepare("SELECT COUNT(id) as total FROM posts WHERE $where_clause");
+$stmt_total = $db->prepare("SELECT COUNT(p.id) as total FROM posts p WHERE $where_clause");
 $stmt_total->execute($params);
 $total_posts = $stmt_total->fetch()['total'] ?? 0;
 
