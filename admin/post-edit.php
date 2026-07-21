@@ -226,10 +226,10 @@ ob_start();
     <form id="postEditForm" method="POST" enctype="multipart/form-data" class="space-y-6">
         <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
         
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             
             <!-- Main Content -->
-            <div class="lg:col-span-2 space-y-6">
+            <div class="lg:col-span-3 space-y-6">
                 
                 <!-- Title -->
                 <div class="bg-white rounded-xl shadow-md p-6">
@@ -294,145 +294,162 @@ ob_start();
                 
             </div>
             
-            <!-- Sidebar -->
-            <div class="space-y-6">
-                
-                <!-- Publish Options -->
-                <div class="bg-white rounded-xl shadow-md p-6">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4">
-                        <i class="fas fa-paper-plane mr-2"></i>
-                        প্রকাশের ধরন
-                    </h3>
-                    
-                    <div class="space-y-3">
-                        <label class="flex items-center">
-                            <input type="radio" 
-                                   name="status" 
-                                   value="draft" 
-                                   <?php echo (!isset($_POST['status']) || $_POST['status'] === 'draft') ? 'checked' : ''; ?>
-                                   class="mr-2 h-4 w-4">
-                            <span class="text-sm">খসড়া (Draft)</span>
-                        </label>
-                        
-                        <label class="flex items-center">
-                            <input type="radio" 
-                                   name="status" 
-                                   value="published" 
-                                   <?php echo (isset($_POST['status']) && $_POST['status'] === 'published') ? 'checked' : ''; ?>
-                                   class="mr-2 h-4 w-4">
-                            <span class="text-sm">প্রকাশিত (Published)</span>
-                        </label>
-                    </div>
-                </div>
-                
-                <!-- Category -->
-                <div class="bg-white rounded-xl shadow-md p-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        ক্যাটাগরি
-                    </label>
-                    <select name="category_id" 
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                        <option value="">-- নির্বাচন করুন --</option>
-                        <?php foreach ($categories as $cat): ?>
-                            <option value="<?php echo $cat['id']; ?>" 
-                                    <?php echo (isset($_POST['category_id']) && $_POST['category_id'] == $cat['id']) ? 'selected' : (isset($post['category_id']) && $post['category_id'] == $cat['id'] ? 'selected' : ''); ?>>
-                                <?php echo escape($cat['name']); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                
-                <!-- Tags -->
-                <div class="bg-white rounded-xl shadow-md p-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        ট্যাগ (Tags)
-                    </label>
-                    <?php
-                    $selected_tag_ids = [];
-                    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tags'])) {
-                        $selected_tag_ids = $_POST['tags'];
-                    } elseif (isset($post['tags']) && is_array($post['tags'])) {
-                        $selected_tag_ids = array_column($post['tags'], 'id');
-                    }
-                    ?>
-                    <select name="tags[]" id="postTags" multiple="multiple" class="w-full px-4 py-3 border border-gray-300 rounded-lg">
-                        <?php foreach ($all_tags as $t): ?>
-                            <option value="<?php echo $t['id']; ?>" <?php echo in_array($t['id'], $selected_tag_ids) ? 'selected' : ''; ?>>
-                                <?php echo escape($t['name']); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                    <p class="text-xs text-gray-500 mt-2">নতুন ট্যাগ লিখতে পারেন এবং এন্টার চাপুন</p>
-                </div>
-                
-                <!-- Featured Image -->
-                <div class="bg-white rounded-xl shadow-md p-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        ফিচার্ড ইমেজ (Featured Image)
-                    </label>
-                    
-                    <div id="featuredImagePreviewContainer" class="<?php echo empty($post['featured_image']) ? 'hidden' : ''; ?> mb-4 relative rounded overflow-hidden border border-gray-200">
-                        <img id="featuredImagePreview" src="<?php echo !empty($post['featured_image']) ? escape($post['featured_image']) : ''; ?>" alt="Preview" class="w-full h-auto object-cover max-h-64">
-                        <button type="button" onclick="removeFeaturedImage()" class="absolute top-2 right-2 bg-red-600 text-white rounded-full p-2 hover:bg-red-700 transition shadow-md" title="Remove Image">
-                            <i class="fas fa-times"></i>
+            <!-- Sidebar with Tabs -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden sticky top-6">
+                    <!-- Tab Headers -->
+                    <div class="flex border-b border-gray-200">
+                        <button type="button" onclick="switchTab('settings')" id="tab-btn-settings" class="flex-1 py-3 px-2 text-sm font-bold text-center border-b-2 border-blue-600 text-blue-600 bg-gray-50 focus:outline-none transition-colors">
+                            <i class="fas fa-cog mr-1"></i> সেটিংস
+                        </button>
+                        <button type="button" onclick="switchTab('media')" id="tab-btn-media" class="flex-1 py-3 px-2 text-sm font-bold text-center border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50 focus:outline-none transition-colors">
+                            <i class="fas fa-image mr-1"></i> মিডিয়া
                         </button>
                     </div>
+                    
+                    <div class="p-5 max-h-[calc(100vh-150px)] overflow-y-auto">
+                        <!-- Tab Content: Settings -->
+                        <div id="tab-content-settings" class="space-y-6 block">
+                            
+                            <!-- Publish Options -->
+                            <div>
+                                <h3 class="text-sm font-bold text-gray-800 mb-3 border-b pb-2">
+                                    <i class="fas fa-paper-plane mr-1 text-gray-500"></i> প্রকাশের ধরন
+                                </h3>
+                                
+                                <div class="space-y-2">
+                                    <label class="flex items-center p-2 rounded hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-200 transition">
+                                        <input type="radio" 
+                                               name="status" 
+                                               value="draft" 
+                                               <?php echo (!isset($_POST['status']) || $_POST['status'] === 'draft') ? 'checked' : ''; ?>
+                                               class="mr-2 h-4 w-4 text-blue-600">
+                                        <span class="text-sm">খসড়া (Draft)</span>
+                                    </label>
+                                    
+                                    <label class="flex items-center p-2 rounded hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-200 transition">
+                                        <input type="radio" 
+                                               name="status" 
+                                               value="published" 
+                                               <?php echo (isset($_POST['status']) && $_POST['status'] === 'published') ? 'checked' : ''; ?>
+                                               class="mr-2 h-4 w-4 text-blue-600">
+                                        <span class="text-sm">প্রকাশিত (Published)</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Category -->
+                            <div>
+                                <label class="block text-sm font-bold text-gray-800 mb-2 border-b pb-2">
+                                    <i class="fas fa-folder-open mr-1 text-gray-500"></i> ক্যাটাগরি
+                                </label>
+                                <select name="category_id" 
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
+                                    <option value="">-- নির্বাচন করুন --</option>
+                                    <?php foreach ($categories as $cat): ?>
+                                        <option value="<?php echo $cat['id']; ?>" 
+                                                <?php echo (isset($_POST['category_id']) && $_POST['category_id'] == $cat['id']) ? 'selected' : (isset($post['category_id']) && $post['category_id'] == $cat['id'] ? 'selected' : ''); ?>>
+                                            <?php echo escape($cat['name']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            
+                            <!-- Tags -->
+                            <div>
+                                <label class="block text-sm font-bold text-gray-800 mb-2 border-b pb-2">
+                                    <i class="fas fa-tags mr-1 text-gray-500"></i> ট্যাগ (Tags)
+                                </label>
+                                <?php
+                                $selected_tag_ids = [];
+                                if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['tags'])) {
+                                    $selected_tag_ids = $_POST['tags'];
+                                } elseif (isset($post['tags']) && is_array($post['tags'])) {
+                                    $selected_tag_ids = array_column($post['tags'], 'id');
+                                }
+                                ?>
+                                <select name="tags[]" id="postTags" multiple="multiple" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                                    <?php foreach ($all_tags as $t): ?>
+                                        <option value="<?php echo $t['id']; ?>" <?php echo in_array($t['id'], $selected_tag_ids) ? 'selected' : ''; ?>>
+                                            <?php echo escape($t['name']); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <p class="text-xs text-gray-500 mt-1">নতুন ট্যাগ লিখতে পারেন এবং এন্টার চাপুন</p>
+                            </div>
 
-                    <div class="flex items-center space-x-3 mb-3">
-                        <button type="button" onclick="openMediaLibrary()" class="px-4 py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-100 transition flex items-center font-semibold">
-                            <i class="fas fa-images mr-2"></i> মিডিয়া লাইব্রেরি থেকে বেছে নিন
-                        </button>
-                    </div>
-                    
-                    <input type="hidden" name="featured_image_url" id="featured_image_url" value="<?php echo !empty($post['featured_image']) ? escape($post['featured_image']) : ''; ?>">
-                    
-                    <div class="mt-3">
-                        <input type="text" 
-                               name="featured_image_alt" 
-                               placeholder="ছবির Alt text (SEO এর জন্য)"
-                               value="<?php echo isset($_POST['featured_image_alt']) ? escape($_POST['featured_image_alt']) : ''; ?>"
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm">
-                    </div>
-                    <div class="mt-3 bg-blue-50 text-blue-700 text-xs p-3 rounded-lg border border-blue-100 flex items-start">
-                        <i class="fas fa-info-circle mt-0.5 mr-2"></i>
-                        <span>পরামর্শিত ছবির সাইজ: <strong>800x450 px</strong> (বা ১৬:৯ অনুপাত)। ছবি স্বয়ংক্রিয়ভাবে কন্টেইনারের সাইজে ফিট হয়ে যাবে (Contain)।</span>
+                        </div>
+                        
+                        <!-- Tab Content: Media & Flags -->
+                        <div id="tab-content-media" class="space-y-6 hidden">
+                            
+                            <!-- Featured Image -->
+                            <div>
+                                <label class="block text-sm font-bold text-gray-800 mb-2 border-b pb-2">
+                                    <i class="fas fa-image mr-1 text-gray-500"></i> ফিচার্ড ইমেজ
+                                </label>
+                                
+                                <div id="featuredImagePreviewContainer" class="<?php echo empty($post['featured_image']) ? 'hidden' : ''; ?> mb-3 relative rounded overflow-hidden border border-gray-200 bg-gray-50">
+                                    <img id="featuredImagePreview" src="<?php echo !empty($post['featured_image']) ? escape($post['featured_image']) : ''; ?>" alt="Preview" class="w-full h-auto object-cover max-h-48">
+                                    <button type="button" onclick="removeFeaturedImage()" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-7 h-7 flex items-center justify-center hover:bg-red-700 transition shadow-md" title="Remove Image">
+                                        <i class="fas fa-times text-xs"></i>
+                                    </button>
+                                </div>
+
+                                <button type="button" onclick="openMediaLibrary()" class="w-full py-2 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-100 transition flex items-center justify-center font-semibold text-sm mb-3">
+                                    <i class="fas fa-cloud-upload-alt mr-2"></i> ইমেজ বেছে নিন
+                                </button>
+                                
+                                <input type="hidden" name="featured_image_url" id="featured_image_url" value="<?php echo !empty($post['featured_image']) ? escape($post['featured_image']) : ''; ?>">
+                                
+                                <div>
+                                    <input type="text" 
+                                           name="featured_image_alt" 
+                                           placeholder="Alt text (SEO)"
+                                           value="<?php echo isset($_POST['featured_image_alt']) ? escape($_POST['featured_image_alt']) : ''; ?>"
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                                </div>
+                            </div>
+                            
+                            <!-- Flags -->
+                            <div>
+                                <h3 class="text-sm font-bold text-gray-800 mb-3 border-b pb-2">
+                                    <i class="fas fa-star mr-1 text-gray-500"></i> বিশেষ চিহ্ন
+                                </h3>
+                                
+                                <div class="space-y-2">
+                                    <label class="flex items-center p-2 rounded hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-200 transition">
+                                        <input type="checkbox" 
+                                               name="is_featured" 
+                                               value="1"
+                                               <?php echo (isset($_POST['is_featured']) && $_POST['is_featured']) ? 'checked' : ''; ?>
+                                               class="mr-2 h-4 w-4 text-blue-600 rounded">
+                                        <span class="text-sm">⭐ ফিচার্ড</span>
+                                    </label>
+                                    
+                                    <label class="flex items-center p-2 rounded hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-200 transition">
+                                        <input type="checkbox" 
+                                               name="is_breaking" 
+                                               value="1"
+                                               <?php echo (isset($_POST['is_breaking']) && $_POST['is_breaking']) ? 'checked' : ''; ?>
+                                               class="mr-2 h-4 w-4 text-red-600 rounded">
+                                        <span class="text-sm text-red-600 font-semibold">🔴 ব্রেকিং নিউজ</span>
+                                    </label>
+                                    
+                                    <label class="flex items-center p-2 rounded hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-200 transition">
+                                        <input type="checkbox" 
+                                               name="is_trending" 
+                                               value="1"
+                                               <?php echo (isset($_POST['is_trending']) && $_POST['is_trending']) ? 'checked' : ''; ?>
+                                               class="mr-2 h-4 w-4 text-orange-500 rounded">
+                                        <span class="text-sm">🔥 ট্রেন্ডিং</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
-                
-                <!-- Flags -->
-                <div class="bg-white rounded-xl shadow-md p-6">
-                    <h3 class="text-sm font-bold text-gray-800 mb-3">বিশেষ চিহ্ন</h3>
-                    
-                    <div class="space-y-3">
-                        <label class="flex items-center">
-                            <input type="checkbox" 
-                                   name="is_featured" 
-                                   value="1"
-                                   <?php echo (isset($_POST['is_featured']) && $_POST['is_featured']) ? 'checked' : ''; ?>
-                                   class="mr-2 h-4 w-4">
-                            <span class="text-sm">⭐ ফিচার্ড</span>
-                        </label>
-                        
-                        <label class="flex items-center">
-                            <input type="checkbox" 
-                                   name="is_breaking" 
-                                   value="1"
-                                   <?php echo (isset($_POST['is_breaking']) && $_POST['is_breaking']) ? 'checked' : ''; ?>
-                                   class="mr-2 h-4 w-4">
-                            <span class="text-sm">🔴 ব্রেকিং নিউজ</span>
-                        </label>
-                        
-                        <label class="flex items-center">
-                            <input type="checkbox" 
-                                   name="is_trending" 
-                                   value="1"
-                                   <?php echo (isset($_POST['is_trending']) && $_POST['is_trending']) ? 'checked' : ''; ?>
-                                   class="mr-2 h-4 w-4">
-                            <span class="text-sm">🔥 ট্রেন্ডিং</span>
-                        </label>
-                    </div>
-                </div>
-                
             </div>
             
         </div>
@@ -571,6 +588,28 @@ function copyFullUrl() {
     navigator.clipboard.writeText(url).then(() => {
         alert('URL কপি করা হয়েছে!');
     });
+}
+
+function switchTab(tabName) {
+    // Hide all tabs
+    document.getElementById('tab-content-settings').classList.add('hidden');
+    document.getElementById('tab-content-media').classList.add('hidden');
+    
+    // Reset all buttons
+    const btns = ['settings', 'media'];
+    btns.forEach(btn => {
+        const el = document.getElementById('tab-btn-' + btn);
+        el.classList.remove('border-blue-600', 'text-blue-600', 'bg-gray-50');
+        el.classList.add('border-transparent', 'text-gray-500');
+    });
+    
+    // Show selected tab
+    document.getElementById('tab-content-' + tabName).classList.remove('hidden');
+    
+    // Active selected button
+    const activeBtn = document.getElementById('tab-btn-' + tabName);
+    activeBtn.classList.remove('border-transparent', 'text-gray-500');
+    activeBtn.classList.add('border-blue-600', 'text-blue-600', 'bg-gray-50');
 }
 </script>
 
