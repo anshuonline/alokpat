@@ -75,6 +75,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $page_title = 'লগইন';
 
+// AJAX Handler for CAPTCHA reload
+if (isset($_GET['reload_captcha'])) {
+    $num1 = rand(1, 9);
+    $num2 = rand(1, 9);
+    $_SESSION['login_captcha'] = $num1 + $num2;
+    header('Content-Type: application/json');
+    echo json_encode(['question' => "{$num1} + {$num2} = ?"]);
+    exit;
+}
+
 // Generate new Math Captcha for the form
 $num1 = rand(1, 9);
 $num2 = rand(1, 9);
@@ -188,8 +198,11 @@ $captcha_question = "{$num1} + {$num2} = ?";
                     
                     <!-- CAPTCHA Field -->
                     <div>
-                        <label for="captcha" class="block text-sm font-bold text-black mb-1">
-                            নিরাপত্তা যাচাই: <span class="text-blue-700 bg-blue-50 px-2 py-0.5 rounded font-mono border border-blue-200"><?php echo $captcha_question; ?></span>
+                        <label for="captcha" class="block text-sm font-bold text-black mb-1 flex justify-between items-center">
+                            <span>নিরাপত্তা যাচাই: <span id="captcha-question" class="text-blue-700 bg-blue-50 px-2 py-0.5 rounded font-mono border border-blue-200"><?php echo $captcha_question; ?></span></span>
+                            <button type="button" id="reload-captcha" class="text-gray-500 hover:text-blue-600 transition-colors" title="নতুন ক্যাপচা">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
                         </label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -228,12 +241,30 @@ $captcha_question = "{$num1} + {$num2} = ?";
         <!-- Footer -->
         <div class="text-center mt-8 text-gray-400">
             <p class="text-xs tracking-wide">
-                &copy; <?php echo date('Y'); ?> আলোকপাত অ্যাডমিন কন্ট্রোল. All Rights Reserved.
+                &copy; <?php echo date('Y'); ?> আলোকপাত . All Rights Reserved.
             </p>
         </div>
     </div>
     
     <script>
+        // CAPTCHA reload handler
+        document.getElementById('reload-captcha').addEventListener('click', function() {
+            const icon = this.querySelector('i');
+            icon.classList.add('fa-spin');
+            
+            fetch('?reload_captcha=1')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('captcha-question').textContent = data.question;
+                    document.getElementById('captcha').value = '';
+                    icon.classList.remove('fa-spin');
+                })
+                .catch(error => {
+                    console.error('Error reloading captcha:', error);
+                    icon.classList.remove('fa-spin');
+                });
+        });
+
         // Simple client-side validation
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             const btn = this.querySelector('button[type="submit"]');
