@@ -200,10 +200,6 @@
                 <?php endif; ?>
                 
                 <?php echo $content ?? ''; ?>
-                
-                <footer class="mt-8 text-center text-sm font-bold text-gray-500 pb-4 border-t border-gray-200 pt-4 uppercase tracking-wider">
-                    &copy; <?php echo date('Y'); ?> আলোকপাত . All Rights Reserved.
-                </footer>
             </main>
             
         </div>
