@@ -161,22 +161,63 @@ ob_start();
 
 <!-- Include html2pdf library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+/* PDF Export Mode Styles (Black & White) */
+#report-content.pdf-mode {
+    background: #fff;
+    padding: 20px;
+}
+#report-content.pdf-mode form {
+    display: none !important; /* Hide filters from PDF */
+}
+#report-content.pdf-mode * {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+#report-content.pdf-mode .bg-gradient-to-br,
+#report-content.pdf-mode .bg-white,
+#report-content.pdf-mode .bg-white\/20,
+#report-content.pdf-mode .bg-gray-50 {
+    background: transparent !important;
+    border: 1px solid #000 !important;
+}
+#report-content.pdf-mode th,
+#report-content.pdf-mode td {
+    border-bottom: 1px solid #000 !important;
+}
+#report-content.pdf-mode h3 {
+    border-bottom: 2px solid #000 !important;
+}
+/* Hide background elements */
+#report-content.pdf-mode .blur-xl {
+    display: none !important;
+}
+</style>
 <script>
 function downloadPDF() {
     const element = document.getElementById('report-content');
+    
+    // Add professional B&W layout class
+    element.classList.add('pdf-mode');
+    
     const opt = {
         margin:       [0.5, 0.5, 0.5, 0.5],
         filename:     'alokpat_report_<?php echo date('Y-m-d'); ?>.pdf',
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
+        image:        { type: 'jpeg', quality: 1 },
+        html2canvas:  { scale: 4, useCORS: true }, // High scale for clear text
         jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
     };
     
-    // Temporarily hide filter button/form for cleaner PDF if desired, or keep it.
-    html2pdf().set(opt).from(element).save();
+    // Generate PDF and open in new tab
+    html2pdf().set(opt).from(element).outputPdf('bloburl').then(function(pdfUrl) {
+        window.open(pdfUrl, '_blank');
+        // Revert styling
+        element.classList.remove('pdf-mode');
+    });
 }
 </script>
-
 <?php
 $content = ob_get_clean();
 include 'layouts/admin.php';
