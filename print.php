@@ -158,7 +158,6 @@ $page_title = 'প্রিন্ট: ' . ($article['title'] ?? '');
             <?php else: ?>
                 <h1>আলোকপাত</h1>
             <?php endif; ?>
-            <p style="margin: 5px 0 0; font-size: 14px; color: #555;">সত্যের সন্ধানে নির্ভীক</p>
         </div>
 
         <h1 class="article-title"><?php echo escape($article['title']); ?></h1>
