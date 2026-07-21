@@ -107,6 +107,12 @@
                     <i class="fas fa-envelope w-6 transition-colors"></i>
                     <span class="font-medium">যোগাযোগ (Contacts)</span>
                 </a>
+                
+                <a href="<?php echo ADMIN_URL; ?>/reports.php" 
+                   class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'reports.php' ? 'active' : 'text-gray-700'; ?>">
+                    <i class="fas fa-chart-line w-6 transition-colors"></i>
+                    <span class="font-medium">রিপোর্টস</span>
+                </a>
                 <?php endif; ?>
                 
                 <?php if(hasAnyRole(['super_admin'])): ?>
