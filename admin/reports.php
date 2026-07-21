@@ -26,7 +26,7 @@ $post_status = $_GET['post_status'] ?? 'published';
 // Get all writers/editors for filter dropdown
 global $db;
 $users = $db->query("SELECT id, full_name, role FROM users WHERE role IN ('admin', 'super_admin', 'editor', 'writer')")->fetchAll();
-$categories = $db->query("SELECT id, name FROM categories WHERE status = 'active' ORDER BY name ASC")->fetchAll();
+$categories = $db->query("SELECT id, name FROM categories WHERE is_active = 1 ORDER BY name ASC")->fetchAll();
 
 // Build query
 $where = [];
