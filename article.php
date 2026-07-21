@@ -290,16 +290,22 @@ component('header', ['categories' => $categories]);
                                 <i class="far fa-clock mr-1.5"></i> <?php echo date('h:i A, d M Y', strtotime($update['update_time'])); ?>
                             </div>
                             
-                            <?php $isLong = strlen(strip_tags($update['content'])) > 600; ?>
+                            <?php 
+                            $raw_text = strip_tags($update['content']);
+                            $isLong = mb_strlen($raw_text) > 400; 
+                            ?>
                             <div class="relative">
-                                <div id="update-content-<?php echo $update['id']; ?>" class="article-content prose prose-sm sm:prose max-w-none text-gray-800 <?php echo $isLong ? 'max-h-40 overflow-hidden transition-all duration-300' : ''; ?>">
-                                    <?php echo $update['content']; ?>
-                                </div>
                                 <?php if ($isLong): ?>
-                                <div id="update-overlay-<?php echo $update['id']; ?>" class="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-white to-transparent flex items-end"></div>
-                                <button onclick="expandUpdateContent(<?php echo $update['id']; ?>)" id="update-btn-<?php echo $update['id']; ?>" class="text-blue-600 hover:text-blue-800 text-sm font-semibold mt-2 inline-flex items-center">
-                                    আরও পড়ুন (Read More) <i class="fas fa-chevron-down ml-1 text-xs"></i>
-                                </button>
+                                    <div id="update-excerpt-<?php echo $update['id']; ?>" class="article-content prose prose-sm sm:prose max-w-none text-gray-800">
+                                        <?php echo mb_substr($raw_text, 0, 400); ?>... <span onclick="expandUpdateContent(<?php echo $update['id']; ?>)" class="text-blue-600 font-semibold cursor-pointer hover:underline ml-1">Load More</span>
+                                    </div>
+                                    <div id="update-content-<?php echo $update['id']; ?>" class="article-content prose prose-sm sm:prose max-w-none text-gray-800 hidden">
+                                        <?php echo $update['content']; ?>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="article-content prose prose-sm sm:prose max-w-none text-gray-800">
+                                        <?php echo $update['content']; ?>
+                                    </div>
                                 <?php endif; ?>
                             </div>
                             
@@ -377,13 +383,11 @@ component('header', ['categories' => $categories]);
             }
             
             function expandUpdateContent(id) {
+                const excerpt = document.getElementById('update-excerpt-' + id);
                 const content = document.getElementById('update-content-' + id);
-                const overlay = document.getElementById('update-overlay-' + id);
-                const btn = document.getElementById('update-btn-' + id);
                 
-                if(content) content.classList.remove('max-h-40', 'overflow-hidden');
-                if(overlay) overlay.style.display = 'none';
-                if(btn) btn.style.display = 'none';
+                if(excerpt) excerpt.style.display = 'none';
+                if(content) content.classList.remove('hidden');
             }
         </script>
         
