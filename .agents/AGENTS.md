@@ -1,0 +1,3 @@
+# Project Rules
+
+- **Database Changes**: NEVER use auto-create or auto-migration SQL scripts directly in the application code (e.g., executing `ALTER TABLE` inside PHP files). If any database changes are required, provide the SQL commands for manual execution or execute them manually if remote DB access is configured. Do not attempt to automatically alter tables during application runtime to avoid breaking production deployments.

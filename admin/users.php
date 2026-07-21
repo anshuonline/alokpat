@@ -8,14 +8,6 @@
 require_once '../config/config.php';
 require_once '../includes/auth.php';
 
-// Auto-migrate social columns (silently fails if they already exist)
-try {
-    global $db;
-    $db->exec("ALTER TABLE users ADD COLUMN facebook_url VARCHAR(255) NULL, ADD COLUMN twitter_url VARCHAR(255) NULL, ADD COLUMN youtube_url VARCHAR(255) NULL");
-} catch (PDOException $e) {
-    // Ignore error, columns likely already exist
-}
-
 requireRole('super_admin');
 
 $userModel = new User();
