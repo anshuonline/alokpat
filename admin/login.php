@@ -32,6 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = sanitize($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
     
+    // Check Honeypot Field (Bot detection)
+    if (!empty($_POST['website_url'])) {
+        // Silently reject or fake error
+        setFlash('error', 'ভুল ইউজারনেম বা পাসওয়ার্ড');
+        redirect(ADMIN_URL . '/login.php');
+    }
+
     // Validate inputs
     if (empty($username) || empty($password)) {
         setFlash('error', 'ইউজারনেম এবং পাসওয়ার্ড দিন');
@@ -44,6 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $authenticated = $user->authenticate($username, $password);
             
             if ($authenticated) {
+                // Prevent Session Fixation attacks
+                session_regenerate_id(true);
+                
                 // Set session
                 $_SESSION['user_id'] = $authenticated['id'];
                 $_SESSION['username'] = $authenticated['username'];
@@ -70,75 +80,111 @@ $page_title = 'লগইন';
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛽</text></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             font-family: 'Noto Sans Bengali', sans-serif;
         }
-        .login-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .bg-tech {
+            background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        /* Hide honeypot field */
+        .hp-field {
+            display: none !important;
         }
     </style>
 </head>
-<body class="login-gradient min-h-screen flex items-center justify-center">
+<body class="bg-tech min-h-screen flex items-center justify-center relative">
     
-    <div class="w-full max-w-md px-4">
-        <div class="bg-white rounded-2xl shadow-2xl p-8">
+    <!-- Dark overlay for better contrast -->
+    <div class="absolute inset-0 bg-black/70 backdrop-blur-[2px]"></div>
+    
+    <div class="relative z-10 w-full max-w-md px-4">
+        <!-- Minimalist Black & White Card -->
+        <div class="bg-white rounded-xl shadow-2xl overflow-hidden border-t-4 border-black">
             
-            <!-- Logo -->
-            <div class="text-center mb-8">
-                <h1 class="text-3xl font-bold text-gray-900">
-                    আলোকপাত
-                </h1>
-                <p class="text-gray-600 mt-2">অ্যাডমিন প্যানেল</p>
+            <div class="p-8">
+                <!-- Logo -->
+                <div class="text-center mb-8">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-black text-white rounded-full mb-4 shadow-lg">
+                        <i class="fas fa-shield-alt text-2xl"></i>
+                    </div>
+                    <h1 class="text-3xl font-extrabold text-black tracking-tight">
+                        আলোকপাত
+                    </h1>
+                    <p class="text-gray-500 mt-1 font-medium tracking-widest text-sm uppercase">অ্যাডমিন প্যানেল</p>
+                </div>
+                
+                <!-- Flash Messages -->
+                <?php if ($flash = getFlash()): ?>
+                    <div class="mb-6 p-4 rounded-lg text-sm font-medium <?php echo $flash['type'] == 'success' ? 'bg-green-50 text-green-900 border border-green-200' : 'bg-red-50 text-red-900 border border-red-200'; ?>">
+                        <div class="flex items-center">
+                            <i class="fas <?php echo $flash['type'] == 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'; ?> mr-2"></i>
+                            <?php echo escape($flash['message']); ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                
+                <!-- Login Form -->
+                <form method="POST" action="" class="space-y-5" id="loginForm">
+                    <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+                    
+                    <!-- Honeypot Field -->
+                    <input type="text" name="website_url" class="hp-field" tabindex="-1" autocomplete="off">
+                    
+                    <div>
+                        <label for="username" class="block text-sm font-bold text-black mb-1">
+                            ইউজারনেম
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </div>
+                            <input type="text" 
+                                   id="username" 
+                                   name="username" 
+                                   required
+                                   class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-0 focus:border-black transition-colors outline-none bg-gray-50 focus:bg-white text-black font-medium"
+                                   placeholder="admin"
+                                   value="<?php echo isset($_POST['username']) ? escape($_POST['username']) : ''; ?>">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label for="password" class="block text-sm font-bold text-black mb-1">
+                            পাসওয়ার্ড
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input type="password" 
+                                   id="password" 
+                                   name="password" 
+                                   required
+                                   class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-0 focus:border-black transition-colors outline-none bg-gray-50 focus:bg-white text-black font-medium"
+                                   placeholder="••••••••">
+                        </div>
+                    </div>
+                    
+                    <div class="pt-2">
+                        <button type="submit" 
+                                class="w-full bg-black text-white py-3.5 rounded-lg font-bold hover:bg-gray-800 transition-colors shadow-md flex justify-center items-center group">
+                            <span>লগইন করুন</span>
+                            <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </div>
+                </form>
+                
             </div>
             
-            <!-- Flash Messages -->
-            <?php if ($flash = getFlash()): ?>
-                <div class="mb-4 p-4 rounded-lg <?php echo $flash['type'] == 'success' ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'; ?>">
-                    <?php echo escape($flash['message']); ?>
-                </div>
-            <?php endif; ?>
-            
-            <!-- Login Form -->
-            <form method="POST" action="" class="space-y-6">
-                <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
-                
-                <div>
-                    <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
-                        ইউজারনেম
-                    </label>
-                    <input type="text" 
-                           id="username" 
-                           name="username" 
-                           required
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                           placeholder="admin"
-                           value="<?php echo isset($_POST['username']) ? escape($_POST['username']) : ''; ?>">
-                </div>
-                
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-                        পাসওয়ার্ড
-                    </label>
-                    <input type="password" 
-                           id="password" 
-                           name="password" 
-                           required
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                           placeholder="••••••••">
-                </div>
-                
-                <button type="submit" 
-                        class="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg">
-                    <i class="fas fa-sign-in-alt mr-2"></i>
-                    লগইন
-                </button>
-            </form>
-            
             <!-- Back to Site -->
-            <div class="mt-6 text-center">
-                <a href="<?php echo SITE_URL; ?>" class="text-sm text-gray-600 hover:text-blue-600">
-                    <i class="fas fa-arrow-left mr-1"></i>
+            <div class="bg-gray-50 px-8 py-4 border-t border-gray-100 text-center">
+                <a href="<?php echo SITE_URL; ?>" class="text-sm font-medium text-gray-600 hover:text-black transition-colors inline-flex items-center">
+                    <i class="fas fa-globe mr-2"></i>
                     ওয়েবসাইটে ফিরে যান
                 </a>
             </div>
@@ -146,12 +192,20 @@ $page_title = 'লগইন';
         </div>
         
         <!-- Footer -->
-        <div class="text-center mt-6 text-white">
-            <p class="text-sm opacity-90">
-                &copy; <?php echo date('Y'); ?> আলোকপাত অ্যাডমিন কন্ট্রোল
+        <div class="text-center mt-8 text-gray-400">
+            <p class="text-xs tracking-wide">
+                &copy; <?php echo date('Y'); ?> আলোকপাত অ্যাডমিন কন্ট্রোল. All Rights Reserved.
             </p>
         </div>
     </div>
     
+    <script>
+        // Simple client-side validation
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            const btn = this.querySelector('button[type="submit"]');
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+        });
+    </script>
 </body>
 </html>
