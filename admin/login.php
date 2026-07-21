@@ -77,7 +77,13 @@ $page_title = 'লগইন';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $page_title; ?> - আলোকপাত অ্যাডমিন</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛽</text></svg>">
+    <?php 
+    if (function_exists('component')) {
+        component('favicon'); 
+    } else {
+        echo '<link rel="icon" href="' . SITE_URL . '/assets/images/favicon.ico">';
+    }
+    ?>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -86,7 +92,7 @@ $page_title = 'লগইন';
             font-family: 'Noto Sans Bengali', sans-serif;
         }
         .bg-tech {
-            background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1920&auto=format&fit=crop');
+            background-image: url('<?php echo SITE_URL; ?>/assets/images/admin-bg.png');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
