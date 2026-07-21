@@ -181,6 +181,10 @@
                 <?php endif; ?>
                 
                 <?php echo $content ?? ''; ?>
+                
+                <footer class="mt-8 text-center text-sm text-gray-400 pb-4 border-t border-gray-100 pt-4">
+                    This panel is not totally responsive so you have to use a big screen monitor for the best UI experience.
+                </footer>
             </main>
             
         </div>
