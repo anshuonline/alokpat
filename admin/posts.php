@@ -386,6 +386,46 @@ ob_start();
         });
     }
 
+    // Custom Toast Notification
+    function showToast(message, type = 'success', url = '') {
+        const toastId = 'toast-' + Math.random().toString(36).substr(2, 9);
+        const bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-600';
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle';
+        
+        let html = `
+            <div id="${toastId}" class="fixed bottom-5 right-5 ${bgColor} text-white px-6 py-4 rounded-lg shadow-xl transform transition-all duration-300 translate-y-full opacity-0 z-50 flex flex-col max-w-sm">
+                <div class="flex items-center space-x-3 mb-2">
+                    <i class="fas ${icon} text-2xl"></i>
+                    <p class="font-bold text-lg">Alokpat Indexing</p>
+                    <button onclick="document.getElementById('${toastId}').remove()" class="ml-auto text-white hover:text-gray-200">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <p class="text-sm opacity-90">${message}</p>
+        `;
+        
+        if (url) {
+            html += `<p class="text-xs mt-2 opacity-75 break-all">${url}</p>`;
+        }
+        
+        html += `</div>`;
+        
+        document.body.insertAdjacentHTML('beforeend', html);
+        
+        const toast = document.getElementById(toastId);
+        
+        // Animate in
+        setTimeout(() => {
+            toast.classList.remove('translate-y-full', 'opacity-0');
+        }, 10);
+        
+        // Remove after 6 seconds
+        setTimeout(() => {
+            toast.classList.add('translate-y-full', 'opacity-0');
+            setTimeout(() => toast.remove(), 300);
+        }, 6000);
+    }
+
     // Instant Indexing
     document.querySelectorAll('.instant-index-btn').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -408,15 +448,15 @@ ob_start();
                 this.disabled = false;
                 
                 if (data.success) {
-                    alert(data.message + '\nURL: ' + data.url);
+                    showToast(data.message, 'success', data.url);
                 } else {
-                    alert('Error: ' + data.message);
+                    showToast('Error: ' + data.message, 'error');
                 }
             })
             .catch(error => {
                 this.innerHTML = originalHtml;
                 this.disabled = false;
-                alert('An error occurred while processing the request.');
+                showToast('An error occurred while processing the request.', 'error');
             });
         });
     });
