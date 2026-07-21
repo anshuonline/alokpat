@@ -73,6 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'title' => $title,
             'slug' => $slug,
             'content' => $content,
+            'post_type' => sanitize($_POST['post_type'] ?? 'standard'),
             'excerpt' => sanitize($_POST['excerpt'] ?? ''),
             'author_id' => getCurrentUser()['id'],
             'category_id' => !empty($_POST['category_id']) ? (int)$_POST['category_id'] : null,
@@ -187,6 +188,46 @@ ob_start();
             <!-- Main Content -->
             <div class="lg:col-span-3 space-y-6">
                 
+                <!-- Post Type Selector -->
+                <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
+                    <label class="block text-lg font-semibold text-gray-800 mb-4">
+                        পোস্টের ধরন <span class="text-red-500">*</span>
+                    </label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none">
+                            <input type="radio" name="post_type" value="standard" class="sr-only peer" checked>
+                            <div class="flex w-full items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="text-sm">
+                                        <p class="font-medium text-gray-900">সাধারণ পোস্ট (Standard)</p>
+                                        <div class="text-gray-500">নিয়মিত নিউজ আর্টিকেল</div>
+                                    </div>
+                                </div>
+                                <div class="shrink-0 text-blue-600 hidden peer-checked:block">
+                                    <i class="fas fa-check-circle text-xl"></i>
+                                </div>
+                            </div>
+                            <span class="pointer-events-none absolute -inset-px rounded-lg border-2 border-transparent peer-checked:border-blue-600" aria-hidden="true"></span>
+                        </label>
+
+                        <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none">
+                            <input type="radio" name="post_type" value="live_blog" class="sr-only peer">
+                            <div class="flex w-full items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="text-sm">
+                                        <p class="font-medium text-gray-900 flex items-center">লাইভ ব্লগ (Live Blog) <span class="ml-2 flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span></p>
+                                        <div class="text-gray-500">টাইমলাইন আপডেট ভিত্তিক সংবাদ</div>
+                                    </div>
+                                </div>
+                                <div class="shrink-0 text-blue-600 hidden peer-checked:block">
+                                    <i class="fas fa-check-circle text-xl"></i>
+                                </div>
+                            </div>
+                            <span class="pointer-events-none absolute -inset-px rounded-lg border-2 border-transparent peer-checked:border-blue-600" aria-hidden="true"></span>
+                        </label>
+                    </div>
+                </div>
+
                 <!-- Title -->
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <label class="block text-lg font-semibold text-gray-800 mb-2">

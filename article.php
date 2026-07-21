@@ -23,6 +23,14 @@ $related_posts = $post->getRelated($article['id'], $article['category_id'], 5);
 
 $page_title = $article['seo_title'] ?? $article['title'];
 
+// Load live updates if it is a live blog
+$live_updates = [];
+if (($article['post_type'] ?? 'standard') === 'live_blog') {
+    require_once 'models/PostUpdate.php';
+    $postUpdateModel = new PostUpdate();
+    $live_updates = $postUpdateModel->getByPostId($article['id']);
+}
+
 // Get categories for header
 $category = new Category();
 $categories = $category->getActive();
@@ -247,6 +255,57 @@ component('header', ['categories' => $categories]);
                 </button>
             </div>
         </div>
+
+        <?php if (($article['post_type'] ?? 'standard') === 'live_blog'): ?>
+        <!-- Live Timeline UI -->
+        <div class="live-timeline-section mt-8 mb-12">
+            <div class="flex items-center mb-6 pb-2 border-b-2 border-red-100">
+                <span class="relative flex h-4 w-4 mr-3">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-4 w-4 bg-red-600 shadow"></span>
+                </span>
+                <h2 class="text-2xl font-bold text-gray-800 m-0">লাইভ আপডেট (Live Updates)</h2>
+            </div>
+            
+            <?php if (empty($live_updates)): ?>
+                <div class="bg-gray-50 border border-gray-200 rounded-xl p-8 text-center text-gray-500">
+                    <i class="fas fa-info-circle text-2xl mb-2 text-gray-400"></i>
+                    <p>এখনও কোনো লাইভ আপডেট নেই। যুক্ত থাকার জন্য ধন্যবাদ।</p>
+                </div>
+            <?php else: ?>
+                <div class="relative border-l-2 border-red-500 ml-4 pl-6 md:ml-6 md:pl-8 space-y-8 pb-4">
+                    <?php foreach ($live_updates as $update): ?>
+                    <div class="relative group" id="update-<?php echo $update['id']; ?>">
+                        <!-- Timeline Dot -->
+                        <div class="absolute -left-[31px] md:-left-[39px] top-1.5 h-4 w-4 rounded-full bg-red-600 border-4 border-white shadow-sm"></div>
+                        
+                        <!-- Timeline Content -->
+                        <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex items-center text-sm font-bold text-red-600 mb-3 bg-red-50 inline-block px-3 py-1 rounded-md">
+                                <i class="far fa-clock mr-1.5"></i> <?php echo date('h:i A, d M Y', strtotime($update['update_time'])); ?>
+                            </div>
+                            <div class="article-content prose prose-sm sm:prose max-w-none text-gray-800">
+                                <?php echo $update['content']; ?>
+                            </div>
+                            
+                            <!-- Share Update -->
+                            <div class="mt-4 pt-3 border-t border-gray-50 flex items-center gap-3">
+                                <span class="text-xs text-gray-400 font-medium uppercase tracking-wider">শেয়ার করুন:</span>
+                                <?php 
+                                $updateUrl = urlencode(url_for_post($article) . '#update-' . $update['id']); 
+                                $updateText = urlencode("Live Update: " . strip_tags(substr($update['content'], 0, 60)) . '...');
+                                ?>
+                                <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $updateUrl; ?>" target="_blank" class="text-blue-600 hover:text-blue-800 transition"><i class="fab fa-facebook-square text-lg"></i></a>
+                                <a href="https://wa.me/?text=<?php echo $updateText . ' ' . $updateUrl; ?>" target="_blank" class="text-green-500 hover:text-green-600 transition"><i class="fab fa-whatsapp text-lg"></i></a>
+                                <a href="https://twitter.com/intent/tweet?url=<?php echo $updateUrl; ?>&text=<?php echo $updateText; ?>" target="_blank" class="text-gray-800 hover:text-black transition"><i class="fa-brands fa-x-twitter text-lg"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {

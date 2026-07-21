@@ -103,6 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'meta_og_title' => sanitize($_POST['meta_og_title'] ?? ''),
             'meta_og_description' => sanitize($_POST['meta_og_description'] ?? ''),
             'meta_og_image' => sanitize($_POST['meta_og_image'] ?? ''),
+            'post_type' => sanitize($_POST['post_type'] ?? 'standard'),
             'meta_twitter_card' => sanitize($_POST['meta_twitter_card'] ?? 'summary_large_image'),
             'robots_meta' => sanitize($_POST['robots_meta'] ?? 'index,follow'),
             'tags' => $processed_tags,
@@ -235,6 +236,46 @@ ob_start();
             <!-- Main Content -->
             <div class="lg:col-span-3 space-y-6">
                 
+                <!-- Post Type Selector -->
+                <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
+                    <label class="block text-lg font-semibold text-gray-800 mb-4">
+                        পোস্টের ধরন <span class="text-red-500">*</span>
+                    </label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none">
+                            <input type="radio" name="post_type" value="standard" class="sr-only peer" <?php echo ($post['post_type'] ?? 'standard') === 'standard' ? 'checked' : ''; ?>>
+                            <div class="flex w-full items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="text-sm">
+                                        <p class="font-medium text-gray-900">সাধারণ পোস্ট (Standard)</p>
+                                        <div class="text-gray-500">নিয়মিত নিউজ আর্টিকেল</div>
+                                    </div>
+                                </div>
+                                <div class="shrink-0 text-blue-600 hidden peer-checked:block">
+                                    <i class="fas fa-check-circle text-xl"></i>
+                                </div>
+                            </div>
+                            <span class="pointer-events-none absolute -inset-px rounded-lg border-2 border-transparent peer-checked:border-blue-600" aria-hidden="true"></span>
+                        </label>
+
+                        <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm focus:outline-none">
+                            <input type="radio" name="post_type" value="live_blog" class="sr-only peer" <?php echo ($post['post_type'] ?? 'standard') === 'live_blog' ? 'checked' : ''; ?>>
+                            <div class="flex w-full items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="text-sm">
+                                        <p class="font-medium text-gray-900 flex items-center">লাইভ ব্লগ (Live Blog) <span class="ml-2 flex h-2 w-2 relative"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span></span></p>
+                                        <div class="text-gray-500">টাইমলাইন আপডেট ভিত্তিক সংবাদ</div>
+                                    </div>
+                                </div>
+                                <div class="shrink-0 text-blue-600 hidden peer-checked:block">
+                                    <i class="fas fa-check-circle text-xl"></i>
+                                </div>
+                            </div>
+                            <span class="pointer-events-none absolute -inset-px rounded-lg border-2 border-transparent peer-checked:border-blue-600" aria-hidden="true"></span>
+                        </label>
+                    </div>
+                </div>
+                
                 <!-- Title -->
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <label class="block text-lg font-semibold text-gray-800 mb-2">
@@ -295,6 +336,29 @@ ob_start();
                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                               placeholder="সংবাদের সংক্ষিপ্ত সারাংশ..."><?php echo isset($_POST['excerpt']) ? escape($_POST['excerpt']) : ''; ?></textarea>
                 </div>
+
+                <!-- Live Blog Updates Timeline -->
+                <?php if (($post['post_type'] ?? 'standard') === 'live_blog'): ?>
+                <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-red-500">
+                    <div class="flex justify-between items-center mb-6 border-b pb-4">
+                        <label class="block text-lg font-bold text-gray-800 flex items-center m-0">
+                            <span class="relative flex h-3 w-3 mr-3">
+                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
+                            </span>
+                            লাইভ আপডেট টাইমলাইন
+                        </label>
+                        <button type="button" onclick="openLiveUpdateModal()" class="bg-red-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-red-700 font-semibold text-sm transition flex items-center">
+                            <i class="fas fa-plus mr-2"></i> নতুন আপডেট যোগ করুন
+                        </button>
+                    </div>
+                    
+                    <div id="liveUpdatesTimelineContainer" class="space-y-4">
+                        <!-- Updates will be loaded here via AJAX -->
+                        <div class="text-center text-gray-500 py-8"><i class="fas fa-circle-notch fa-spin text-2xl mb-2"></i><br>আপডেট লোড হচ্ছে...</div>
+                    </div>
+                </div>
+                <?php endif; ?>
                 
             </div>
             
@@ -866,6 +930,228 @@ function toggleScheduleInput() {
         }
     });
 </script>
+
+<?php if (($post['post_type'] ?? 'standard') === 'live_blog'): ?>
+<!-- Live Update Modal -->
+<div id="liveUpdateModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center">
+    <div class="absolute inset-0 bg-black bg-opacity-50 transition-opacity" onclick="closeLiveUpdateModal()"></div>
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative z-10 p-6 transform transition-all">
+        <div class="flex justify-between items-center mb-5 pb-3 border-b border-gray-200">
+            <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                <i class="fas fa-bolt text-red-500 mr-2"></i> <span id="liveUpdateModalTitle">নতুন লাইভ আপডেট</span>
+            </h3>
+            <button type="button" onclick="closeLiveUpdateModal()" class="text-gray-400 hover:text-red-500 transition-colors">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        
+        <form id="liveUpdateForm" onsubmit="submitLiveUpdate(event)">
+            <input type="hidden" id="live_update_id" value="">
+            
+            <div class="mb-4">
+                <label class="block text-sm font-bold text-gray-700 mb-1">সময় (Update Time)</label>
+                <input type="datetime-local" id="live_update_time" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent" required>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-bold text-gray-700 mb-1">বিস্তারিত (Content)</label>
+                <textarea id="live_update_content" rows="6" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 font-mono text-sm"></textarea>
+            </div>
+            
+            <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                <button type="button" onclick="closeLiveUpdateModal()" class="px-5 py-2.5 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 transition">বাতিল</button>
+                <button type="submit" class="px-5 py-2.5 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 shadow-md transition flex items-center">
+                    <i class="fas fa-save mr-2"></i> সংরক্ষণ করুন
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Initialize Live Update TinyMCE when modal opens
+let liveUpdateEditorInit = false;
+
+function openLiveUpdateModal(id = '', content = '', time = '') {
+    document.getElementById('liveUpdateModalTitle').innerText = id ? 'আপডেট সম্পাদনা' : 'নতুন লাইভ আপডেট';
+    document.getElementById('live_update_id').value = id;
+    
+    // Set default time if new
+    if (!time) {
+        const now = new Date();
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        time = now.toISOString().slice(0,16);
+    }
+    document.getElementById('live_update_time').value = time;
+    document.getElementById('live_update_content').value = content;
+    
+    document.getElementById('liveUpdateModal').classList.remove('hidden');
+    
+    if (!liveUpdateEditorInit) {
+        tinymce.init({
+            selector: '#live_update_content',
+            height: 300,
+            menubar: false,
+            plugins: [
+                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
+                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                'insertdatetime', 'media', 'table', 'help', 'wordcount'
+            ],
+            toolbar: 'undo redo | blocks | ' +
+            'bold italic forecolor | alignleft aligncenter ' +
+            'alignright alignjustify | bullist numlist outdent indent | ' +
+            'removeformat | image link | code help',
+            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }',
+            setup: function(editor) {
+                editor.on('change input', function () {
+                    tinymce.triggerSave();
+                });
+            }
+        });
+        liveUpdateEditorInit = true;
+    } else {
+        tinymce.get('live_update_content').setContent(content);
+    }
+}
+
+function closeLiveUpdateModal() {
+    document.getElementById('liveUpdateModal').classList.add('hidden');
+}
+
+function submitLiveUpdate(e) {
+    e.preventDefault();
+    tinymce.triggerSave();
+    
+    const id = document.getElementById('live_update_id').value;
+    const time = document.getElementById('live_update_time').value;
+    const content = document.getElementById('live_update_content').value;
+    
+    if (!content.trim()) {
+        alert('বিস্তারিত লেখা প্রয়োজন');
+        return;
+    }
+    
+    const action = id ? 'update' : 'create';
+    const formData = new FormData();
+    formData.append('action', action);
+    formData.append('csrf_token', '<?php echo generateCSRFToken(); ?>');
+    formData.append('post_id', '<?php echo $post_id; ?>');
+    formData.append('update_time', time);
+    formData.append('content', content);
+    if (id) formData.append('id', id);
+    
+    fetch('ajax_live_update.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            closeLiveUpdateModal();
+            fetchLiveUpdates(); // Reload updates
+            
+            // Show toast/alert
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded shadow-lg z-50 transition-opacity duration-500';
+            toast.innerHTML = `<i class="fas fa-check-circle mr-2"></i> ${data.message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 500); }, 3000);
+        } else {
+            alert(data.message || 'Error saving update');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Server connection error');
+    });
+}
+
+function deleteLiveUpdate(id) {
+    if (!confirm('আপনি কি নিশ্চিত যে এই আপডেটটি মুছে ফেলতে চান?')) return;
+    
+    const formData = new FormData();
+    formData.append('action', 'delete');
+    formData.append('csrf_token', '<?php echo generateCSRFToken(); ?>');
+    formData.append('id', id);
+    
+    fetch('ajax_live_update.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            fetchLiveUpdates();
+        } else {
+            alert(data.message || 'Error deleting update');
+        }
+    });
+}
+
+function fetchLiveUpdates() {
+    const formData = new FormData();
+    formData.append('action', 'fetch');
+    formData.append('csrf_token', '<?php echo generateCSRFToken(); ?>');
+    formData.append('post_id', '<?php echo $post_id; ?>');
+    
+    fetch('ajax_live_update.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        const container = document.getElementById('liveUpdatesTimelineContainer');
+        if (data.success) {
+            if (data.updates.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-500 py-6 border-2 border-dashed border-gray-300 rounded-lg">কোন আপডেট পাওয়া যায়নি। নতুন আপডেট যোগ করুন।</div>';
+                return;
+            }
+            
+            let html = '<div class="relative border-l-2 border-red-500 ml-3 pl-6 space-y-6">';
+            data.updates.forEach(update => {
+                // Ensure properly formatted datetime-local
+                let dt = new Date(update.update_time);
+                dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
+                let isoTime = dt.toISOString().slice(0,16);
+                
+                // Escape HTML for data attributes safely
+                const escapedContent = update.content.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                
+                html += `
+                <div class="relative">
+                    <div class="absolute -left-[31px] top-1 h-4 w-4 rounded-full bg-red-500 border-4 border-white shadow"></div>
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 shadow-sm relative group hover:shadow-md transition">
+                        <div class="text-xs font-bold text-red-600 mb-2 flex items-center">
+                            <i class="far fa-clock mr-1"></i> ${update.display_time}
+                        </div>
+                        <div class="prose prose-sm max-w-none text-gray-800">
+                            ${update.content}
+                        </div>
+                        
+                        <!-- Action buttons -->
+                        <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition flex space-x-2 bg-white px-2 py-1 rounded shadow-sm">
+                            <button type="button" onclick="openLiveUpdateModal(${update.id}, \`${escapedContent}\`, '${isoTime}')" class="text-blue-500 hover:text-blue-700" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" onclick="deleteLiveUpdate(${update.id})" class="text-red-500 hover:text-red-700" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        } else {
+            container.innerHTML = `<div class="text-red-500">${data.message || 'Error loading updates'}</div>`;
+        }
+    });
+}
+
+// Load initially if it's a live blog
+document.addEventListener('DOMContentLoaded', fetchLiveUpdates);
+</script>
+<?php endif; ?>
 
 <script>
 document.querySelector('form')?.addEventListener('submit', function () {

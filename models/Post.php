@@ -24,12 +24,12 @@ class Post {
         try {
             $sql = "INSERT INTO " . $this->table . " 
                     (title, slug, content, excerpt, featured_image, featured_image_alt, author_id, 
-                     category_id, status, is_featured, is_breaking, is_trending, published_at, 
+                     category_id, status, post_type, is_featured, is_breaking, is_trending, published_at, 
                      seo_title, seo_description, seo_keywords, canonical_url, meta_og_title, 
                      meta_og_description, meta_og_image, meta_twitter_card, robots_meta, schema_markup, is_live, flags_expiry) 
                     VALUES 
                     (:title, :slug, :content, :excerpt, :featured_image, :featured_image_alt, :author_id, 
-                     :category_id, :status, :is_featured, :is_breaking, :is_trending, :published_at, 
+                     :category_id, :status, :post_type, :is_featured, :is_breaking, :is_trending, :published_at, 
                      :seo_title, :seo_description, :seo_keywords, :canonical_url, :meta_og_title, 
                      :meta_og_description, :meta_og_image, :meta_twitter_card, :robots_meta, :schema_markup, :is_live, :flags_expiry)";
             
@@ -45,6 +45,7 @@ class Post {
             $author_id = $data['author_id'];
             $category_id = isset($data['category_id']) ? $data['category_id'] : null;
             $status = sanitize($data['status']);
+            $post_type = sanitize($data['post_type'] ?? 'standard');
             $is_featured = isset($data['is_featured']) ? 1 : 0;
             $is_breaking = isset($data['is_breaking']) ? 1 : 0;
             $is_trending = isset($data['is_trending']) ? 1 : 0;
@@ -74,6 +75,7 @@ class Post {
             $stmt->bindParam(':author_id', $author_id, PDO::PARAM_INT);
             $stmt->bindParam(':category_id', $category_id, PDO::PARAM_INT);
             $stmt->bindParam(':status', $status);
+            $stmt->bindParam(':post_type', $post_type);
             $stmt->bindParam(':is_featured', $is_featured, PDO::PARAM_INT);
             $stmt->bindParam(':is_breaking', $is_breaking, PDO::PARAM_INT);
             $stmt->bindParam(':is_trending', $is_trending, PDO::PARAM_INT);
@@ -123,7 +125,7 @@ class Post {
             
             $allowed_fields = [
                 'title', 'slug', 'content', 'excerpt', 'featured_image', 'featured_image_alt',
-                'category_id', 'status', 'is_featured', 'is_breaking', 'is_trending', 'is_live', 'flags_expiry', 'published_at',
+                'category_id', 'status', 'post_type', 'is_featured', 'is_breaking', 'is_trending', 'is_live', 'flags_expiry', 'published_at',
                 'seo_title', 'seo_description', 'seo_keywords', 'canonical_url',
                 'meta_og_title', 'meta_og_description', 'meta_og_image', 'meta_twitter_card',
                 'robots_meta', 'schema_markup'
