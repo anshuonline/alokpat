@@ -94,6 +94,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'is_featured' => isset($_POST['is_featured']),
             'is_breaking' => isset($_POST['is_breaking']),
             'is_trending' => isset($_POST['is_trending']),
+            'is_live' => isset($_POST['is_live']),
+            'flags_expiry' => !empty($_POST['flags_expiry']) ? date('Y-m-d H:i:s', strtotime($_POST['flags_expiry'])) : null,
             'seo_title' => sanitize($_POST['seo_title'] ?? ''),
             'seo_description' => sanitize($_POST['seo_description'] ?? ''),
             'seo_keywords' => sanitize($_POST['seo_keywords'] ?? ''),
@@ -135,9 +137,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         
-        // Set publish time if changing to published
+        // Set publish time if changing to published or scheduling
         if ($status === 'published' && $post['status'] !== 'published') {
             $data['published_at'] = date('Y-m-d H:i:s');
+        } elseif ($status === 'scheduled' && !empty($_POST['published_at'])) {
+            $data['published_at'] = date('Y-m-d H:i:s', strtotime($_POST['published_at']));
         }
         
         if (empty($errors)) {
