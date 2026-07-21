@@ -304,6 +304,14 @@ ob_start();
                                                class="text-blue-600 hover:text-blue-800" title="সম্পাদনা">
                                                 <i class="fas fa-edit"></i>
                                             </a>
+                                            <?php if ($post_item['status'] === 'published'): ?>
+                                                <button type="button" 
+                                                        class="text-green-600 hover:text-green-800 instant-index-btn" 
+                                                        data-id="<?php echo $post_item['id']; ?>"
+                                                        title="Instant Index (গুগলে ইনডেক্স করুন)">
+                                                    <i class="fab fa-google"></i>
+                                                </button>
+                                            <?php endif; ?>
                                             <a href="<?php echo ADMIN_URL; ?>/post-duplicate.php?id=<?php echo $post_item['id']; ?>" 
                                                class="text-gray-600 hover:text-gray-800" title="ডুপ্লিকেট">
                                                 <i class="fas fa-copy"></i>
@@ -377,6 +385,41 @@ ob_start();
             postCheckboxes.forEach(cb => cb.checked = this.checked);
         });
     }
+
+    // Instant Indexing
+    document.querySelectorAll('.instant-index-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const postId = this.getAttribute('data-id');
+            const originalHtml = this.innerHTML;
+            
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            this.disabled = true;
+
+            fetch('ajax/instant-index.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'post_id=' + postId
+            })
+            .then(response => response.json())
+            .then(data => {
+                this.innerHTML = originalHtml;
+                this.disabled = false;
+                
+                if (data.success) {
+                    alert(data.message + '\nURL: ' + data.url);
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                this.innerHTML = originalHtml;
+                this.disabled = false;
+                alert('An error occurred while processing the request.');
+            });
+        });
+    });
 </script>
 
 <?php
