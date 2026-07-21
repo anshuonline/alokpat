@@ -367,7 +367,7 @@ ob_start();
                                 ?>
                                 <div id="scheduleTimeContainer" class="mt-3 p-3 bg-gray-50 rounded border <?php echo ($current_status === 'scheduled') ? 'block' : 'hidden'; ?>">
                                     <label class="block text-xs font-semibold text-gray-700 mb-1">প্রকাশের সময় নির্ধারণ করুন:</label>
-                                    <input type="datetime-local" name="published_at" value="<?php echo $published_at_val; ?>" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                                    <input type="datetime-local" step="any" name="published_at" value="<?php echo $published_at_val; ?>" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
                                 </div>
                             </div>
                             
@@ -505,7 +505,7 @@ ob_start();
                                     <label class="block text-xs font-semibold text-gray-700 mb-1">
                                         <i class="far fa-clock mr-1 text-gray-500"></i> কতক্ষণ এই আইকনগুলো দেখাবে? (ঐচ্ছিক)
                                     </label>
-                                    <input type="datetime-local" name="flags_expiry" value="<?php echo $flags_expiry_val; ?>" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
+                                    <input type="datetime-local" step="any" name="flags_expiry" value="<?php echo $flags_expiry_val; ?>" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">
                                     <p class="text-[11px] text-gray-500 mt-1">খালি রাখলে আজীবন দেখাবে।</p>
                                 </div>
                             </div>
