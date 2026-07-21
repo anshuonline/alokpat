@@ -279,8 +279,8 @@ component('header', ['categories' => $categories]);
                 </div>
             <?php else: ?>
                 <div class="relative border-l-2 border-red-500 ml-4 pl-6 md:ml-6 md:pl-8 space-y-8 pb-4">
-                    <?php foreach ($live_updates as $update): ?>
-                    <div class="relative group" id="update-<?php echo $update['id']; ?>">
+                    <?php foreach ($live_updates as $index => $update): ?>
+                    <div class="relative group live-update-item <?php echo $index >= 10 ? 'hidden' : ''; ?>" id="update-<?php echo $update['id']; ?>">
                         <!-- Timeline Dot -->
                         <div class="absolute -left-[31px] md:-left-[39px] top-1.5 h-4 w-4 rounded-full bg-red-600 border-4 border-white shadow-sm"></div>
                         
@@ -289,8 +289,18 @@ component('header', ['categories' => $categories]);
                             <div class="flex items-center text-sm font-bold text-red-600 mb-3 bg-red-50 inline-block px-3 py-1 rounded-md">
                                 <i class="far fa-clock mr-1.5"></i> <?php echo date('h:i A, d M Y', strtotime($update['update_time'])); ?>
                             </div>
-                            <div class="article-content prose prose-sm sm:prose max-w-none text-gray-800">
-                                <?php echo $update['content']; ?>
+                            
+                            <?php $isLong = strlen(strip_tags($update['content'])) > 600; ?>
+                            <div class="relative">
+                                <div id="update-content-<?php echo $update['id']; ?>" class="article-content prose prose-sm sm:prose max-w-none text-gray-800 <?php echo $isLong ? 'max-h-40 overflow-hidden transition-all duration-300' : ''; ?>">
+                                    <?php echo $update['content']; ?>
+                                </div>
+                                <?php if ($isLong): ?>
+                                <div id="update-overlay-<?php echo $update['id']; ?>" class="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-white to-transparent flex items-end"></div>
+                                <button onclick="expandUpdateContent(<?php echo $update['id']; ?>)" id="update-btn-<?php echo $update['id']; ?>" class="text-blue-600 hover:text-blue-800 text-sm font-semibold mt-2 inline-flex items-center">
+                                    আরও পড়ুন (Read More) <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                                </button>
+                                <?php endif; ?>
                             </div>
                             
                             <!-- Share Update -->
@@ -308,6 +318,14 @@ component('header', ['categories' => $categories]);
                     </div>
                     <?php endforeach; ?>
                 </div>
+                
+                <?php if (count($live_updates) > 10): ?>
+                <div class="text-center mt-8">
+                    <button id="loadMoreUpdatesBtn" onclick="loadMoreLiveUpdates()" class="bg-red-50 text-red-600 border border-red-200 px-6 py-2.5 rounded-full font-bold hover:bg-red-100 transition shadow-sm">
+                        আরও আপডেট দেখুন (Load More) <i class="fas fa-arrow-down ml-1"></i>
+                    </button>
+                </div>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
         <?php endif; ?>
@@ -342,6 +360,30 @@ component('header', ['categories' => $categories]);
                     wrapper.classList.remove('overflow-hidden');
                     wrapper.style.maxHeight = 'none';
                 }, 500);
+            }
+            
+            function loadMoreLiveUpdates() {
+                const items = document.querySelectorAll('.live-update-item.hidden');
+                let count = 0;
+                for (let i = 0; i < items.length; i++) {
+                    if (count >= 10) break;
+                    items[i].classList.remove('hidden');
+                    count++;
+                }
+                if (document.querySelectorAll('.live-update-item.hidden').length === 0) {
+                    const btn = document.getElementById('loadMoreUpdatesBtn');
+                    if(btn) btn.style.display = 'none';
+                }
+            }
+            
+            function expandUpdateContent(id) {
+                const content = document.getElementById('update-content-' + id);
+                const overlay = document.getElementById('update-overlay-' + id);
+                const btn = document.getElementById('update-btn-' + id);
+                
+                if(content) content.classList.remove('max-h-40', 'overflow-hidden');
+                if(overlay) overlay.style.display = 'none';
+                if(btn) btn.style.display = 'none';
             }
         </script>
         
