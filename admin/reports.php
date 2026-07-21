@@ -68,7 +68,12 @@ ob_start();
 <div class="space-y-6">
     <div class="flex items-center justify-between border-b-2 border-black pb-4 mb-6">
         <h2 class="text-3xl font-black text-black uppercase tracking-widest">রিপোর্টস</h2>
+        <button onclick="downloadPDF()" class="bg-red-600 text-white px-4 py-2 rounded-lg font-bold hover:bg-red-700 transition-colors shadow-sm flex items-center">
+            <i class="fas fa-file-pdf mr-2"></i> PDF ডাউনলোড
+        </button>
     </div>
+    
+    <div id="report-content" class="space-y-6">
 
     <!-- Filters -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 relative overflow-hidden group">
@@ -149,7 +154,28 @@ ob_start();
         </div>
     </div>
 
+    </div> <!-- End Breakdown Table -->
+
+    </div> <!-- End report-content wrapper -->
 </div>
+
+<!-- Include html2pdf library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+function downloadPDF() {
+    const element = document.getElementById('report-content');
+    const opt = {
+        margin:       [0.5, 0.5, 0.5, 0.5],
+        filename:     'alokpat_report_<?php echo date('Y-m-d'); ?>.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+    
+    // Temporarily hide filter button/form for cleaner PDF if desired, or keep it.
+    html2pdf().set(opt).from(element).save();
+}
+</script>
 
 <?php
 $content = ob_get_clean();
