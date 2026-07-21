@@ -338,6 +338,16 @@ ob_start();
                                                class="mr-2 h-4 w-4 text-blue-600">
                                         <span class="text-sm font-semibold">⏰ শিডিউল (Scheduled)</span>
                                     </label>
+                                    
+                                    <label class="flex items-center p-2 rounded hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-200 transition">
+                                        <input type="radio" 
+                                               name="status" 
+                                               value="unlisted" 
+                                               onchange="toggleScheduleInput()"
+                                               <?php echo (isset($_POST['status']) && $_POST['status'] === 'unlisted') ? 'checked' : ''; ?>
+                                               class="mr-2 h-4 w-4 text-blue-600">
+                                        <span class="text-sm text-gray-600"><i class="fas fa-eye-slash mr-1"></i> আনলিস্টেড (Unlisted)</span>
+                                    </label>
                                 </div>
                                 <div id="scheduleTimeContainer" class="mt-3 p-3 bg-gray-50 rounded border <?php echo (isset($_POST['status']) && $_POST['status'] === 'scheduled') ? 'block' : 'hidden'; ?>">
                                     <label class="block text-xs font-semibold text-gray-700 mb-1">প্রকাশের সময় নির্ধারণ করুন:</label>

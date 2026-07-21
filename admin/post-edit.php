@@ -423,6 +423,16 @@ ob_start();
                                                class="mr-2 h-4 w-4 text-blue-600">
                                         <span class="text-sm font-semibold">⏰ শিডিউল (Scheduled)</span>
                                     </label>
+
+                                    <label class="flex items-center p-2 rounded hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-200 transition">
+                                        <input type="radio" 
+                                               name="status" 
+                                               value="unlisted" 
+                                               onchange="toggleScheduleInput()"
+                                               <?php echo ($current_status === 'unlisted') ? 'checked' : ''; ?>
+                                               class="mr-2 h-4 w-4 text-blue-600">
+                                        <span class="text-sm text-gray-600"><i class="fas fa-eye-slash mr-1"></i> আনলিস্টেড (Unlisted)</span>
+                                    </label>
                                 </div>
                                 
                                 <?php 

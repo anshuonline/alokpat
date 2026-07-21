@@ -222,7 +222,7 @@ class Post {
                     LEFT JOIN users u ON p.author_id = u.id
                     LEFT JOIN categories c ON p.category_id = c.id
                     WHERE p.slug = :slug
-                    AND (p.status = 'published' OR (p.status = 'scheduled' AND p.published_at <= NOW()))
+                    AND (p.status = 'published' OR p.status = 'unlisted' OR (p.status = 'scheduled' AND p.published_at <= NOW()))
                     LIMIT 1";
             
             $stmt = $this->conn->prepare($sql);

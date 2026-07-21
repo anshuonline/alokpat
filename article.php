@@ -39,6 +39,11 @@ ob_start();
 ?>
 
 <!-- SEO Meta Tags -->
+<?php if ($article['status'] === 'unlisted'): ?>
+<meta name="robots" content="noindex,nofollow">
+<?php else: ?>
+<meta name="robots" content="<?php echo escape($article['robots_meta'] ?? 'index,follow'); ?>">
+<?php endif; ?>
 <meta name="description" content="<?php echo escape($article['seo_description'] ?? $article['excerpt'] ?? ''); ?>">
 <meta name="keywords" content="<?php echo escape($article['seo_keywords'] ?? ''); ?>">
 <link rel="canonical" href="<?php echo url_for_post($article); ?>">

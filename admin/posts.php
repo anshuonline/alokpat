@@ -263,14 +263,16 @@ ob_start();
                                         'draft' => 'bg-yellow-100 text-yellow-800',
                                         'scheduled' => 'bg-blue-100 text-blue-800',
                                         'archived' => 'bg-gray-100 text-gray-800',
-                                        'trashed' => 'bg-red-100 text-red-800'
+                                        'trashed' => 'bg-red-100 text-red-800',
+                                        'unlisted' => 'bg-gray-200 text-gray-600'
                                     ];
                                     $status_labels = [
                                         'published' => 'প্রকাশিত',
                                         'draft' => 'খসড়া',
                                         'scheduled' => 'নির্ধারিত',
                                         'archived' => 'সংরক্ষিত',
-                                        'trashed' => 'ট্র্যাশড'
+                                        'trashed' => 'ট্র্যাশড',
+                                        'unlisted' => 'আনলিস্টেড'
                                     ];
                                     ?>
                                     <span class="px-2 py-1 text-xs font-semibold rounded <?php echo $status_classes[$post_item['status']]; ?>">
