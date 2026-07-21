@@ -40,8 +40,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Validate inputs
+    $captcha = $_POST['captcha'] ?? '';
+    
     if (empty($username) || empty($password)) {
         setFlash('error', 'ইউজারনেম এবং পাসওয়ার্ড দিন');
+    } elseif (!isset($_SESSION['login_captcha']) || $captcha != $_SESSION['login_captcha']) {
+        setFlash('error', 'ক্যাপচা (CAPTCHA) ভুল হয়েছে। আবার চেষ্টা করুন।');
     } else {
         // Check rate limiting
         if (!checkRateLimit('login_' . $_SERVER['REMOTE_ADDR'], 5, 300)) {
@@ -70,6 +74,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $page_title = 'লগইন';
+
+// Generate new Math Captcha for the form
+$num1 = rand(1, 9);
+$num2 = rand(1, 9);
+$_SESSION['login_captcha'] = $num1 + $num2;
+$captcha_question = "{$num1} + {$num2} = ?";
 ?>
 <!DOCTYPE html>
 <html lang="bn">
@@ -173,6 +183,24 @@ $page_title = 'লগইন';
                                    required
                                    class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-0 focus:border-black transition-colors outline-none bg-gray-50 focus:bg-white text-black font-medium"
                                    placeholder="••••••••">
+                        </div>
+                    </div>
+                    
+                    <!-- CAPTCHA Field -->
+                    <div>
+                        <label for="captcha" class="block text-sm font-bold text-black mb-1">
+                            নিরাপত্তা যাচাই: <span class="text-blue-700 bg-blue-50 px-2 py-0.5 rounded font-mono border border-blue-200"><?php echo $captcha_question; ?></span>
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-robot text-gray-400"></i>
+                            </div>
+                            <input type="number" 
+                                   id="captcha" 
+                                   name="captcha" 
+                                   required
+                                   class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-0 focus:border-black transition-colors outline-none bg-gray-50 focus:bg-white text-black font-medium"
+                                   placeholder="ফলাফল লিখুন">
                         </div>
                     </div>
                     
