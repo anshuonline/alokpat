@@ -121,6 +121,34 @@ component('header', ['categories' => $categories]);
                 </p>
             <?php endif; ?>
             
+            <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
+                <div class="text-sm md:text-base font-bold text-gray-800 flex items-center">
+                    <i class="fas fa-pen-nib mr-2 text-gray-500"></i>
+                    <?php echo escape($article['author_name']); ?>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="window.print()" class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition" title="Print Article">
+                        <i class="fas fa-print"></i>
+                    </button>
+                    <button onclick="toggleFontSize()" class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition font-bold text-sm tracking-tighter" title="Change Font Size">
+                        AA
+                    </button>
+                </div>
+            </div>
+            
+            <script>
+                function toggleFontSize() {
+                    const article = document.getElementById('article-content-inner');
+                    if (article.classList.contains('large-text')) {
+                        article.classList.remove('large-text');
+                    } else {
+                        article.classList.add('large-text');
+                    }
+                }
+            </script>
+            <style>
+                .large-text p { font-size: 1.5rem !important; line-height: 2 !important; }
+            </style>
             <?php 
             $setting_model = new Setting();
             $fb_url = $setting_model->get('facebook_url');
