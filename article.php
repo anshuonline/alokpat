@@ -555,7 +555,7 @@ component('header', ['categories' => $categories]);
                     <p class="text-gray-500 mb-6 text-sm">আলোকপাত এর একজন নিয়মিত লেখক ও সাংবাদিক।</p>
                 <?php endif; ?>
                 
-                <a href="<?php echo SITE_URL; ?>/author.php?username=<?php echo escape($article['author_username']); ?>" class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition shadow-sm w-full">
+                <a href="<?php echo SITE_URL; ?>/author.php?id=<?php echo escape($article['author_id']); ?>&name=<?php echo urlencode($article['author_name']); ?>" class="inline-block px-6 py-2.5 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition shadow-sm w-full">
                     লেখকের সকল লেখা পড়ুন
                 </a>
             </div>
