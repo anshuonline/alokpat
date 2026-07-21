@@ -79,7 +79,7 @@ component('header', ['categories' => $categories]);
     <div class="max-w-4xl mx-auto px-4 py-10">
         
         <!-- Breadcrumb (Centered) -->
-        <nav class="mb-6 text-sm text-center">
+        <nav class="mb-6 text-sm text-center no-print">
             <ol class="flex items-center justify-center space-x-2 text-primary-600 font-medium">
                 <li><a href="<?php echo SITE_URL; ?>" class="hover:underline">প্রচ্ছদ</a></li>
                 <?php if (!empty($article['category_name'])): ?>
@@ -126,7 +126,7 @@ component('header', ['categories' => $categories]);
                     <i class="fas fa-pen-nib mr-2 text-gray-500"></i>
                     <?php echo escape($article['author_name']); ?>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 no-print">
                     <button onclick="window.print()" class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition" title="Print Article">
                         <i class="fas fa-print"></i>
                     </button>
@@ -158,7 +158,7 @@ component('header', ['categories' => $categories]);
             
             if (!empty($fb_url) || !empty($wa_url) || !empty($tw_url) || !empty($yt_url)):
             ?>
-            <div class="flex flex-col sm:flex-row items-center sm:justify-between mt-2 mb-6 w-full gap-2 sm:gap-0">
+            <div class="flex flex-col sm:flex-row items-center sm:justify-between mt-2 mb-6 w-full gap-2 sm:gap-0 no-print">
                 <span class="text-gray-700 font-bold text-sm md:text-base whitespace-nowrap">Follow Us:</span>
                 <div class="flex flex-row items-center justify-center sm:justify-end gap-1 sm:gap-2 w-full sm:w-auto flex-1">
                 <?php if (!empty($wa_url)): ?>
@@ -220,7 +220,7 @@ component('header', ['categories' => $categories]);
                 ?>
             </div>
             
-            <div class="flex items-center space-x-2 md:space-x-3 w-full md:w-auto justify-center md:justify-end">
+            <div class="flex items-center space-x-2 md:space-x-3 w-full md:w-auto justify-center md:justify-end no-print">
                 <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(url_for_post($article)); ?>" 
                    target="_blank"
                    class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition shadow-sm hover:shadow-md" title="Share on Facebook">
@@ -271,6 +271,44 @@ component('header', ['categories' => $categories]);
             .article-content summary::-webkit-details-marker { display: none; }
             .article-content details[open] summary { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 1px solid #e5e7eb; }
             .article-content details > div { padding: 16px; }
+
+            /* Print Styles */
+            @media print {
+                body {
+                    background: #fff;
+                    color: #000;
+                    margin: 0;
+                    padding: 0;
+                }
+                header, footer, .no-print, .related-articles, .comments-section {
+                    display: none !important;
+                }
+                .max-w-4xl {
+                    max-width: 100% !important;
+                    width: 100% !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                }
+                h1, h2, h3, p, span, div, .article-content, .article-content * {
+                    color: #000 !important;
+                }
+                .article-content p {
+                    font-size: 14pt !important;
+                    line-height: 1.6 !important;
+                }
+                img {
+                    max-width: 100% !important;
+                    height: auto !important;
+                    page-break-inside: avoid;
+                }
+                a {
+                    text-decoration: none !important;
+                    color: #000 !important;
+                }
+                @page {
+                    margin: 2cm;
+                }
+            }
         </style>
         <div id="article-content-wrapper" class="relative overflow-hidden max-h-[600px] transition-all duration-500 ease-in-out mb-12">
             <article id="article-content-inner" class="article-content max-w-none text-gray-800 leading-relaxed pb-8">
