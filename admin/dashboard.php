@@ -34,9 +34,10 @@ ob_start();
 <div class="space-y-6">
     
     <!-- Page Header -->
-    <div class="flex items-center justify-between">
-        <h2 class="text-3xl font-bold text-gray-800">ড্যাশবোর্ড</h2>
-        <div class="text-sm text-gray-500">
+    <div class="flex items-center justify-between border-b-2 border-black pb-4 mb-6">
+        <h2 class="text-3xl font-black text-black uppercase tracking-widest">ড্যাশবোর্ড</h2>
+        <div class="text-xs font-bold text-gray-500 uppercase tracking-widest">
+            <i class="far fa-calendar-alt mr-1 text-black"></i>
             <?php echo formatDateBengali(date('Y-m-d H:i:s'), 'l, d F Y'); ?>
         </div>
     </div>
@@ -45,53 +46,53 @@ ob_start();
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         
         <!-- Total Posts -->
-        <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition hover:border-black">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 mb-1">মোট সংবাদ</p>
-                    <p class="text-3xl font-bold text-gray-800"><?php echo formatNumberBengali($total_posts); ?></p>
+                    <p class="text-sm font-semibold text-gray-500 mb-1 uppercase tracking-wider">মোট সংবাদ</p>
+                    <p class="text-3xl font-black text-black"><?php echo formatNumberBengali($total_posts); ?></p>
                 </div>
-                <div class="h-14 w-14 rounded-full bg-blue-100 flex items-center justify-center">
-                    <i class="fas fa-newspaper text-blue-600 text-2xl"></i>
+                <div class="h-14 w-14 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center">
+                    <i class="fas fa-newspaper text-black text-2xl"></i>
                 </div>
             </div>
         </div>
         
         <!-- Published Posts -->
-        <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition hover:border-black">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 mb-1">প্রকাশিত</p>
-                    <p class="text-3xl font-bold text-green-600"><?php echo formatNumberBengali($published_posts); ?></p>
+                    <p class="text-sm font-semibold text-gray-500 mb-1 uppercase tracking-wider">প্রকাশিত</p>
+                    <p class="text-3xl font-black text-black"><?php echo formatNumberBengali($published_posts); ?></p>
                 </div>
-                <div class="h-14 w-14 rounded-full bg-green-100 flex items-center justify-center">
-                    <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                <div class="h-14 w-14 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center">
+                    <i class="fas fa-check-circle text-black text-2xl"></i>
                 </div>
             </div>
         </div>
         
         <!-- Draft Posts -->
-        <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition hover:border-black">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 mb-1">খসড়া</p>
-                    <p class="text-3xl font-bold text-yellow-600"><?php echo formatNumberBengali($draft_posts); ?></p>
+                    <p class="text-sm font-semibold text-gray-500 mb-1 uppercase tracking-wider">খসড়া</p>
+                    <p class="text-3xl font-black text-black"><?php echo formatNumberBengali($draft_posts); ?></p>
                 </div>
-                <div class="h-14 w-14 rounded-full bg-yellow-100 flex items-center justify-center">
-                    <i class="fas fa-file-alt text-yellow-600 text-2xl"></i>
+                <div class="h-14 w-14 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center">
+                    <i class="fas fa-file-alt text-black text-2xl"></i>
                 </div>
             </div>
         </div>
         
         <!-- Categories -->
-        <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition hover:border-black">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500 mb-1">ক্যাটাগরি</p>
-                    <p class="text-3xl font-bold text-purple-600"><?php echo formatNumberBengali($total_categories); ?></p>
+                    <p class="text-sm font-semibold text-gray-500 mb-1 uppercase tracking-wider">ক্যাটাগরি</p>
+                    <p class="text-3xl font-black text-black"><?php echo formatNumberBengali($total_categories); ?></p>
                 </div>
-                <div class="h-14 w-14 rounded-full bg-purple-100 flex items-center justify-center">
-                    <i class="fas fa-folder text-purple-600 text-2xl"></i>
+                <div class="h-14 w-14 rounded-full bg-gray-100 border border-gray-300 flex items-center justify-center">
+                    <i class="fas fa-folder text-black text-2xl"></i>
                 </div>
             </div>
         </div>
@@ -99,23 +100,23 @@ ob_start();
     </div>
     
     <!-- Quick Actions -->
-    <div class="bg-white rounded-xl shadow-md p-6">
-        <h3 class="text-xl font-bold text-gray-800 mb-4">দ্রুত কাজ</h3>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 class="text-lg font-black text-black mb-4 uppercase tracking-widest border-b border-gray-100 pb-2">দ্রুত কাজ</h3>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <a href="<?php echo ADMIN_URL; ?>/post-create.php" 
-               class="flex items-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition">
-                <i class="fas fa-plus-circle text-blue-600 text-2xl mr-3"></i>
-                <span class="font-medium">নতুন সংবাদ লিখুন</span>
+               class="flex items-center p-4 border-2 border-gray-300 border-dashed rounded-lg hover:border-black hover:bg-gray-50 transition group">
+                <i class="fas fa-plus-circle text-gray-500 group-hover:text-black text-2xl mr-3 transition-colors"></i>
+                <span class="font-bold text-gray-700 group-hover:text-black transition-colors">নতুন সংবাদ লিখুন</span>
             </a>
             <a href="<?php echo ADMIN_URL; ?>/posts.php" 
-               class="flex items-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition">
-                <i class="fas fa-list text-green-600 text-2xl mr-3"></i>
-                <span class="font-medium">সকল সংবাদ দেখুন</span>
+               class="flex items-center p-4 border-2 border-gray-300 border-dashed rounded-lg hover:border-black hover:bg-gray-50 transition group">
+                <i class="fas fa-list text-gray-500 group-hover:text-black text-2xl mr-3 transition-colors"></i>
+                <span class="font-bold text-gray-700 group-hover:text-black transition-colors">সকল সংবাদ দেখুন</span>
             </a>
             <a href="<?php echo ADMIN_URL; ?>/media.php" 
-               class="flex items-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-purple-500 hover:bg-purple-50 transition">
-                <i class="fas fa-upload text-purple-600 text-2xl mr-3"></i>
-                <span class="font-medium">মিডিয়া আপলোড</span>
+               class="flex items-center p-4 border-2 border-gray-300 border-dashed rounded-lg hover:border-black hover:bg-gray-50 transition group">
+                <i class="fas fa-upload text-gray-500 group-hover:text-black text-2xl mr-3 transition-colors"></i>
+                <span class="font-bold text-gray-700 group-hover:text-black transition-colors">মিডিয়া আপলোড</span>
             </a>
         </div>
     </div>
@@ -123,26 +124,26 @@ ob_start();
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         <!-- Recent Posts -->
-        <div class="bg-white rounded-xl shadow-md p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-xl font-bold text-gray-800">সাম্প্রতিক সংবাদ</h3>
-                <a href="<?php echo ADMIN_URL; ?>/posts.php" class="text-sm text-blue-600 hover:underline">সব দেখুন</a>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-4 border-b border-gray-100 pb-2">
+                <h3 class="text-lg font-black text-black uppercase tracking-widest">সাম্প্রতিক সংবাদ</h3>
+                <a href="<?php echo ADMIN_URL; ?>/posts.php" class="text-sm font-bold text-gray-500 hover:text-black transition-colors hover:underline">সব দেখুন</a>
             </div>
             
             <div class="space-y-4">
                 <?php if (empty($recent_posts)): ?>
-                    <p class="text-center text-gray-500 py-8">কোনো সংবাদ পাওয়া যায়নি</p>
+                    <p class="text-center text-gray-500 py-8 font-medium">কোনো সংবাদ পাওয়া যায়নি</p>
                 <?php else: ?>
                     <?php foreach ($recent_posts as $index => $post_item): ?>
-                        <div class="flex items-start space-x-4 p-4 rounded-lg hover:bg-gray-50 transition">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm">
+                        <div class="flex items-start space-x-4 p-4 rounded-lg border border-transparent hover:border-gray-200 hover:bg-gray-50 transition">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-black flex items-center justify-center text-white font-bold text-sm">
                                 <?php echo formatNumberBengali($index + 1); ?>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <h4 class="font-semibold text-gray-800 truncate">
+                                <h4 class="font-bold text-black truncate">
                                     <?php echo escape($post_item['title']); ?>
                                 </h4>
-                                <div class="flex items-center space-x-3 mt-1 text-sm text-gray-500">
+                                <div class="flex items-center space-x-3 mt-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                                     <span>
                                         <i class="fas fa-user mr-1"></i>
                                         <?php echo escape($post_item['author_name']); ?>
@@ -153,7 +154,7 @@ ob_start();
                                     </span>
                                 </div>
                             </div>
-                            <span class="px-2 py-1 text-xs rounded-full <?php echo $post_item['status'] == 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'; ?>">
+                            <span class="px-2 py-1 text-xs font-bold rounded-full border <?php echo $post_item['status'] == 'published' ? 'bg-white text-black border-black' : 'bg-gray-100 text-gray-600 border-gray-300'; ?>">
                                 <?php echo $post_item['status'] == 'published' ? 'প্রকাশিত' : 'খসড়া'; ?>
                             </span>
                         </div>
@@ -163,29 +164,29 @@ ob_start();
         </div>
         
         <!-- Breaking News -->
-        <div class="bg-white rounded-xl shadow-md p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-xl font-bold text-gray-800">ব্রেকিং নিউজ</h3>
-                <a href="<?php echo ADMIN_URL; ?>/posts.php?filter=breaking" class="text-sm text-blue-600 hover:underline">সব দেখুন</a>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-4 border-b border-gray-100 pb-2">
+                <h3 class="text-lg font-black text-black uppercase tracking-widest">ব্রেকিং নিউজ</h3>
+                <a href="<?php echo ADMIN_URL; ?>/posts.php?filter=breaking" class="text-sm font-bold text-gray-500 hover:text-black transition-colors hover:underline">সব দেখুন</a>
             </div>
             
             <div class="space-y-4">
                 <?php if (empty($breaking_news)): ?>
-                    <p class="text-center text-gray-500 py-8">কোনো ব্রেকিং নিউজ নেই</p>
+                    <p class="text-center text-gray-500 py-8 font-medium">কোনো ব্রেকিং নিউজ নেই</p>
                 <?php else: ?>
                     <?php foreach ($breaking_news as $news): ?>
-                        <div class="flex items-start space-x-3 p-3 rounded-lg hover:bg-red-50 transition border-l-4 border-red-500">
+                        <div class="flex items-start space-x-3 p-4 rounded-lg border border-transparent hover:border-gray-200 hover:bg-gray-50 transition border-l-4 hover:border-l-black">
                             <div class="flex-shrink-0">
-                                <span class="inline-block px-2 py-1 bg-red-600 text-white text-xs font-bold rounded">
+                                <span class="inline-block px-2 py-1 bg-black text-white text-xs font-bold rounded uppercase tracking-wider">
                                     <i class="fas fa-bolt mr-1"></i>
                                     ব্রেকিং
                                 </span>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <h4 class="font-semibold text-gray-800">
+                                <h4 class="font-bold text-black">
                                     <?php echo escape($news['title']); ?>
                                 </h4>
-                                <p class="text-sm text-gray-500 mt-1">
+                                <p class="text-xs font-semibold text-gray-500 mt-1 uppercase tracking-wider">
                                     <i class="fas fa-eye mr-1"></i>
                                     <?php echo formatNumberBengali($news['view_count']); ?> ভিউ
                                 </p>
