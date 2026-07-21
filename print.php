@@ -177,7 +177,7 @@ $page_title = 'প্রিন্ট: ' . ($article['title'] ?? '');
             </div>
             <div>
                 <i class="far fa-calendar-alt"></i> 
-                <?php echo formatDateTimeBengali($article['published_at'] ?? $article['created_at']); ?>
+                <?php echo formatDateBengali($article['published_at'] ?? $article['created_at']); ?>
             </div>
         </div>
 
