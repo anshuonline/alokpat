@@ -110,21 +110,21 @@ component('header', ['categories' => $categories]);
             <div class="mt-10 flex justify-center w-full">
                 <nav class="flex flex-wrap justify-center gap-2 max-w-full">
                     <?php if ($page > 1): ?>
-                        <a href="?username=<?php echo escape($author['username']); ?>&page=<?php echo $page - 1; ?>" 
+                        <a href="?id=<?php echo $author['id']; ?>&name=<?php echo urlencode($author['full_name']); ?>&page=<?php echo $page - 1; ?>" 
                            class="px-4 py-2 bg-white border rounded-lg hover:bg-primary-50 transition">
                             <i class="fas fa-chevron-left"></i>
                         </a>
                     <?php endif; ?>
                     
                     <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                        <a href="?username=<?php echo escape($author['username']); ?>&page=<?php echo $i; ?>" 
+                        <a href="?id=<?php echo $author['id']; ?>&name=<?php echo urlencode($author['full_name']); ?>&page=<?php echo $i; ?>" 
                            class="px-4 py-2 <?php echo $i == $page ? 'bg-primary-600 text-white' : 'bg-white border hover:bg-primary-50'; ?> rounded-lg">
                             <?php echo formatNumberBengali($i); ?>
                         </a>
                     <?php endfor; ?>
                     
                     <?php if ($page < $total_pages): ?>
-                        <a href="?username=<?php echo escape($author['username']); ?>&page=<?php echo $page + 1; ?>" 
+                        <a href="?id=<?php echo $author['id']; ?>&name=<?php echo urlencode($author['full_name']); ?>&page=<?php echo $page + 1; ?>" 
                            class="px-4 py-2 bg-white border rounded-lg hover:bg-primary-50 transition">
                             <i class="fas fa-chevron-right"></i>
                         </a>
