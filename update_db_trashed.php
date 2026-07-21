@@ -4,7 +4,7 @@ require_once 'config/config.php';
 try {
     $db = (new Database())->getConnection();
     
-    echo "<h1>Database Update for Unlisted Status</h1>";
+    echo "<h1>Database Update for Trashed Status</h1>";
     
     try {
         $db->exec("ALTER TABLE posts MODIFY COLUMN status ENUM('draft', 'published', 'scheduled', 'archived', 'trashed', 'unlisted') DEFAULT 'draft'");
