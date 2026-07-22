@@ -314,6 +314,10 @@ ob_start();
                                                     <i class="fab fa-google"></i>
                                                 </button>
                                             <?php endif; ?>
+                                            <a href="<?php echo ADMIN_URL; ?>/post-share.php?id=<?php echo $post_item['id']; ?>" 
+                                               class="text-indigo-600 hover:text-indigo-800" title="সোশ্যাল শেয়ার ইমেজ (Share Image)">
+                                                <i class="fas fa-share-alt"></i>
+                                            </a>
                                             <a href="<?php echo ADMIN_URL; ?>/post-duplicate.php?id=<?php echo $post_item['id']; ?>" 
                                                class="text-gray-600 hover:text-gray-800" title="ডুপ্লিকেট">
                                                 <i class="fas fa-copy"></i>
