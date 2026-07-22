@@ -58,6 +58,41 @@ $primary_color = $theme_palettes[$theme_color] ?? '#2563eb';
             সোশ্যাল মিডিয়া কার্ড জেনারেটর
         </h2>
         <div class="flex space-x-3">
+// Fetch or generate short link
+$stmt = $pdo->prepare("SELECT short_code FROM short_links WHERE post_id = ? LIMIT 1");
+$stmt->execute([$post_id]);
+$link = $stmt->fetch();
+
+if ($link) {
+    $short_code = $link['short_code'];
+} else {
+    // Generate a unique 8-character alphanumeric code
+    do {
+        $short_code = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyz"), 0, 8);
+        $checkStmt = $pdo->prepare("SELECT id FROM short_links WHERE short_code = ?");
+        $checkStmt->execute([$short_code]);
+    } while ($checkStmt->fetchColumn());
+    
+    // Insert new short link
+    $insertStmt = $pdo->prepare("INSERT INTO short_links (post_id, short_code) VALUES (?, ?)");
+    $insertStmt->execute([$post_id, $short_code]);
+}
+
+$short_url = SITE_URL . '/u' . $short_code;
+$excerpt = !empty($post['meta_description']) ? escape($post['meta_description']) : escape(substr(strip_tags($post['content']), 0, 150)) . '...';
+$share_text = escape($post['title']) . "\n\n" . $excerpt . "\n\nবিস্তারিত পড়ুন: " . $short_url;
+?>
+
+<div class="space-y-6 max-w-5xl mx-auto">
+    <!-- Header -->
+    <div class="flex items-center justify-between bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+        <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+            <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center mr-3">
+                <i class="fas fa-share-alt"></i>
+            </div>
+            সোশ্যাল মিডিয়া কার্ড জেনারেটর
+        </h2>
+        <div class="flex space-x-3">
             <a href="<?php echo ADMIN_URL; ?>/posts.php" class="bg-gray-100 text-gray-700 px-5 py-2.5 rounded-lg font-semibold hover:bg-gray-200 transition">
                 <i class="fas fa-arrow-left mr-2"></i> ফিরে যান
             </a>
@@ -67,10 +102,10 @@ $primary_color = $theme_palettes[$theme_color] ?? '#2563eb';
         </div>
     </div>
 
-    <!-- Canvas Workspace -->
-    <div class="bg-gray-50 rounded-2xl p-8 border border-gray-200 flex flex-col md:flex-row gap-8 items-start">
+    <!-- Main Workspace Area -->
+    <div class="flex flex-col md:flex-row gap-6 items-start">
         
-        <!-- Controls / Info -->
+        <!-- Left Sidebar (Controls & Share Text) -->
         <div class="w-full md:w-1/3 space-y-6">
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
                 <h3 class="font-bold text-gray-800 mb-4">নির্দেশনা</h3>
@@ -84,23 +119,30 @@ $primary_color = $theme_palettes[$theme_color] ?? '#2563eb';
                 </ul>
             </div>
             
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <h3 class="font-bold text-gray-800 mb-2">সংবাদের বিবরণ</h3>
-                <div class="text-sm font-semibold text-gray-900 mt-2">শিরোনাম:</div>
-                <div class="text-sm text-gray-600"><?php echo escape($post['title']); ?></div>
+            <!-- Short Link & Share Text Box -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1" style="background-color: <?php echo $primary_color; ?>;"></div>
+                <h3 class="font-bold text-gray-800 mb-3 flex items-center">
+                    <i class="fas fa-link mr-2 text-gray-500"></i> শেয়ার ক্যাপশন ও লিংক
+                </h3>
+                
+                <textarea id="shareCaption" class="w-full h-32 p-3 text-sm border border-gray-200 rounded-lg bg-gray-50 text-gray-700 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none" readonly><?php echo $share_text; ?></textarea>
+                
+                <div class="mt-4 flex space-x-2">
+                    <input type="text" id="shortUrlInput" value="<?php echo escape($short_url); ?>" class="flex-1 p-2 text-sm border border-gray-200 rounded-lg bg-gray-50 text-gray-600" readonly>
+                    <button onclick="copyShareText()" style="background-color: <?php echo $primary_color; ?>;" class="px-4 py-2 text-white text-sm font-semibold rounded-lg hover:opacity-90 transition flex items-center">
+                        <i class="fas fa-copy mr-2"></i> কপি করুন
+                    </button>
+                </div>
             </div>
             
-            <div id="loadingStatus" class="hidden text-indigo-600 font-semibold items-center justify-center p-4 bg-indigo-50 rounded-lg">
-                <i class="fas fa-spinner fa-spin mr-2"></i> ইমেজ রেন্ডার হচ্ছে, অপেক্ষা করুন...
+            <div id="loadingStatus" class="hidden text-indigo-600 font-semibold items-center justify-center p-4 bg-indigo-50 rounded-lg border border-indigo-100">
+                <i class="fas fa-spinner fa-spin mr-2"></i> ইমেজ রেন্ডার হচ্ছে...
             </div>
         </div>
 
-        <!-- Inject Font URL dynamically -->
-        <link href="<?php echo SITE_FONT_URL; ?>" rel="stylesheet">
-
-        <!-- The Canvas Preview -->
-        <!-- We use absolute pixel sizes to guarantee the output is 1080x1080, but scale it via CSS for viewing -->
-        <div class="w-full md:w-2/3 flex justify-center bg-gray-200/50 rounded-xl p-4 overflow-hidden relative" style="min-height: 400px;">
+        <!-- The Canvas Preview (Right Side) -->
+        <div class="w-full md:w-2/3 flex justify-center bg-gray-100 rounded-xl p-4 overflow-hidden relative border border-gray-200" style="min-height: 400px;">
             <div id="card-wrapper" style="width: 1080px; height: 1080px; transform-origin: top center; transform: scale(0.45); margin-bottom: -590px;" class="shadow-2xl flex-shrink-0 transition-transform">
                 
                 <!-- Actual Capture Node (Magazine Style Light Theme) -->
@@ -161,9 +203,30 @@ $primary_color = $theme_palettes[$theme_color] ?? '#2563eb';
     </div>
 </div>
 
+    <!-- Inject Font URL dynamically -->
+    <link href="<?php echo SITE_FONT_URL; ?>" rel="stylesheet">
+
 <!-- Load html-to-image (Most modern and bug-free canvas renderer) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
 <script>
+// Function to copy share text
+function copyShareText() {
+    const textarea = document.getElementById('shareCaption');
+    textarea.select();
+    document.execCommand('copy');
+    
+    // Toast notification
+    const toast = document.createElement('div');
+    toast.className = 'fixed bottom-4 right-4 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-xl z-50 transform transition-all duration-300';
+    toast.innerHTML = '<i class="fas fa-check-circle text-green-400 mr-2"></i> ক্যাপশন ও লিংক কপি করা হয়েছে!';
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     
     // Adjust scale based on screen width for preview

@@ -14,6 +14,9 @@
     RewriteRule ^sitemap-categories\.xml$ sitemap.php?type=categories [L,QSA]
     RewriteRule ^sitemap-authors\.xml$ sitemap.php?type=authors [L,QSA]
 
+    # Route short links (e.g. /u47nncby)
+    RewriteRule ^u([a-zA-Z0-9]+)$ redirect.php?code=$1 [L,QSA]
+
     # Route /admin/<custom-slug> to admin/login.php?login_slug=<custom-slug>
     RewriteRule ^admin/([a-zA-Z0-9_-]+)/?$ admin/login.php?login_slug=$1 [L,QSA]
 </IfModule>
