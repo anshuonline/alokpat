@@ -388,15 +388,15 @@ function uploadFile($file, $directory = 'uploads') {
             $target_size = 100 * 1024; // 100 KB
             $success = false;
 
-            while ($quality >= 20) {
-                ob_start();
-                imagewebp($image, null, $quality);
-                $image_data = ob_get_clean();
+            while ($quality >= 10) { // minimum 10kb roughly matches quality 10 for most images
+                imagewebp($image, $webp_filepath, $quality);
                 
-                if (strlen($image_data) <= $target_size || $quality == 20) {
-                    file_put_contents($webp_filepath, $image_data);
-                    $success = true;
-                    break;
+                if (file_exists($webp_filepath)) {
+                    $current_size = filesize($webp_filepath);
+                    if ($current_size <= $target_size || $quality == 10) {
+                        $success = true;
+                        break;
+                    }
                 }
                 $quality -= 10;
             }
