@@ -23,6 +23,9 @@ if (!$post) {
 $page_title = 'সোশ্যাল মিডিয়া শেয়ার ইমেজ';
 ob_start();
 
+$setting = new Setting();
+$site_logo = $setting->get('site_logo');
+
 // Setup image and fallback
 $image_url = !empty($post['featured_image']) ? $post['featured_image'] : SITE_URL . '/assets/images/default-news.jpg';
 
@@ -125,7 +128,11 @@ $image_url = !empty($post['featured_image']) ? $post['featured_image'] : SITE_UR
                         <div class="flex items-center justify-between border-t border-slate-700/80 pt-8">
                             <div class="flex items-center">
                                 <!-- Logo only (Removed left text) -->
-                                <img src="<?php echo SITE_URL; ?>/assets/images/logo.png" onerror="this.style.display='none'" alt="Alokpat" class="h-16 object-contain" crossorigin="anonymous">
+                                <?php if($site_logo): ?>
+                                    <img src="<?php echo escape($site_logo); ?>" alt="Alokpat" class="h-16 object-contain" crossorigin="anonymous">
+                                <?php else: ?>
+                                    <h2 class="text-white text-5xl font-bold">আলোকপাত</h2>
+                                <?php endif; ?>
                             </div>
                             <div class="flex items-center space-x-4 text-slate-300">
                                 <i class="fas fa-globe text-4xl opacity-80"></i>
