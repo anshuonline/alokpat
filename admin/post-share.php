@@ -34,6 +34,20 @@ $image_url = !empty($post['featured_image']) ? $post['featured_image'] : SITE_UR
 // We'll proxy or use base64 if needed, but since it's same origin mostly, it's fine.
 ?>
 
+<?php
+// Get theme primary color
+$theme_color = (new Setting())->get('theme_color') ?: 'default';
+$theme_palettes = [
+    'default' => '#2563eb', // blue
+    'ruby'    => '#dc2626', // red
+    'emerald' => '#059669', // green
+    'amber'   => '#d97706', // amber
+    'violet'  => '#7c3aed', // violet
+    'rose'    => '#e11d48', // rose
+];
+$primary_color = $theme_palettes[$theme_color] ?? '#2563eb';
+?>
+
 <div class="space-y-6 max-w-5xl mx-auto">
     <!-- Header -->
     <div class="flex items-center justify-between bg-white p-6 rounded-xl shadow-sm border border-gray-100">
@@ -47,7 +61,7 @@ $image_url = !empty($post['featured_image']) ? $post['featured_image'] : SITE_UR
             <a href="<?php echo ADMIN_URL; ?>/posts.php" class="bg-gray-100 text-gray-700 px-5 py-2.5 rounded-lg font-semibold hover:bg-gray-200 transition">
                 <i class="fas fa-arrow-left mr-2"></i> ফিরে যান
             </a>
-            <button id="downloadBtn" class="bg-indigo-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-indigo-700 transition shadow-lg shadow-indigo-200 flex items-center">
+            <button id="downloadBtn" style="background-color: <?php echo $primary_color; ?>;" class="text-white px-6 py-2.5 rounded-lg font-semibold transition shadow-lg flex items-center hover:opacity-90">
                 <i class="fas fa-download mr-2"></i> ইমেজ ডাউনলোড করুন
             </button>
         </div>
@@ -81,13 +95,16 @@ $image_url = !empty($post['featured_image']) ? $post['featured_image'] : SITE_UR
             </div>
         </div>
 
+        <!-- Inject Font URL dynamically -->
+        <link href="<?php echo SITE_FONT_URL; ?>" rel="stylesheet">
+
         <!-- The Canvas Preview -->
         <!-- We use absolute pixel sizes to guarantee the output is 1080x1080, but scale it via CSS for viewing -->
         <div class="w-full md:w-2/3 flex justify-center bg-gray-200/50 rounded-xl p-4 overflow-hidden relative" style="min-height: 400px;">
             <div id="card-wrapper" style="width: 1080px; height: 1080px; transform-origin: top center; transform: scale(0.45); margin-bottom: -590px;" class="shadow-2xl flex-shrink-0 transition-transform">
                 
-                <!-- Actual Capture Node (Magazine Style Light Theme - No Shadows/Filters to prevent canvas bugs) -->
-                <div id="social-card" class="relative w-full h-full bg-white flex flex-col" style="font-family: 'Noto Sans Bengali', sans-serif;">
+                <!-- Actual Capture Node (Magazine Style Light Theme) -->
+                <div id="social-card" class="relative w-full h-full bg-white flex flex-col" style="font-family: <?php echo SITE_FONT_CSS; ?>;">
                     
                     <!-- Top Image Area (55%) -->
                     <div class="relative w-full h-[55%]">
@@ -101,20 +118,20 @@ $image_url = !empty($post['featured_image']) ? $post['featured_image'] : SITE_UR
 
                         <!-- Breaking Ribbon -->
                         <?php if($post['is_breaking']): ?>
-                        <div class="absolute bottom-6 left-8 bg-red-600 text-white px-6 py-2 rounded flex items-center text-2xl font-bold uppercase tracking-widest z-10">
+                        <div class="absolute bottom-6 left-8 text-white px-6 py-2 rounded flex items-center text-2xl font-bold uppercase tracking-widest z-10" style="background-color: <?php echo $primary_color; ?>;">
                             <span class="w-3.5 h-3.5 bg-white rounded-full animate-pulse mr-3"></span> ব্রেকিং
                         </div>
                         <?php endif; ?>
                     </div>
 
                     <!-- Brand Lines -->
-                    <div class="w-full h-3 bg-red-600"></div>
+                    <div class="w-full h-3" style="background-color: <?php echo $primary_color; ?>;"></div>
                     <div class="w-full h-1 bg-black"></div>
 
                     <!-- Bottom Content Area -->
                     <div class="flex-1 w-full bg-white p-12 flex flex-col justify-between">
                         
-                        <!-- Title (No shadows) -->
+                        <!-- Title -->
                         <h1 class="text-[#111] font-extrabold leading-[1.35] tracking-tight" style="font-size: 58px;">
                             <?php echo escape($post['title']); ?>
                         </h1>
