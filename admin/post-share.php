@@ -86,16 +86,23 @@ $image_url = !empty($post['featured_image']) ? $post['featured_image'] : SITE_UR
                 <!-- Actual Capture Node (Premium Split Layout) -->
                 <div id="social-card" class="relative w-full h-full bg-slate-900 overflow-hidden flex flex-col" style="font-family: 'Noto Sans Bengali', sans-serif;">
                     
-                    <!-- Top Accent Line -->
-                    <div class="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-red-600 via-purple-600 to-indigo-600 z-50"></div>
+                    <!-- Top Accent Line (Black/Dark Theme) -->
+                    <div class="absolute top-0 left-0 w-full h-4 bg-gradient-to-r from-gray-900 via-gray-600 to-black z-50"></div>
                     
-                    <!-- Top Image Section (65%) -->
-                    <div class="relative h-[65%] w-full overflow-hidden bg-slate-800">
+                    <!-- Top Image Section (Flex 1 to take remaining space, dynamically shrinking if title is long) -->
+                    <div class="relative flex-1 w-full overflow-hidden bg-slate-800">
                         <img src="<?php echo escape($image_url); ?>" id="card-bg-image" class="absolute inset-0 w-full h-full object-cover" crossorigin="anonymous">
                         
                         <!-- Subtle gradient overlay at the very bottom of the image to blend smoothly -->
                         <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
                         
+                        <!-- Top Right Corner "Read More" -->
+                        <div class="absolute top-12 right-12 z-20 flex space-x-4">
+                            <div class="bg-black/70 backdrop-blur-md text-white px-8 py-3 rounded-full text-3xl font-bold shadow-2xl border border-white/20 flex items-center">
+                                বিস্তারিত পড়ুন <i class="fas fa-arrow-right ml-3 text-2xl"></i>
+                            </div>
+                        </div>
+
                         <!-- Top Ribbon / Category -->
                         <div class="absolute bottom-8 left-12 flex space-x-4 z-10">
                             <?php if($post['is_breaking']): ?>
@@ -103,27 +110,25 @@ $image_url = !empty($post['featured_image']) ? $post['featured_image'] : SITE_UR
                                     <span class="w-4 h-4 bg-white rounded-full animate-pulse mr-4"></span> ব্রেকিং
                                 </div>
                             <?php endif; ?>
-                            <?php if(!empty($post['category_name'])): ?>
-                                <div class="bg-indigo-600 text-white px-8 py-3 rounded-md text-3xl font-bold uppercase shadow-2xl">
-                                    <?php echo escape($post['category_name']); ?>
-                                </div>
-                            <?php endif; ?>
+                            <div class="bg-indigo-600 text-white px-8 py-3 rounded-md text-3xl font-bold shadow-2xl">
+                                বিস্তারিত প্রথম কমেন্টে
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- Bottom Content Section (35%) -->
-                    <div class="h-[35%] w-full bg-slate-900 flex flex-col justify-between p-12 pt-8 relative">
+                    <!-- Bottom Content Section (Auto height) -->
+                    <div class="w-full bg-slate-900 flex flex-col p-12 pt-8 relative shrink-0">
                         
-                        <!-- Title (Clamped to 3 lines) -->
-                        <h1 class="text-white font-bold leading-tight drop-shadow-sm" style="font-size: 60px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                        <!-- Title (Full text, no ellipsis) -->
+                        <h1 class="text-white font-bold leading-tight drop-shadow-sm mb-10" style="font-size: 56px;">
                             <?php echo escape($post['title']); ?>
                         </h1>
                         
                         <!-- Footer bar -->
-                        <div class="flex items-center justify-between border-t border-slate-700/80 pt-8 mt-auto">
+                        <div class="flex items-center justify-between border-t border-slate-700/80 pt-8">
                             <div class="flex items-center">
-                                <!-- Logo -->
-                                <img src="<?php echo SITE_URL; ?>/assets/images/logo.png" onerror="this.outerHTML='<h2 class=\'text-white text-5xl font-bold\'>আলোকপাত</h2>'" alt="Alokpat" class="h-16 object-contain" crossorigin="anonymous">
+                                <!-- Logo only (Removed left text) -->
+                                <img src="<?php echo SITE_URL; ?>/assets/images/logo.png" onerror="this.style.display='none'" alt="Alokpat" class="h-16 object-contain" crossorigin="anonymous">
                             </div>
                             <div class="flex items-center space-x-4 text-slate-300">
                                 <i class="fas fa-globe text-4xl opacity-80"></i>
