@@ -132,7 +132,7 @@ $primary_color = $theme_palettes[$theme_color] ?? '#2563eb';
                     <div class="flex-1 w-full bg-white p-12 flex flex-col justify-between">
                         
                         <!-- Title -->
-                        <h1 class="text-[#111] font-extrabold leading-[1.35] tracking-tight" style="font-size: 58px;">
+                        <h1 class="text-[#111] font-extrabold leading-[1.35] tracking-tight border-l-[12px] pl-6" style="font-size: 58px; border-color: <?php echo $primary_color; ?>;">
                             <?php echo escape($post['title']); ?>
                         </h1>
                         
