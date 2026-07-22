@@ -150,9 +150,8 @@ $share_text = escape($post['title']) . "\n\n" . $excerpt . ($short_code ? "\n\n�
                         <img src="<?php echo escape($image_url); ?>" id="card-bg-image" class="absolute inset-0 w-full h-full object-cover" crossorigin="anonymous">
                         
                         <!-- Top Right Tag -->
-                        <div class="absolute top-10 right-12 z-10 bg-black text-white px-6 py-3 text-[26px] font-bold rounded flex items-center w-max max-w-[90%] whitespace-nowrap">
+                        <div class="absolute top-10 right-12 z-10 bg-black text-white px-6 py-2.5 text-[22px] font-bold rounded flex items-center justify-center w-max whitespace-nowrap">
                             বিস্তারিত প্রথম কমেন্টে
-                            <svg class="w-6 h-6 ml-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </div>
 
                         <!-- Breaking Ribbon -->
