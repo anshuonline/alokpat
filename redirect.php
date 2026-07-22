@@ -14,7 +14,7 @@ if (!isset($_GET['code']) || empty($_GET['code'])) {
 $code = sanitize_string($_GET['code']);
 
 // Query the short link
-$stmt = $pdo->prepare("SELECT post_id FROM short_links WHERE short_code = ? LIMIT 1");
+$stmt = $db->prepare("SELECT post_id FROM short_links WHERE short_code = ? LIMIT 1");
 $stmt->execute([$code]);
 $link = $stmt->fetch();
 
@@ -26,12 +26,12 @@ if (!$link) {
 $post_id = $link['post_id'];
 
 // Increment click count
-$updateStmt = $pdo->prepare("UPDATE short_links SET clicks = clicks + 1 WHERE short_code = ?");
+$updateStmt = $db->prepare("UPDATE short_links SET clicks = clicks + 1 WHERE short_code = ?");
 $updateStmt->execute([$code]);
 
 // Get the post details to construct the actual URL
 // We need post slug and category slug
-$postStmt = $pdo->prepare("
+$postStmt = $db->prepare("
     SELECT p.slug AS post_slug, c.slug AS cat_slug 
     FROM posts p
     LEFT JOIN categories c ON p.category_id = c.id

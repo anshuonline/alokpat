@@ -28,7 +28,7 @@ $db_error = null;
 
 try {
     // Fetch short links
-    $stmt = $pdo->prepare("
+    $stmt = $db->prepare("
         SELECT s.id, s.short_code, s.clicks, s.created_at, p.title as post_title, p.id as post_id
         FROM short_links s
         JOIN posts p ON s.post_id = p.id
@@ -41,7 +41,7 @@ try {
     $links = $stmt->fetchAll();
 
     // Get total count for pagination
-    $totalStmt = $pdo->query("SELECT COUNT(id) FROM short_links");
+    $totalStmt = $db->query("SELECT COUNT(id) FROM short_links");
     $total_links = $totalStmt->fetchColumn();
     $total_pages = ceil($total_links / $limit);
 } catch (PDOException $e) {

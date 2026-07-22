@@ -63,7 +63,7 @@ $short_code = null;
 $db_error = null;
 
 try {
-    $stmt = $pdo->prepare("SELECT short_code FROM short_links WHERE post_id = ? LIMIT 1");
+    $stmt = $db->prepare("SELECT short_code FROM short_links WHERE post_id = ? LIMIT 1");
     $stmt->execute([$post_id]);
     $link = $stmt->fetch();
 
@@ -73,12 +73,12 @@ try {
         // Generate a unique 8-character alphanumeric code
         do {
             $short_code = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyz"), 0, 8);
-            $checkStmt = $pdo->prepare("SELECT id FROM short_links WHERE short_code = ?");
+            $checkStmt = $db->prepare("SELECT id FROM short_links WHERE short_code = ?");
             $checkStmt->execute([$short_code]);
         } while ($checkStmt->fetchColumn());
         
         // Insert new short link
-        $insertStmt = $pdo->prepare("INSERT INTO short_links (post_id, short_code) VALUES (?, ?)");
+        $insertStmt = $db->prepare("INSERT INTO short_links (post_id, short_code) VALUES (?, ?)");
         $insertStmt->execute([$post_id, $short_code]);
     }
 } catch (PDOException $e) {
