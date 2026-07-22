@@ -11,6 +11,21 @@ if (empty($slug)) {
     redirect(SITE_URL);
 }
 
+// === PAGE CACHING ===
+$cache_dir = __DIR__ . '/cache/articles';
+if (!is_dir($cache_dir)) {
+    @mkdir($cache_dir, 0777, true);
+}
+$cache_file = $cache_dir . '/' . md5($slug) . '.html';
+$cache_time = 3600; // 1 hour
+
+if (file_exists($cache_file) && (time() - filemtime($cache_file)) < $cache_time) {
+    // Serve from cache instantly
+    readfile($cache_file);
+    echo "<!-- Cached: " . date('Y-m-d H:i:s', filemtime($cache_file)) . " -->";
+    exit;
+}
+
 $post = new Post();
 $article = $post->getBySlug($slug);
 
@@ -316,7 +331,10 @@ component('header', ['categories' => $categories]);
             <article id="article-content-inner" class="article-content max-w-none text-gray-800 leading-relaxed pb-8">
                 <?php
                 // Inject inline ads into article content based on settings
-                echo inject_ads_into_content($article['content'], $article['id']);
+                $processed_content = inject_ads_into_content($article['content'], $article['id']);
+                // Apply Lazy Loading to images
+                $processed_content = preg_replace('/<img(?!.*loading=["\']lazy["\'])([^>]+)>/i', '<img loading="lazy"$1>', $processed_content);
+                echo $processed_content;
                 ?>
             </article>
             
@@ -584,6 +602,16 @@ component('header', ['categories' => $categories]);
 <?php
 component('footer');
 $content = ob_get_clean();
+
+// Start output buffering for the final HTML containing the layout
+ob_start();
 include 'layouts/main.php';
+$final_html = ob_get_clean();
+
+// Save the completely rendered HTML to cache
+@file_put_contents($cache_file, $final_html);
+
+// Output the HTML
+echo $final_html;
 ?>
 

@@ -120,6 +120,10 @@ class Post {
      */
     public function update($id, $data) {
         try {
+            // === CACHE INVALIDATION: Get old slug ===
+            $old_post = $this->getById($id);
+            $old_slug = $old_post ? $old_post['slug'] : null;
+            
             $fields = [];
             $params = [':id' => $id];
             
@@ -164,6 +168,21 @@ class Post {
                 if (isset($data['tags']) && is_array($data['tags'])) {
                     $this->attachTags($id, $data['tags']);
                 }
+                
+                // === CACHE INVALIDATION: Clear cache files ===
+                if ($old_slug) {
+                    $cache_file = __DIR__ . '/../cache/articles/' . md5($old_slug) . '.html';
+                    if (file_exists($cache_file)) {
+                        @unlink($cache_file);
+                    }
+                }
+                if (isset($data['slug']) && $data['slug'] !== $old_slug) {
+                    $new_cache_file = __DIR__ . '/../cache/articles/' . md5($data['slug']) . '.html';
+                    if (file_exists($new_cache_file)) {
+                        @unlink($new_cache_file);
+                    }
+                }
+                
                 return true;
             }
             
