@@ -228,8 +228,9 @@ ob_start();
     </div>
     
     <!-- Form -->
-    <form id="postEditForm" method="POST" enctype="multipart/form-data" class="space-y-6">
-        <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+    <form id="postEditForm" method="POST" action="?id=<?php echo $post_id; ?>" enctype="multipart/form-data" class="space-y-6">
+        <input type="hidden" name="csrf_token" id="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+        <input type="hidden" name="autosave_post_id" id="autosave_post_id" value="<?php echo $post_id; ?>">
         
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
             
@@ -1210,6 +1211,73 @@ $(document).ready(function() {
     $('main').on('scroll', function() {
         $('#postTags').select2('close');
     });
+});
+</script>
+
+<!-- AutoSave Toast Notification -->
+<div id="autosave-toast" class="fixed bottom-5 right-5 bg-gray-800 text-white px-4 py-3 rounded-lg shadow-lg transform transition-all duration-300 translate-y-20 opacity-0 z-50 flex items-center">
+    <i class="fas fa-check-circle text-green-400 mr-2"></i>
+    <span id="autosave-toast-message">Auto saved</span>
+</div>
+
+<script>
+$(document).ready(function() {
+    let lastSavedData = '';
+    
+    function showAutosaveToast(message) {
+        const toast = $('#autosave-toast');
+        $('#autosave-toast-message').text(message);
+        toast.removeClass('translate-y-20 opacity-0').addClass('translate-y-0 opacity-100');
+        
+        setTimeout(() => {
+            toast.removeClass('translate-y-0 opacity-100').addClass('translate-y-20 opacity-0');
+        }, 3000);
+    }
+
+    function autoSave() {
+        const title = $('input[name="title"]').val();
+        if (!title || !title.trim()) return;
+
+        if (typeof tinymce !== 'undefined') {
+            tinymce.triggerSave();
+        }
+
+        const formEl = document.getElementById('postEditForm') || document.getElementById('post-form');
+        if (!formEl) return;
+
+        const formData = new FormData(formEl);
+        formData.append('action', 'autosave');
+        
+        const dataString = new URLSearchParams(formData).toString();
+        
+        if (dataString === lastSavedData) {
+            return;
+        }
+
+        $.ajax({
+            url: 'ajax/autosave.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                try {
+                    const res = typeof response === 'string' ? JSON.parse(response) : response;
+                    if (res.success && res.post_id) {
+                        $('#autosave_post_id').val(res.post_id);
+                        lastSavedData = dataString;
+                        
+                        const time = new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+                        showAutosaveToast('Auto-saved at ' + time);
+                    }
+                } catch (e) {
+                    console.error('Autosave parse error', e);
+                }
+            }
+        });
+    }
+
+    setInterval(autoSave, 30000);
 });
 </script>
 
