@@ -202,6 +202,12 @@ $page_title = 'প্রিন্ট: ' . ($article['title'] ?? '');
                 window.print();
             }, 500);
         };
+
+        // Redirect back to the article when the print dialog is closed (printed or cancelled)
+        // This prevents users from reading the print page to bypass ads
+        window.onafterprint = function() {
+            window.location.href = '<?php echo url_for_post($article); ?>';
+        };
     </script>
 </body>
 </html>
