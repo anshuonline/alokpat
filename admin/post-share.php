@@ -86,51 +86,57 @@ $image_url = !empty($post['featured_image']) ? $post['featured_image'] : SITE_UR
         <div class="w-full md:w-2/3 flex justify-center bg-gray-200/50 rounded-xl p-4 overflow-hidden relative" style="min-height: 400px;">
             <div id="card-wrapper" style="width: 1080px; height: 1080px; transform-origin: top center; transform: scale(0.45); margin-bottom: -590px;" class="shadow-2xl flex-shrink-0 transition-transform">
                 
-                <!-- Actual Capture Node (Professional Light Theme Split Layout) -->
-                <div id="social-card" class="relative w-full h-full bg-white overflow-hidden flex flex-col" style="font-family: 'Noto Sans Bengali', sans-serif;">
+                <!-- Actual Capture Node (Jaw-dropping Dark Premium Layout) -->
+                <div id="social-card" class="relative w-full h-full bg-[#050B14] overflow-hidden flex flex-col" style="font-family: 'Noto Sans Bengali', sans-serif;">
                     
-                    <!-- Top Image Section (60%) -->
-                    <div class="relative h-[60%] w-full overflow-hidden bg-gray-100 border-b-[8px] border-red-600">
-                        <img src="<?php echo escape($image_url); ?>" id="card-bg-image" class="absolute inset-0 w-full h-full object-cover" crossorigin="anonymous">
-                        
-                        <!-- Top Right Corner "Read More" -->
-                        <div class="absolute top-12 right-12 z-20 flex space-x-4">
-                            <div class="bg-red-600 text-white px-8 py-3 rounded-full text-3xl font-bold shadow-2xl border-2 border-white flex items-center">
-                                বিস্তারিত প্রথম কমেন্টে <i class="fas fa-arrow-right ml-3 text-2xl"></i>
-                            </div>
-                        </div>
-
-                        <!-- Top Ribbon / Category -->
-                        <div class="absolute bottom-8 left-12 flex space-x-4 z-10">
-                            <?php if($post['is_breaking']): ?>
-                                <div class="bg-red-600 text-white px-8 py-3 rounded-md flex items-center text-3xl font-bold uppercase tracking-widest shadow-xl border border-red-500">
-                                    <span class="w-4 h-4 bg-white rounded-full animate-pulse mr-4"></span> ব্রেকিং
-                                </div>
-                            <?php endif; ?>
+                    <!-- Background Image -->
+                    <img src="<?php echo escape($image_url); ?>" id="card-bg-image" class="absolute inset-0 w-full h-full object-cover opacity-[0.85]" crossorigin="anonymous">
+                    
+                    <!-- Deep Gradient Overlay (Smooth blend from bottom) -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050B14] via-[#050B14]/80 to-transparent"></div>
+                    <!-- Extra gradient layer for text readability -->
+                    <div class="absolute inset-x-0 bottom-0 h-[60%] bg-gradient-to-t from-[#050B14] via-[#050B14]/40 to-transparent"></div>
+                    
+                    <!-- Top Right Corner "Read More" -->
+                    <div class="absolute top-10 right-10 z-20">
+                        <div class="bg-red-600 text-white px-6 py-2.5 rounded-lg text-2xl font-bold shadow-2xl flex items-center tracking-wide border border-red-500/50">
+                            বিস্তারিত প্রথম কমেন্টে 
+                            <!-- Inline SVG for arrow (fixes canvas font rendering bug) -->
+                            <svg class="w-6 h-6 ml-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </div>
                     </div>
-                    
-                    <!-- Bottom Content Section (40%) -->
-                    <div class="h-[40%] w-full bg-white flex flex-col justify-between p-12 relative">
+
+                    <!-- Breaking Ribbon -->
+                    <div class="absolute top-10 left-10 z-20">
+                        <?php if($post['is_breaking']): ?>
+                            <div class="bg-red-600 text-white px-6 py-2.5 rounded-lg flex items-center text-2xl font-bold uppercase tracking-widest shadow-2xl border border-red-500/50">
+                                <span class="w-3.5 h-3.5 bg-white rounded-full animate-pulse mr-3"></span> ব্রেকিং
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <!-- Bottom Content Section -->
+                    <div class="absolute bottom-0 left-0 w-full p-12 z-30 flex flex-col justify-end">
                         
-                        <!-- Title (Full text, adjusts via flex) -->
-                        <h1 class="text-gray-900 font-bold leading-snug tracking-tight" style="font-size: 58px;">
+                        <!-- Title -->
+                        <h1 class="text-white font-extrabold leading-[1.35] drop-shadow-2xl mb-10" style="font-size: 64px; text-shadow: 0px 4px 15px rgba(0,0,0,0.8);">
                             <?php echo escape($post['title']); ?>
                         </h1>
                         
                         <!-- Footer bar -->
-                        <div class="flex items-center justify-between border-t-2 border-gray-100 pt-8 mt-auto">
+                        <div class="flex items-center justify-between border-t-[1.5px] border-white/20 pt-8">
                             <div class="flex items-center">
-                                <!-- Logo -->
+                                <!-- Logo with brightness-0 invert to make it white -->
                                 <?php if($site_logo): ?>
-                                    <img src="<?php echo escape($site_logo); ?>" alt="Alokpat" class="h-20 object-contain" crossorigin="anonymous">
+                                    <img src="<?php echo escape($site_logo); ?>" alt="Alokpat" class="h-16 object-contain" style="filter: brightness(0) invert(1);" crossorigin="anonymous">
                                 <?php else: ?>
-                                    <h2 class="text-indigo-900 text-6xl font-black tracking-tight">আলোকপাত</h2>
+                                    <h2 class="text-white text-5xl font-black tracking-tight">আলোকপাত</h2>
                                 <?php endif; ?>
                             </div>
-                            <div class="flex items-center space-x-4 text-gray-500">
-                                <i class="fas fa-globe text-4xl text-gray-400"></i>
-                                <span class="text-4xl font-bold tracking-widest uppercase text-gray-700">alokpat.in</span>
+                            <div class="flex items-center space-x-3 text-gray-200">
+                                <!-- Inline SVG for globe -->
+                                <svg class="w-8 h-8 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <span class="text-3xl font-bold tracking-widest uppercase opacity-90">alokpat.in</span>
                             </div>
                         </div>
                     </div>
