@@ -21,6 +21,7 @@ if (isset($_GET['delete'])) {
         setFlash('error', 'আপনি নিজের অ্যাকাউন্ট মুছতে পারবেন না');
     } else {
         if ($userModel->delete($id)) {
+            if (function_exists('clear_page_caches')) clear_page_caches();
             setFlash('success', 'ব্যবহারকারী সফলভাবে মুছে ফেলা হয়েছে');
         } else {
             setFlash('error', 'ব্যবহারকারী মুছতে সমস্যা হয়েছে');
@@ -90,12 +91,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($is_update) {
         $id = (int)$_POST['update_id'];
         if ($userModel->update($id, $data)) {
+            if (function_exists('clear_page_caches')) clear_page_caches();
             setFlash('success', 'ব্যবহারকারীর তথ্য আপডেট করা হয়েছে');
         } else {
             setFlash('error', 'ব্যবহারকারীর তথ্য আপডেট করতে সমস্যা হয়েছে');
         }
     } else {
         if ($userModel->create($data)) {
+            if (function_exists('clear_page_caches')) clear_page_caches();
             setFlash('success', 'নতুন ব্যবহারকারী সফলভাবে যোগ করা হয়েছে');
         } else {
             setFlash('error', 'নতুন ব্যবহারকারী যোগ করতে সমস্যা হয়েছে');

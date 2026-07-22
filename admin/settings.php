@@ -67,6 +67,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    if (function_exists('clear_page_caches')) {
+        clear_page_caches();
+    }
+
     setFlash('success', 'সাইট সেটিংস সফলভাবে আপডেট হয়েছে');
     redirect(ADMIN_URL . '/settings.php');
 }
