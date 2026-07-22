@@ -83,44 +83,51 @@ $image_url = !empty($post['featured_image']) ? $post['featured_image'] : SITE_UR
         <div class="w-full md:w-2/3 flex justify-center bg-gray-200/50 rounded-xl p-4 overflow-hidden relative" style="min-height: 400px;">
             <div id="card-wrapper" style="width: 1080px; height: 1080px; transform-origin: top center; transform: scale(0.45); margin-bottom: -590px;" class="shadow-2xl flex-shrink-0 transition-transform">
                 
-                <!-- Actual Capture Node -->
-                <div id="social-card" class="relative w-full h-full bg-gray-900 overflow-hidden flex flex-col" style="font-family: 'Noto Sans Bengali', sans-serif;">
+                <!-- Actual Capture Node (Premium Split Layout) -->
+                <div id="social-card" class="relative w-full h-full bg-slate-900 overflow-hidden flex flex-col" style="font-family: 'Noto Sans Bengali', sans-serif;">
                     
-                    <!-- Background Image -->
-                    <img src="<?php echo escape($image_url); ?>" id="card-bg-image" class="absolute inset-0 w-full h-full object-cover opacity-60" crossorigin="anonymous">
+                    <!-- Top Accent Line -->
+                    <div class="absolute top-0 left-0 w-full h-3 bg-gradient-to-r from-red-600 via-purple-600 to-indigo-600 z-50"></div>
                     
-                    <!-- Gradient Overlay (Darker at bottom) -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/70 to-transparent"></div>
-                    
-                    <!-- Top Ribbon / Category (Optional) -->
-                    <div class="absolute top-12 left-12 z-10 flex space-x-4">
-                        <?php if($post['is_breaking']): ?>
-                            <span class="bg-red-600 text-white px-6 py-2 rounded-full text-2xl font-bold uppercase tracking-wider flex items-center shadow-lg">
-                                <i class="fas fa-bolt mr-3"></i> ব্রেকিং
-                            </span>
-                        <?php endif; ?>
-                        <?php if(!empty($post['category_name'])): ?>
-                            <span class="bg-indigo-600 text-white px-6 py-2 rounded-full text-2xl font-bold shadow-lg">
-                                <?php echo escape($post['category_name']); ?>
-                            </span>
-                        <?php endif; ?>
+                    <!-- Top Image Section (65%) -->
+                    <div class="relative h-[65%] w-full overflow-hidden bg-slate-800">
+                        <img src="<?php echo escape($image_url); ?>" id="card-bg-image" class="absolute inset-0 w-full h-full object-cover" crossorigin="anonymous">
+                        
+                        <!-- Subtle gradient overlay at the very bottom of the image to blend smoothly -->
+                        <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
+                        
+                        <!-- Top Ribbon / Category -->
+                        <div class="absolute bottom-8 left-12 flex space-x-4 z-10">
+                            <?php if($post['is_breaking']): ?>
+                                <div class="bg-red-600 text-white px-8 py-3 rounded-md flex items-center text-3xl font-bold uppercase tracking-widest shadow-2xl">
+                                    <span class="w-4 h-4 bg-white rounded-full animate-pulse mr-4"></span> ব্রেকিং
+                                </div>
+                            <?php endif; ?>
+                            <?php if(!empty($post['category_name'])): ?>
+                                <div class="bg-indigo-600 text-white px-8 py-3 rounded-md text-3xl font-bold uppercase shadow-2xl">
+                                    <?php echo escape($post['category_name']); ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
-
-                    <!-- Content (Bottom aligned) -->
-                    <div class="absolute bottom-0 left-0 w-full p-12 z-10">
-                        <h1 class="text-white font-bold leading-[1.3] mb-10 drop-shadow-2xl" style="font-size: 64px;">
+                    
+                    <!-- Bottom Content Section (35%) -->
+                    <div class="h-[35%] w-full bg-slate-900 flex flex-col justify-between p-12 pt-8 relative">
+                        
+                        <!-- Title (Clamped to 3 lines) -->
+                        <h1 class="text-white font-bold leading-tight drop-shadow-sm" style="font-size: 60px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
                             <?php echo escape($post['title']); ?>
                         </h1>
                         
                         <!-- Footer bar -->
-                        <div class="flex items-center justify-between border-t-[3px] border-white/20 pt-8 mt-auto">
+                        <div class="flex items-center justify-between border-t border-slate-700/80 pt-8 mt-auto">
                             <div class="flex items-center">
                                 <!-- Logo -->
-                                <!-- Make sure logo.png exists, or use text fallback -->
-                                <img src="<?php echo SITE_URL; ?>/assets/images/logo.png" onerror="this.outerHTML='<h2 class=\'text-white text-5xl font-bold\'>আলোকপাত</h2>'" alt="Alokpat" class="h-20" crossorigin="anonymous">
+                                <img src="<?php echo SITE_URL; ?>/assets/images/logo.png" onerror="this.outerHTML='<h2 class=\'text-white text-5xl font-bold\'>আলোকপাত</h2>'" alt="Alokpat" class="h-16 object-contain" crossorigin="anonymous">
                             </div>
-                            <div class="text-white/90 text-4xl font-semibold tracking-widest uppercase flex items-center">
-                                <i class="fas fa-globe mr-3 opacity-70"></i> alokpat.in
+                            <div class="flex items-center space-x-4 text-slate-300">
+                                <i class="fas fa-globe text-4xl opacity-80"></i>
+                                <span class="text-4xl font-semibold tracking-widest uppercase text-slate-200">alokpat.in</span>
                             </div>
                         </div>
                     </div>
