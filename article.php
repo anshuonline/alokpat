@@ -631,6 +631,9 @@ ob_start();
 include 'layouts/main.php';
 $final_html = ob_get_clean();
 
+// Minify the complete HTML before caching (ignoring scripts/pre to prevent breakage)
+$final_html = minify_html_safe($final_html);
+
 // Save the completely rendered HTML to cache
 @file_put_contents($cache_file, $final_html);
 

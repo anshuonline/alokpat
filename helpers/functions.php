@@ -638,10 +638,39 @@ function inject_ads_into_content($html, $postId = null) {
     }
 
     $newHtml = '';
-    foreach ($container->childNodes as $child) {
-        $newHtml .= $doc->saveHTML($child);
+    foreach ($container->childNodes as $node) {
+        $newHtml .= $doc->saveHTML($node);
     }
-
     return $newHtml;
 }
 
+/**
+ * Minify HTML safely (ignores script, style, pre, textarea)
+ * 
+ * @param string $html
+ * @return string
+ */
+function minify_html_safe($html) {
+    // Extract tags where whitespace matters
+    preg_match_all('!(<(?:code|pre|script|style|textarea)[^>]*>.*?</(?:code|pre|script|style|textarea)>)!is', $html, $matches);
+    $blocks = $matches[1];
+    
+    // Replace them with placeholders
+    $html = preg_replace('!(<(?:code|pre|script|style|textarea)[^>]*>.*?</(?:code|pre|script|style|textarea)>)!is', '@@@BLOCK@@@', $html);
+    
+    // Minify the rest (remove comments, collapse whitespace)
+    $html = preg_replace('/<!--(?!<!)[^\[>].*?-->/s', '', $html); // Remove HTML comments
+    $html = preg_replace('/\s+/', ' ', $html); // Collapse whitespace
+    $html = preg_replace('/>\s+</', '><', $html); // Remove space between tags
+    
+    // Put the blocks back
+    foreach ($blocks as $block) {
+        // Use explode/implode or preg_replace with limit 1
+        $pos = strpos($html, '@@@BLOCK@@@');
+        if ($pos !== false) {
+            $html = substr_replace($html, $block, $pos, strlen('@@@BLOCK@@@'));
+        }
+    }
+    
+    return trim($html);
+}

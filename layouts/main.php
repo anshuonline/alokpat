@@ -276,7 +276,8 @@
         })();
     </script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.3.0/js/glightbox.min.js"></script>
+    <!-- Defer non-critical JS -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.3.0/js/glightbox.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // Find all images inside the post content that aren't already wrapped in a link
