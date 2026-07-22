@@ -46,18 +46,7 @@ $theme_palettes = [
     'rose'    => '#e11d48', // rose
 ];
 $primary_color = $theme_palettes[$theme_color] ?? '#2563eb';
-?>
 
-<div class="space-y-6 max-w-5xl mx-auto">
-    <!-- Header -->
-    <div class="flex items-center justify-between bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-        <h2 class="text-2xl font-bold text-gray-800 flex items-center">
-            <div class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center mr-3">
-                <i class="fas fa-share-alt"></i>
-            </div>
-            সোশ্যাল মিডিয়া কার্ড জেনারেটর
-        </h2>
-        <div class="flex space-x-3">
 // Fetch or generate short link
 $short_code = null;
 $db_error = null;
