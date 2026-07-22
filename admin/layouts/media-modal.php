@@ -293,13 +293,20 @@ function submitGlobalMediaUpload() {
             let compKB = data.data.file_size ? Math.round(data.data.file_size / 1024) : 'N/A';
             statusMsg.innerHTML = data.message + '<br><span class="text-xs text-gray-500 block mt-1">Size before: ' + origKB + 'KB &rarr; Compressed: ' + compKB + 'KB</span>';
             
-            // Switch back to library and select the newly uploaded image
+            // Reset button immediately
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            btn.classList.remove('opacity-70');
+            
+            // Switch back to library and select the newly uploaded image quickly
             setTimeout(() => {
                 fileInput.value = '';
                 switchMediaTab('library');
                 loadMediaLibrary(); 
                 // Note: it will appear first in the grid due to ordering.
-            }, 1000);
+                statusMsg.innerHTML = '';
+                statusMsg.classList.add('hidden');
+            }, 500);
         } else {
             throw new Error(data.message || 'আপলোডে সমস্যা হয়েছে');
         }
