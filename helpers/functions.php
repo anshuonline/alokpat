@@ -383,22 +383,30 @@ function uploadFile($file, $directory = 'uploads') {
                 $image = $resized;
             }
 
-            // Iterative compression to target < 100KB
-            $quality = 90;
-            $target_size = 100 * 1024; // 100 KB
+            // Fast compression to target < 100KB
+            // Step 1: Compress at quality 70
+            imagewebp($image, $webp_filepath, 70);
+            clearstatcache(true, $webp_filepath);
+            
             $success = false;
-
-            while ($quality >= 10) { // minimum 10kb roughly matches quality 10 for most images
-                imagewebp($image, $webp_filepath, $quality);
+            if (file_exists($webp_filepath)) {
+                $current_size = filesize($webp_filepath);
+                $target_size = 100 * 1024; // 100 KB
                 
-                if (file_exists($webp_filepath)) {
-                    $current_size = filesize($webp_filepath);
-                    if ($current_size <= $target_size || $quality == 10) {
-                        $success = true;
-                        break;
+                if ($current_size > $target_size) {
+                    // Step 2: If still > 100KB, compress at quality 30
+                    imagewebp($image, $webp_filepath, 30);
+                    clearstatcache(true, $webp_filepath);
+                    
+                    if (file_exists($webp_filepath)) {
+                        $current_size = filesize($webp_filepath);
+                        // If it's STILL > 100KB, we force extreme compression (quality 10)
+                        if ($current_size > $target_size) {
+                             imagewebp($image, $webp_filepath, 10);
+                        }
                     }
                 }
-                $quality -= 10;
+                $success = true;
             }
 
             imagedestroy($image);
