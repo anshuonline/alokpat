@@ -16,7 +16,7 @@ if (!isset($_GET['code']) || empty($_GET['code'])) {
     redirect(SITE_URL);
 }
 
-$code = sanitize_string($_GET['code']);
+$code = sanitize($_GET['code']);
 
 try {
     // Query the short link
