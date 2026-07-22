@@ -50,6 +50,9 @@
                         <button type="button" onclick="navigator.clipboard.writeText(selectedMediaUrl); alert('URL কপি করা হয়েছে!');" class="w-full text-center block px-4 py-2 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-200 border border-gray-200 transition font-medium text-sm">
                             <i class="fas fa-copy mr-2"></i> URL কপি করুন
                         </button>
+                        <button type="button" onclick="deleteSelectedMedia()" class="w-full text-center block px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition font-medium text-sm mt-2">
+                            <i class="fas fa-trash-alt mr-2"></i> ছবিটি ডিলিট করুন
+                        </button>
                     </div>
                 </div>
             </div>
@@ -93,6 +96,7 @@
 <script>
 // Global Media Library Logic
 let selectedMediaUrl = '';
+let selectedMediaId = null;
 let mediaSelectionCallback = null;
 
 /**
@@ -180,7 +184,7 @@ function loadMediaLibrary() {
                 res.data.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'media-item relative aspect-square bg-gray-200 rounded-lg overflow-hidden border-2 border-gray-300 cursor-pointer hover:shadow-lg transition group';
-                    div.onclick = () => selectMediaItem(div, item.file_url, item.original_filename || item.alt_text || item.filename);
+                    div.onclick = () => selectMediaItem(div, item.file_url, item.original_filename || item.alt_text || item.filename, item.id);
                     
                     const img = document.createElement('img');
                     img.src = item.file_url;
@@ -206,11 +210,12 @@ function loadMediaLibrary() {
         });
 }
 
-function selectMediaItem(element, url, filename) {
+function selectMediaItem(element, url, filename, id) {
     document.querySelectorAll('.media-item').forEach(el => el.classList.remove('ring-4', 'ring-blue-500', 'border-transparent'));
     
     element.classList.add('ring-4', 'ring-blue-500', 'border-transparent');
     selectedMediaUrl = url;
+    selectedMediaId = id;
     
     // Update sidebar
     const sidebar = document.getElementById('mediaSidebarPreview');
@@ -283,7 +288,10 @@ function submitGlobalMediaUpload() {
         if (data.status === 'success') {
             statusMsg.classList.remove('text-blue-600');
             statusMsg.classList.add('text-green-600');
-            statusMsg.innerText = data.message;
+            
+            let origKB = data.data.original_size ? Math.round(data.data.original_size / 1024) : 'N/A';
+            let compKB = data.data.file_size ? Math.round(data.data.file_size / 1024) : 'N/A';
+            statusMsg.innerHTML = data.message + '<br><span class="text-xs text-gray-500 block mt-1">Size before: ' + origKB + 'KB &rarr; Compressed: ' + compKB + 'KB</span>';
             
             // Switch back to library and select the newly uploaded image
             setTimeout(() => {
@@ -299,12 +307,40 @@ function submitGlobalMediaUpload() {
     .catch(err => {
         statusMsg.classList.remove('text-blue-600');
         statusMsg.classList.add('text-red-600');
-        statusMsg.innerText = err.message;
-    })
-    .finally(() => {
+        statusMsg.innerText = err.message || 'আপলোডে সমস্যা হয়েছে';
         btn.disabled = false;
         btn.innerHTML = originalText;
         btn.classList.remove('opacity-70');
+    });
+}
+
+function deleteSelectedMedia() {
+    if(!selectedMediaId) return;
+    if(!confirm('আপনি কি নিশ্চিত যে আপনি এই ছবিটি ডিলিট করতে চান?')) return;
+    
+    fetch('<?php echo ADMIN_URL; ?>/ajax/delete-media.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: selectedMediaId })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === 'success') {
+            alert('ছবিটি সফলভাবে ডিলিট করা হয়েছে!');
+            document.getElementById('mediaSidebarPreview').classList.add('hidden');
+            document.getElementById('mediaSidebarPreview').classList.remove('flex');
+            selectedMediaUrl = '';
+            selectedMediaId = null;
+            loadMediaLibrary();
+        } else {
+            alert(data.message || 'ডিলিট করতে সমস্যা হয়েছে');
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('সার্ভার এরর!');
     });
 }
 </script>

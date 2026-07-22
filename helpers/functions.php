@@ -357,20 +357,60 @@ function uploadFile($file, $directory = 'uploads') {
                 }
                 break;
             case 'webp':
-                // Already WebP, just move it below
+                $image = @imagecreatefromwebp($file['tmp_name']);
                 break;
         }
         
-        // Attempt WebP conversion
         if ($image !== false && $image !== null) {
-            if (@imagewebp($image, $webp_filepath, 90)) { // 90 is a high quality for WebP
+            // Resize if too large
+            $width = imagesx($image);
+            $height = imagesy($image);
+            $max_width = 1200; // Resize large images to help hit <100kb
+            
+            if ($width > $max_width) {
+                $new_width = $max_width;
+                $new_height = floor($height * ($new_width / $width));
+                
+                $resized = imagecreatetruecolor($new_width, $new_height);
+                // Handle transparency for resized image
+                imagealphablending($resized, false);
+                imagesavealpha($resized, true);
+                $transparent = imagecolorallocatealpha($resized, 255, 255, 255, 127);
+                imagefilledrectangle($resized, 0, 0, $new_width, $new_height, $transparent);
+                
+                imagecopyresampled($resized, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);
                 imagedestroy($image);
+                $image = $resized;
+            }
+
+            // Iterative compression to target < 100KB
+            $quality = 90;
+            $target_size = 100 * 1024; // 100 KB
+            $success = false;
+
+            while ($quality >= 20) {
+                ob_start();
+                imagewebp($image, null, $quality);
+                $image_data = ob_get_clean();
+                
+                if (strlen($image_data) <= $target_size || $quality == 20) {
+                    file_put_contents($webp_filepath, $image_data);
+                    $success = true;
+                    break;
+                }
+                $quality -= 10;
+            }
+
+            imagedestroy($image);
+
+            if ($success) {
                 $file_url = SITE_URL . '/' . $directory . '/' . $webp_filename;
                 return [
                     'filename' => $webp_filename,
                     'filepath' => $webp_filepath,
                     'file_url' => $file_url,
                     'file_size' => filesize($webp_filepath),
+                    'original_size' => $file['size'], // Return original size
                     'mime_type' => 'image/webp'
                 ];
             }
@@ -385,6 +425,7 @@ function uploadFile($file, $directory = 'uploads') {
             'filepath' => $filepath,
             'file_url' => $file_url,
             'file_size' => $file['size'],
+            'original_size' => $file['size'], // Return original size
             'mime_type' => $file['type']
         ];
     }

@@ -58,6 +58,7 @@ try {
             'file_url' => $upload_result['file_url'],
             'file_type' => pathinfo($upload_result['filename'], PATHINFO_EXTENSION),
             'file_size' => $upload_result['file_size'],
+            'original_size' => $upload_result['original_size'] ?? $file['size'], // Add original size
             'mime_type' => $upload_result['mime_type'],
             'alt_text' => pathinfo($file['name'], PATHINFO_FILENAME),
             'uploaded_by' => getCurrentUser()['id']
