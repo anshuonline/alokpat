@@ -11,28 +11,43 @@ require_once '../helpers/functions.php';
 // Check if user is logged in
 requireAuth();
 
+// Enable debugging for this page
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 // Pagination setup
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $limit = ADMIN_POSTS_PER_PAGE;
 $offset = ($page - 1) * $limit;
 
-// Fetch short links
-$stmt = $pdo->prepare("
-    SELECT s.id, s.short_code, s.clicks, s.created_at, p.title as post_title, p.id as post_id
-    FROM short_links s
-    JOIN posts p ON s.post_id = p.id
-    ORDER BY s.created_at DESC
-    LIMIT :limit OFFSET :offset
-");
-$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-$stmt->execute();
-$links = $stmt->fetchAll();
+$links = [];
+$total_links = 0;
+$total_pages = 0;
+$db_error = null;
 
-// Get total count for pagination
-$totalStmt = $pdo->query("SELECT COUNT(id) FROM short_links");
-$total_links = $totalStmt->fetchColumn();
-$total_pages = ceil($total_links / $limit);
+try {
+    // Fetch short links
+    $stmt = $pdo->prepare("
+        SELECT s.id, s.short_code, s.clicks, s.created_at, p.title as post_title, p.id as post_id
+        FROM short_links s
+        JOIN posts p ON s.post_id = p.id
+        ORDER BY s.created_at DESC
+        LIMIT :limit OFFSET :offset
+    ");
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $stmt->execute();
+    $links = $stmt->fetchAll();
+
+    // Get total count for pagination
+    $totalStmt = $pdo->query("SELECT COUNT(id) FROM short_links");
+    $total_links = $totalStmt->fetchColumn();
+    $total_pages = ceil($total_links / $limit);
+} catch (PDOException $e) {
+    // Table probably doesn't exist
+    $db_error = $e->getMessage();
+}
 
 $page_title = 'Short Links Management';
 ob_start();
@@ -51,6 +66,25 @@ ob_start();
 
     <!-- Main Content Area -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        
+        <?php if ($db_error): ?>
+        <div class="p-8 text-center bg-red-50">
+            <i class="fas fa-exclamation-triangle text-5xl text-red-400 mb-4"></i>
+            <h3 class="text-xl font-bold text-red-800 mb-2">ডাটাবেস ত্রুটি (Database Error)</h3>
+            <p class="text-red-600 mb-4">শর্ট লিংক টেবিলটি ডাটাবেসে পাওয়া যায়নি। দয়া করে নিচের SQL কোডটি phpMyAdmin-এ রান করুন:</p>
+            <div class="bg-white p-4 rounded-lg border border-red-200 text-left overflow-x-auto text-sm text-gray-800 font-mono">
+                CREATE TABLE IF NOT EXISTS short_links (<br>
+                    &nbsp;&nbsp;id INT AUTO_INCREMENT PRIMARY KEY,<br>
+                    &nbsp;&nbsp;post_id INT NOT NULL,<br>
+                    &nbsp;&nbsp;short_code VARCHAR(15) NOT NULL UNIQUE,<br>
+                    &nbsp;&nbsp;clicks INT DEFAULT 0,<br>
+                    &nbsp;&nbsp;created_at DATETIME DEFAULT CURRENT_TIMESTAMP,<br>
+                    &nbsp;&nbsp;FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE<br>
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+            </div>
+            <p class="text-xs text-red-500 mt-4 text-left">System Error: <?php echo escape($db_error); ?></p>
+        </div>
+        <?php else: ?>
         <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
             <h2 class="text-lg font-bold text-gray-800">Generated Links Analytics</h2>
         </div>
@@ -131,6 +165,8 @@ ob_start();
                 </div>
             </div>
         <?php endif; ?>
+        
+        <?php endif; // End of db_error check ?>
     </div>
 </div>
 

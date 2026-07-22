@@ -59,28 +59,36 @@ $primary_color = $theme_palettes[$theme_color] ?? '#2563eb';
         </h2>
         <div class="flex space-x-3">
 // Fetch or generate short link
-$stmt = $pdo->prepare("SELECT short_code FROM short_links WHERE post_id = ? LIMIT 1");
-$stmt->execute([$post_id]);
-$link = $stmt->fetch();
+$short_code = null;
+$db_error = null;
 
-if ($link) {
-    $short_code = $link['short_code'];
-} else {
-    // Generate a unique 8-character alphanumeric code
-    do {
-        $short_code = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyz"), 0, 8);
-        $checkStmt = $pdo->prepare("SELECT id FROM short_links WHERE short_code = ?");
-        $checkStmt->execute([$short_code]);
-    } while ($checkStmt->fetchColumn());
-    
-    // Insert new short link
-    $insertStmt = $pdo->prepare("INSERT INTO short_links (post_id, short_code) VALUES (?, ?)");
-    $insertStmt->execute([$post_id, $short_code]);
+try {
+    $stmt = $pdo->prepare("SELECT short_code FROM short_links WHERE post_id = ? LIMIT 1");
+    $stmt->execute([$post_id]);
+    $link = $stmt->fetch();
+
+    if ($link) {
+        $short_code = $link['short_code'];
+    } else {
+        // Generate a unique 8-character alphanumeric code
+        do {
+            $short_code = substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyz"), 0, 8);
+            $checkStmt = $pdo->prepare("SELECT id FROM short_links WHERE short_code = ?");
+            $checkStmt->execute([$short_code]);
+        } while ($checkStmt->fetchColumn());
+        
+        // Insert new short link
+        $insertStmt = $pdo->prepare("INSERT INTO short_links (post_id, short_code) VALUES (?, ?)");
+        $insertStmt->execute([$post_id, $short_code]);
+    }
+} catch (PDOException $e) {
+    // Table doesn't exist, ignore generation
+    $db_error = true;
 }
 
-$short_url = SITE_URL . '/u' . $short_code;
+$short_url = $short_code ? SITE_URL . '/u' . $short_code : 'Database Error: Table not created';
 $excerpt = !empty($post['meta_description']) ? escape($post['meta_description']) : escape(substr(strip_tags($post['content']), 0, 150)) . '...';
-$share_text = escape($post['title']) . "\n\n" . $excerpt . "\n\nবিস্তারিত পড়ুন: " . $short_url;
+$share_text = escape($post['title']) . "\n\n" . $excerpt . ($short_code ? "\n\nবিস্তারিত পড়ুন: " . $short_url : "");
 ?>
 
 <div class="space-y-6 max-w-5xl mx-auto">
