@@ -101,6 +101,9 @@ class Post {
                     $this->attachTags($postId, $data['tags']);
                 }
                 
+                // === CACHE INVALIDATION ===
+                if (function_exists('clear_page_caches')) clear_page_caches();
+                
                 return $postId;
             }
             
@@ -170,6 +173,7 @@ class Post {
                 }
                 
                 // === CACHE INVALIDATION: Clear cache files ===
+                if (function_exists('clear_page_caches')) clear_page_caches();
                 if ($old_slug) {
                     $cache_file = __DIR__ . '/../cache/articles/' . md5($old_slug) . '.html';
                     if (file_exists($cache_file)) {
@@ -549,7 +553,11 @@ class Post {
             $sql = "UPDATE " . $this->table . " SET status = 'trashed' WHERE id = :id";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':id', $id);
-            return $stmt->execute();
+            if ($stmt->execute()) {
+                if (function_exists('clear_page_caches')) clear_page_caches();
+                return true;
+            }
+            return false;
         } catch(PDOException $e) {
             error_log("Delete Post Error (Soft Delete): " . $e->getMessage());
             return false;
@@ -576,7 +584,11 @@ class Post {
             $sql = "DELETE FROM " . $this->table . " WHERE id = :id";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':id', $id);
-            return $stmt->execute();
+            if ($stmt->execute()) {
+                if (function_exists('clear_page_caches')) clear_page_caches();
+                return true;
+            }
+            return false;
         } catch(PDOException $e) {
             error_log("Force Delete Post Error: " . $e->getMessage());
             return false;
@@ -594,7 +606,11 @@ class Post {
             $sql = "UPDATE " . $this->table . " SET status = 'draft' WHERE id = :id";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':id', $id);
-            return $stmt->execute();
+            if ($stmt->execute()) {
+                if (function_exists('clear_page_caches')) clear_page_caches();
+                return true;
+            }
+            return false;
         } catch(PDOException $e) {
             error_log("Restore Post Error: " . $e->getMessage());
             return false;

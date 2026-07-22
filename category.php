@@ -8,9 +8,25 @@
 require_once 'config/config.php';
 
 $slug = $_GET['slug'] ?? '';
+$page = $_GET['page'] ?? 1;
 
 if (empty($slug)) {
     redirect(SITE_URL);
+}
+
+// === PAGE CACHING ===
+$cache_dir = __DIR__ . '/cache/categories';
+if (!is_dir($cache_dir)) {
+    @mkdir($cache_dir, 0777, true);
+}
+$cache_file = $cache_dir . '/' . md5($slug . '_page_' . $page) . '.html';
+$cache_time = 300; // 5 minutes
+
+if (file_exists($cache_file) && (time() - filemtime($cache_file)) < $cache_time) {
+    // Serve from cache instantly
+    readfile($cache_file);
+    echo "<!-- Cached: " . date('Y-m-d H:i:s', filemtime($cache_file)) . " -->";
+    exit;
 }
 
 $category = new Category();
@@ -111,5 +127,18 @@ component('header', ['categories' => $categories]);
 <?php
 component('footer');
 $content = ob_get_clean();
+
+// Start output buffering for the final HTML containing the layout
+ob_start();
 include 'layouts/main.php';
+$final_html = ob_get_clean();
+
+// Minify the complete HTML before caching
+$final_html = minify_html_safe($final_html);
+
+// Save the completely rendered HTML to cache
+@file_put_contents($cache_file, $final_html);
+
+// Output the HTML
+echo $final_html;
 ?>

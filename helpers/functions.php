@@ -674,3 +674,21 @@ function minify_html_safe($html) {
     
     return trim($html);
 }
+
+/**
+ * Clear homepage and category caches
+ */
+function clear_page_caches() {
+    $index_cache = __DIR__ . '/../cache/index.html';
+    if (file_exists($index_cache)) @unlink($index_cache);
+    
+    $cat_dir = __DIR__ . '/../cache/categories/';
+    if (is_dir($cat_dir)) {
+        $files = glob($cat_dir . '*.html');
+        if ($files) {
+            foreach ($files as $file) {
+                if (is_file($file)) @unlink($file);
+            }
+        }
+    }
+}

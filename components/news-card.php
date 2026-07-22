@@ -25,7 +25,7 @@ $hasImage = !empty($post['featured_image']);
 $settingModel = new Setting();
 $site_info = $settingModel->getSiteInfo();
 $imgSrc = $hasImage ? escape($post['featured_image']) : escape($site_info['site_logo'] ?? '');
-$imgClass = $hasImage ? 'object-contain' : 'object-contain p-4 animate-pulse opacity-30 bg-gray-50';
+$imgClass = $hasImage ? 'object-contain animate-pulse bg-gray-200' : 'object-contain p-4 animate-pulse opacity-30 bg-gray-50';
 
 // Badge Logic
 $badgeHtml = '';
@@ -57,7 +57,7 @@ if ($showFlags) {
                 <img src="<?php echo $imgSrc; ?>" 
                      alt="<?php echo escape($post['title']); ?>" 
                      class="w-full h-full <?php echo $imgClass; ?> object-cover group-hover:scale-105 transition duration-500"
-                     loading="lazy">
+                     loading="lazy" onload="this.classList.remove('animate-pulse', 'bg-gray-200');">
             </a>
             <?php echo $badgeHtml; ?>
         </div>
@@ -81,7 +81,7 @@ if ($showFlags) {
                 <img src="<?php echo $imgSrc; ?>" 
                      alt="<?php echo escape($post['title']); ?>" 
                      class="w-full h-full <?php echo $imgClass; ?> object-cover group-hover:scale-110 transition duration-300"
-                     loading="lazy">
+                     loading="lazy" onload="this.classList.remove('animate-pulse', 'bg-gray-200');">
             </a>
             <?php echo $badgeHtml; ?>
         </div>
@@ -102,7 +102,7 @@ if ($showFlags) {
                 <img src="<?php echo $imgSrc; ?>" 
                      alt="<?php echo escape($post['title']); ?>" 
                      class="w-full h-full <?php echo $imgClass; ?> object-cover group-hover:scale-105 transition duration-500"
-                     loading="lazy">
+                     loading="lazy" onload="this.classList.remove('animate-pulse', 'bg-gray-200');">
             </a>
             <?php echo $badgeHtml; ?>
         </div>
@@ -149,7 +149,7 @@ if ($showFlags) {
                         <img src="<?php echo escape($post['featured_image']); ?>" 
                              alt="<?php echo escape($post['featured_image_alt'] ?? $post['title']); ?>" 
                              class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                             loading="lazy">
+                             loading="lazy" onload="this.classList.remove('animate-pulse', 'bg-gray-200');">
                     </a>
                     <?php echo $badgeHtml; ?>
                 </div>
@@ -193,7 +193,7 @@ if ($showFlags) {
                 <img src="<?php echo escape($post['featured_image']); ?>" 
                      alt="<?php echo escape($post['featured_image_alt'] ?? $post['title']); ?>" 
                      class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                     loading="lazy">
+                     loading="lazy" onload="this.classList.remove('animate-pulse', 'bg-gray-200');">
             </a>
         <?php else: ?>
             <div class="w-full h-full bg-gradient-to-br from-primary-500 to-purple-600"></div>
@@ -249,7 +249,7 @@ if ($showFlags) {
                     <img src="<?php echo escape($post['featured_image']); ?>" 
                          alt="<?php echo escape($post['featured_image_alt'] ?? $post['title']); ?>" 
                          class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
-                         loading="lazy">
+                         loading="lazy" onload="this.classList.remove('animate-pulse', 'bg-gray-200');">
                 </a>
                 <?php echo $badgeHtml; ?>
             </div>
