@@ -208,11 +208,12 @@ component('header', ['categories' => $categories]);
         
         <!-- Featured Image -->
         <?php if (!empty($article['featured_image'])): ?>
-            <div class="mb-6 aspect-video">
+            <div class="mb-6 aspect-video bg-gray-200 animate-pulse rounded-lg overflow-hidden" id="featured-img-skeleton">
                 <a href="<?php echo escape($article['featured_image']); ?>" class="glightbox" data-title="<?php echo escape($article['featured_image_alt'] ?? $article['title']); ?>">
                     <img src="<?php echo escape($article['featured_image']); ?>" 
                          alt="<?php echo escape($article['featured_image_alt'] ?? $article['title']); ?>" 
-                         class="w-full h-full object-cover rounded-lg shadow-sm cursor-zoom-in">
+                         class="w-full h-full object-cover rounded-lg shadow-sm cursor-zoom-in opacity-0 transition-opacity duration-500"
+                         onload="this.style.opacity='1'; document.getElementById('featured-img-skeleton').classList.remove('animate-pulse', 'bg-gray-200');">
                 </a>
             </div>
         <?php endif; ?>
@@ -332,8 +333,30 @@ component('header', ['categories' => $categories]);
                 <?php
                 // Inject inline ads into article content based on settings
                 $processed_content = inject_ads_into_content($article['content'], $article['id']);
-                // Apply Lazy Loading to images
-                $processed_content = preg_replace('/<img(?!.*loading=["\']lazy["\'])([^>]+)>/i', '<img loading="lazy"$1>', $processed_content);
+                
+                // Apply Lazy Loading and Skeleton Effect to content images
+                $processed_content = preg_replace_callback('/<img([^>]+)>/i', function($matches) {
+                    $attrs = $matches[1];
+                    
+                    if (stripos($attrs, 'loading=') === false) {
+                        $attrs .= ' loading="lazy"';
+                    }
+                    
+                    $onload = "this.style.opacity='1'; this.classList.remove('animate-pulse', 'bg-gray-200');";
+                    if (stripos($attrs, 'onload=') === false) {
+                        $attrs .= ' onload="' . $onload . '"';
+                    }
+                    
+                    $new_classes = 'bg-gray-200 animate-pulse opacity-0 transition-opacity duration-500';
+                    if (stripos($attrs, 'class=') !== false) {
+                        $attrs = preg_replace('/class=(["\'])(.*?)\1/i', 'class=$1$2 ' . $new_classes . '$1', $attrs);
+                    } else {
+                        $attrs .= ' class="' . $new_classes . '"';
+                    }
+                    
+                    return '<img' . $attrs . '>';
+                }, $processed_content);
+                
                 echo $processed_content;
                 ?>
             </article>
