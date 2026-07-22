@@ -99,7 +99,7 @@ $image_url = !empty($post['featured_image']) ? $post['featured_image'] : SITE_UR
                         <!-- Top Right Corner "Read More" -->
                         <div class="absolute top-12 right-12 z-20 flex space-x-4">
                             <div class="bg-black/70 backdrop-blur-md text-white px-8 py-3 rounded-full text-3xl font-bold shadow-2xl border border-white/20 flex items-center">
-                                বিস্তারিত পড়ুন <i class="fas fa-arrow-right ml-3 text-2xl"></i>
+                                বিস্তারিত প্রথম কমেন্টে <i class="fas fa-arrow-right ml-3 text-2xl"></i>
                             </div>
                         </div>
 
@@ -110,9 +110,6 @@ $image_url = !empty($post['featured_image']) ? $post['featured_image'] : SITE_UR
                                     <span class="w-4 h-4 bg-white rounded-full animate-pulse mr-4"></span> ব্রেকিং
                                 </div>
                             <?php endif; ?>
-                            <div class="bg-indigo-600 text-white px-8 py-3 rounded-md text-3xl font-bold shadow-2xl">
-                                বিস্তারিত প্রথম কমেন্টে
-                            </div>
                         </div>
                     </div>
                     
