@@ -13,7 +13,8 @@ if (!is_dir($cache_dir)) {
     @mkdir($cache_dir, 0777, true);
 }
 $cache_file = $cache_dir . '/index.html';
-$cache_time = 300; // 5 minutes
+$cache_setting = (new Setting())->get('home_cache_time');
+$cache_time = ($cache_setting !== false) ? (int)$cache_setting : 300;
 
 if (file_exists($cache_file) && (time() - filemtime($cache_file)) < $cache_time) {
     // Serve from cache instantly

@@ -95,6 +95,12 @@
                     <span class="font-medium">মিডিয়া</span>
                 </a>
                 
+                <a href="<?php echo ADMIN_URL; ?>/optimize.php" 
+                   class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'optimize.php' ? 'active' : 'text-gray-700'; ?>">
+                    <i class="fas fa-rocket w-6 transition-colors"></i>
+                    <span class="font-medium">অপ্টিমাইজ</span>
+                </a>
+                
                 <a href="<?php echo ADMIN_URL; ?>/users.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'users.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-users w-6 transition-colors"></i>
