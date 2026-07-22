@@ -111,7 +111,7 @@ $primary_color = $theme_palettes[$theme_color] ?? '#2563eb';
                         <img src="<?php echo escape($image_url); ?>" id="card-bg-image" class="absolute inset-0 w-full h-full object-cover" crossorigin="anonymous">
                         
                         <!-- Top Right Tag -->
-                        <div class="absolute top-8 right-8 z-10 bg-black text-white px-6 py-3 text-2xl font-bold rounded flex items-center whitespace-nowrap">
+                        <div class="absolute top-10 right-12 z-10 bg-black text-white px-6 py-3 text-[26px] font-bold rounded flex items-center w-max max-w-[90%]">
                             বিস্তারিত প্রথম কমেন্টে
                             <svg class="w-6 h-6 ml-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                         </div>
