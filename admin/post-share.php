@@ -86,22 +86,16 @@ $image_url = !empty($post['featured_image']) ? $post['featured_image'] : SITE_UR
         <div class="w-full md:w-2/3 flex justify-center bg-gray-200/50 rounded-xl p-4 overflow-hidden relative" style="min-height: 400px;">
             <div id="card-wrapper" style="width: 1080px; height: 1080px; transform-origin: top center; transform: scale(0.45); margin-bottom: -590px;" class="shadow-2xl flex-shrink-0 transition-transform">
                 
-                <!-- Actual Capture Node (Premium Split Layout) -->
-                <div id="social-card" class="relative w-full h-full bg-slate-900 overflow-hidden flex flex-col" style="font-family: 'Noto Sans Bengali', sans-serif;">
+                <!-- Actual Capture Node (Professional Light Theme Split Layout) -->
+                <div id="social-card" class="relative w-full h-full bg-white overflow-hidden flex flex-col" style="font-family: 'Noto Sans Bengali', sans-serif;">
                     
-                    <!-- Top Accent Line (Black/Dark Theme) -->
-                    <div class="absolute top-0 left-0 w-full h-4 bg-gradient-to-r from-gray-900 via-gray-600 to-black z-50"></div>
-                    
-                    <!-- Top Image Section (Flex 1 to take remaining space, dynamically shrinking if title is long) -->
-                    <div class="relative flex-1 w-full overflow-hidden bg-slate-800">
+                    <!-- Top Image Section (60%) -->
+                    <div class="relative h-[60%] w-full overflow-hidden bg-gray-100 border-b-[8px] border-red-600">
                         <img src="<?php echo escape($image_url); ?>" id="card-bg-image" class="absolute inset-0 w-full h-full object-cover" crossorigin="anonymous">
-                        
-                        <!-- Subtle gradient overlay at the very bottom of the image to blend smoothly -->
-                        <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
                         
                         <!-- Top Right Corner "Read More" -->
                         <div class="absolute top-12 right-12 z-20 flex space-x-4">
-                            <div class="bg-black/70 backdrop-blur-md text-white px-8 py-3 rounded-full text-3xl font-bold shadow-2xl border border-white/20 flex items-center">
+                            <div class="bg-red-600 text-white px-8 py-3 rounded-full text-3xl font-bold shadow-2xl border-2 border-white flex items-center">
                                 বিস্তারিত প্রথম কমেন্টে <i class="fas fa-arrow-right ml-3 text-2xl"></i>
                             </div>
                         </div>
@@ -109,34 +103,34 @@ $image_url = !empty($post['featured_image']) ? $post['featured_image'] : SITE_UR
                         <!-- Top Ribbon / Category -->
                         <div class="absolute bottom-8 left-12 flex space-x-4 z-10">
                             <?php if($post['is_breaking']): ?>
-                                <div class="bg-red-600 text-white px-8 py-3 rounded-md flex items-center text-3xl font-bold uppercase tracking-widest shadow-2xl">
+                                <div class="bg-red-600 text-white px-8 py-3 rounded-md flex items-center text-3xl font-bold uppercase tracking-widest shadow-xl border border-red-500">
                                     <span class="w-4 h-4 bg-white rounded-full animate-pulse mr-4"></span> ব্রেকিং
                                 </div>
                             <?php endif; ?>
                         </div>
                     </div>
                     
-                    <!-- Bottom Content Section (Auto height) -->
-                    <div class="w-full bg-slate-900 flex flex-col p-12 pt-8 relative shrink-0">
+                    <!-- Bottom Content Section (40%) -->
+                    <div class="h-[40%] w-full bg-white flex flex-col justify-between p-12 relative">
                         
-                        <!-- Title (Full text, no ellipsis) -->
-                        <h1 class="text-white font-bold leading-tight drop-shadow-sm mb-10" style="font-size: 56px;">
+                        <!-- Title (Full text, adjusts via flex) -->
+                        <h1 class="text-gray-900 font-bold leading-snug tracking-tight" style="font-size: 58px;">
                             <?php echo escape($post['title']); ?>
                         </h1>
                         
                         <!-- Footer bar -->
-                        <div class="flex items-center justify-between border-t border-slate-700/80 pt-8">
+                        <div class="flex items-center justify-between border-t-2 border-gray-100 pt-8 mt-auto">
                             <div class="flex items-center">
-                                <!-- Logo only (Removed left text) -->
+                                <!-- Logo -->
                                 <?php if($site_logo): ?>
-                                    <img src="<?php echo escape($site_logo); ?>" alt="Alokpat" class="h-16 object-contain" crossorigin="anonymous">
+                                    <img src="<?php echo escape($site_logo); ?>" alt="Alokpat" class="h-20 object-contain" crossorigin="anonymous">
                                 <?php else: ?>
-                                    <h2 class="text-white text-5xl font-bold">আলোকপাত</h2>
+                                    <h2 class="text-indigo-900 text-6xl font-black tracking-tight">আলোকপাত</h2>
                                 <?php endif; ?>
                             </div>
-                            <div class="flex items-center space-x-4 text-slate-300">
-                                <i class="fas fa-globe text-4xl opacity-80"></i>
-                                <span class="text-4xl font-semibold tracking-widest uppercase text-slate-200">alokpat.in</span>
+                            <div class="flex items-center space-x-4 text-gray-500">
+                                <i class="fas fa-globe text-4xl text-gray-400"></i>
+                                <span class="text-4xl font-bold tracking-widest uppercase text-gray-700">alokpat.in</span>
                             </div>
                         </div>
                     </div>
@@ -148,8 +142,8 @@ $image_url = !empty($post['featured_image']) ? $post['featured_image'] : SITE_UR
     </div>
 </div>
 
-<!-- Load html2canvas -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- Load dom-to-image-more (Fixes Bengali text rendering bugs) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dom-to-image-more/3.1.6/dom-to-image-more.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     
@@ -181,11 +175,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const node = document.getElementById('social-card');
         const btn = this;
         const loader = document.getElementById('loadingStatus');
-        const originalText = btn.innerHTML;
-        
-        // Convert local images to base64 or ensure crossorigin works.
-        // html2canvas handles it usually if crossorigin is set, but sometimes proxy is needed.
-        // We enabled allowTaint and useCORS.
         
         btn.disabled = true;
         btn.classList.add('opacity-70', 'cursor-not-allowed');
@@ -194,13 +183,17 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Wait a tiny bit for the UI to update the loading state
         setTimeout(() => {
-            html2canvas(node, {
-                scale: 1, // We already use 1080px base size, so scale 1 is enough for high-res
-                useCORS: true,
-                allowTaint: true,
-                backgroundColor: '#0a0a0a',
-                logging: false
-            }).then(function(canvas) {
+            domtoimage.toJpeg(node, {
+                quality: 0.95,
+                bgcolor: '#ffffff',
+                width: 1080,
+                height: 1080,
+                style: {
+                    transform: 'scale(1)',
+                    transformOrigin: 'top left'
+                }
+            })
+            .then(function (dataUrl) {
                 // Restore UI
                 btn.disabled = false;
                 btn.classList.remove('opacity-70', 'cursor-not-allowed');
@@ -210,12 +203,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Create download link
                 const link = document.createElement('a');
                 link.download = 'alokpat-post-' + <?php echo $post_id; ?> + '.jpg';
-                // Use JPEG for smaller file size, quality 0.9
-                link.href = canvas.toDataURL('image/jpeg', 0.9);
+                link.href = dataUrl;
                 link.click();
+            })
+            .catch(function (error) {
+                alert('ইমেজ জেনারেট করতে সমস্যা হয়েছে: ' + error.message);
+                console.error('oops, something went wrong!', error);
                 
-            }).catch(function(err) {
-                alert('ইমেজ জেনারেট করতে সমস্যা হয়েছে: ' + err.message);
                 btn.disabled = false;
                 btn.classList.remove('opacity-70', 'cursor-not-allowed');
                 loader.classList.add('hidden');
