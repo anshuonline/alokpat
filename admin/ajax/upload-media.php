@@ -37,7 +37,7 @@ try {
     $errors = [];
     $media = new Media();
 
-    foreach ($files as $file) {
+    foreach ($files as $index => $file) {
         if ($file['error'] !== UPLOAD_ERR_OK) {
             $errors[] = "Error uploading " . $file['name'];
             continue;
@@ -50,6 +50,9 @@ try {
             continue;
         }
         
+        // Get true original size from client if available, otherwise use uploaded file size
+        $true_original_size = isset($_POST['client_original_sizes'][$index]) ? $_POST['client_original_sizes'][$index] : ($upload_result['original_size'] ?? $file['size']);
+        
         // Add to media library database
         $media_data = [
             'filename' => $upload_result['filename'],
@@ -58,7 +61,7 @@ try {
             'file_url' => $upload_result['file_url'],
             'file_type' => pathinfo($upload_result['filename'], PATHINFO_EXTENSION),
             'file_size' => $upload_result['file_size'],
-            'original_size' => $upload_result['original_size'] ?? $file['size'], // Add original size
+            'original_size' => $true_original_size, // Use true original size
             'mime_type' => $upload_result['mime_type'],
             'alt_text' => pathinfo($file['name'], PATHINFO_FILENAME),
             'uploaded_by' => getCurrentUser()['id']

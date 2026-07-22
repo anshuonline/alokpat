@@ -258,7 +258,58 @@ function confirmMediaSelection() {
     }
 }
 
-function submitGlobalMediaUpload() {
+async function compressImageClientSide(file) {
+    return new Promise((resolve) => {
+        if (!file.type.startsWith('image/')) {
+            resolve(file);
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = event => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 1200;
+                let width = img.width;
+                let height = img.height;
+                
+                if (width > MAX_WIDTH) {
+                    height = Math.floor(height * (MAX_WIDTH / width));
+                    width = MAX_WIDTH;
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                let quality = 0.8;
+                const targetSize = 100 * 1024; // 100kb
+                
+                const tryCompress = (q) => {
+                    canvas.toBlob(blob => {
+                        if (blob.size <= targetSize || q <= 0.2) {
+                            const newFileName = file.name.replace(/\.[^/.]+$/, "") + ".webp";
+                            // Create a file object with the original size attached as a custom property
+                            const newFile = new File([blob], newFileName, { type: 'image/webp' });
+                            // We can append original size to formData later, or let the server use the new file size.
+                            // Client-side compressed file size is the new 'original' for the server.
+                            resolve({ file: newFile, originalSize: file.size });
+                        } else {
+                            tryCompress(q - 0.2);
+                        }
+                    }, 'image/webp', q);
+                };
+                tryCompress(quality);
+            };
+        };
+    });
+}
+
+async function submitGlobalMediaUpload() {
     const fileInput = document.getElementById('globalMediaFileInput');
     if(fileInput.files.length === 0) return;
     
@@ -267,17 +318,28 @@ function submitGlobalMediaUpload() {
     const statusMsg = document.getElementById('uploadStatusMsg');
     
     btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> আপলোড হচ্ছে...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> অপ্টিমাইজ করা হচ্ছে...';
     btn.classList.add('opacity-70');
     
     statusMsg.classList.remove('hidden', 'text-green-600', 'text-red-600');
     statusMsg.classList.add('text-blue-600');
-    statusMsg.innerText = 'দয়া করে অপেক্ষা করুন...';
+    statusMsg.innerText = 'আপনার ব্রাউজারেই ছবি অপ্টিমাইজ হচ্ছে, একটু অপেক্ষা করুন...';
     
     const formData = new FormData();
     for(let i=0; i<fileInput.files.length; i++) {
-        formData.append('files[]', fileInput.files[i]);
+        let result = await compressImageClientSide(fileInput.files[i]);
+        if(result.file) {
+            formData.append('files[]', result.file);
+            // We append a custom field for the true original size before browser compression
+            formData.append('client_original_sizes[]', result.originalSize);
+        } else {
+            formData.append('files[]', result); // fallback for non-images
+            formData.append('client_original_sizes[]', result.size);
+        }
     }
+    
+    statusMsg.innerText = 'সার্ভারে আপলোড করা হচ্ছে...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> আপলোড হচ্ছে...';
     
     fetch('<?php echo ADMIN_URL; ?>/ajax/upload-media.php', {
         method: 'POST',
