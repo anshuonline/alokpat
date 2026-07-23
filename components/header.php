@@ -140,7 +140,7 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
                                 <!-- Dropdown Menu Item -->
                                 <div class="relative group h-full">
                                     <a href="<?php echo escape($item['url']); ?>" 
-                                       class="px-2 lg:px-3 py-3 nav-hover-effect font-medium text-[15px] xl:text-[17px] whitespace-nowrap flex items-center gap-1 h-full cursor-pointer">
+                                       class="px-2 lg:px-3 py-3 nav-hover-effect font-medium text-base lg:text-lg whitespace-nowrap flex items-center gap-1 h-full cursor-pointer">
                                         <?php echo escape($item['title']); ?>
                                         <i class="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
                                     </a>
@@ -157,7 +157,7 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
                             <?php else: ?>
                                 <!-- Regular Menu Item -->
                                 <a href="<?php echo escape($item['url']); ?>" 
-                                   class="px-2 lg:px-3 py-3 nav-hover-effect font-medium text-[15px] xl:text-[17px] whitespace-nowrap flex items-center h-full">
+                                   class="px-2 lg:px-3 py-3 nav-hover-effect font-medium text-base lg:text-lg whitespace-nowrap flex items-center h-full">
                                     <?php echo escape($item['title']); ?>
                                 </a>
                             <?php endif; ?>
