@@ -142,7 +142,10 @@ $page_title = 'প্রিন্ট: ' . ($article['title'] ?? '');
 <body>
     <div class="print-container">
         
-        <div class="print-controls">
+        <div class="print-controls" style="display: flex; gap: 10px; justify-content: center;">
+            <a href="<?php echo url_for_post($article); ?>" class="btn-print" style="background-color: #6b7280; text-decoration: none;">
+                <i class="fas fa-arrow-left"></i> ফিরে যান
+            </a>
             <button class="btn-print" onclick="window.print()">
                 <i class="fas fa-print"></i> পেজটি প্রিন্ট করুন
             </button>
@@ -202,12 +205,10 @@ $page_title = 'প্রিন্ট: ' . ($article['title'] ?? '');
                 window.print();
             }, 500);
         };
-
-        // Redirect back to the article when the print dialog is closed (printed or cancelled)
-        // This prevents users from reading the print page to bypass ads
-        window.onafterprint = function() {
-            window.location.href = '<?php echo url_for_post($article); ?>';
-        };
+        
+        // Note: window.onafterprint was removed because mobile browsers
+        // handle print dialogs asynchronously and were immediately redirecting
+        // back to the article page before the user could actually print.
     </script>
 </body>
 </html>
