@@ -327,6 +327,7 @@ ob_start();
                                     ?>
                                     <select class="inline-status-update w-full px-2 py-1 text-xs font-semibold rounded outline-none border border-transparent hover:border-gray-300 cursor-pointer focus:border-blue-500 <?php echo $status_classes[$post_item['status']]; ?>" data-id="<?php echo $post_item['id']; ?>">
                                         <?php foreach ($status_labels as $val => $label): ?>
+                                            <?php if (in_array($val, ['pending_review', 'pending_delete']) && $post_item['status'] !== $val) continue; ?>
                                             <option value="<?php echo $val; ?>" <?php echo $post_item['status'] === $val ? 'selected' : ''; ?> class="bg-white text-gray-800 font-normal">
                                                 <?php echo $label; ?>
                                             </option>
