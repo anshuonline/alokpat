@@ -161,7 +161,10 @@ ob_start();
                                 <div class="text-xs text-gray-500 font-mono bg-gray-100 px-2 py-1 rounded inline-block">/tag/<?php echo escape($tag['slug']); ?></div>
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-600">
-                                <?php echo escape(strlen($tag['description']) > 50 ? substr($tag['description'], 0, 50) . '...' : $tag['description']); ?>
+                                <?php 
+                                $desc = $tag['description'] ?? '';
+                                echo escape(strlen($desc) > 50 ? substr($desc, 0, 50) . '...' : $desc); 
+                                ?>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <a href="tags.php?delete=<?php echo $tag['id']; ?>&csrf_token=<?php echo generateCSRFToken(); ?>" onclick="return confirm('আপনি কি নিশ্চিত? এটি মুছে ফেললে রিকভার করা যাবে না।')" class="inline-block p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-900 transition" title="ডিলিট">
