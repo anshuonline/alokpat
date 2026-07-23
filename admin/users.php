@@ -23,7 +23,10 @@ if (isset($_GET['delete'])) {
     if ($id === $_SESSION['user_id']) {
         setFlash('error', 'আপনি নিজের অ্যাকাউন্ট মুছতে পারবেন না');
     } else {
-        if ($userModel->delete($id)) {
+        $userToDelete = $userModel->getById($id);
+        if ($userToDelete && $userToDelete['role'] === 'super_admin' && getCurrentUser()['role'] !== 'super_admin') {
+            setFlash('error', 'আপনার সুপার এডমিন একাউন্ট মুছতে অনুমতি নেই');
+        } else if ($userModel->delete($id)) {
             if (function_exists('clear_page_caches')) clear_page_caches();
             setFlash('success', 'ব্যবহারকারী সফলভাবে মুছে ফেলা হয়েছে');
         } else {
@@ -91,8 +94,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    $currentUserRole = getCurrentUser()['role'];
+    
+    // Prevent assigning super_admin role if not super_admin
+    if ($data['role'] === 'super_admin' && $currentUserRole !== 'super_admin') {
+        setFlash('error', 'আপনার সুপার এডমিন রোল দেওয়ার অনুমতি নেই');
+        redirect(ADMIN_URL . '/users.php');
+        exit;
+    }
+
     if ($is_update) {
         $id = (int)$_POST['update_id'];
+        
+        $userToEdit = $userModel->getById($id);
+        if ($userToEdit && $userToEdit['role'] === 'super_admin' && $currentUserRole !== 'super_admin') {
+            setFlash('error', 'আপনার সুপার এডমিন একাউন্ট সম্পাদনা করার অনুমতি নেই');
+            redirect(ADMIN_URL . '/users.php');
+            exit;
+        }
+        
+        if ($id === $_SESSION['user_id'] && $userToEdit['role'] === 'super_admin' && $data['role'] !== 'super_admin') {
+            setFlash('error', 'আপনি নিজের সুপার এডমিন রোল পরিবর্তন করতে পারবেন না');
+            redirect(ADMIN_URL . '/users.php');
+            exit;
+        }
+
         if ($userModel->update($id, $data)) {
             if (function_exists('clear_page_caches')) clear_page_caches();
             setFlash('success', 'ব্যবহারকারীর তথ্য আপডেট করা হয়েছে');
@@ -194,11 +220,15 @@ ob_start();
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                     <div class="flex space-x-3">
-                                        <button onclick="editUser(<?php echo htmlspecialchars((string)json_encode($u, JSON_INVALID_UTF8_IGNORE)); ?>)" 
-                                                class="text-blue-500 hover:text-blue-800 transition" title="সম্পাদনা">
-                                            <i class="fas fa-edit text-lg"></i>
-                                        </button>
-                                        <?php if ($u['id'] !== $_SESSION['user_id']): ?>
+                                        <?php $canEdit = ($u['role'] !== 'super_admin' || getCurrentUser()['role'] === 'super_admin'); ?>
+                                        <?php if ($canEdit): ?>
+                                            <button onclick="editUser(<?php echo htmlspecialchars((string)json_encode($u, JSON_INVALID_UTF8_IGNORE)); ?>)" 
+                                                    class="text-blue-500 hover:text-blue-800 transition" title="সম্পাদনা">
+                                                <i class="fas fa-edit text-lg"></i>
+                                            </button>
+                                        <?php endif; ?>
+                                        
+                                        <?php if ($u['id'] !== $_SESSION['user_id'] && $canEdit): ?>
                                             <a href="?delete=<?php echo $u['id']; ?>&csrf_token=<?php echo generateCSRFToken(); ?>" 
                                                class="text-red-500 hover:text-red-800 transition delete-confirm" title="মুছুন">
                                                 <i class="fas fa-trash-alt text-lg"></i>
@@ -273,6 +303,7 @@ ob_start();
                     <label class="block text-sm font-medium text-gray-700 mb-2">ভূমিকা (Role) <span class="text-red-500">*</span></label>
                     <select name="role" id="role" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition">
                         <?php foreach($allRoles as $r): ?>
+                            <?php if ($r['slug'] === 'super_admin' && getCurrentUser()['role'] !== 'super_admin') continue; ?>
                             <option value="<?php echo escape($r['slug']); ?>"><?php echo escape($r['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
