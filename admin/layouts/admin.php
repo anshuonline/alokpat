@@ -206,9 +206,9 @@
                         $pending_count = $db_conn->query("SELECT count(*) FROM posts WHERE status IN ('pending_review', 'pending_delete')")->fetchColumn();
                     ?>
                     <a href="<?php echo ADMIN_URL; ?>/pending-actions.php" 
-                       class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 <?php echo strpos($_SERVER['PHP_SELF'], 'pending-actions.php') !== false ? 'bg-gradient-to-r from-blue-600 to-indigo-700 text-white shadow-lg' : 'text-gray-300 hover:bg-gray-800 hover:text-white'; ?>">
-                        <i class="fas fa-tasks w-5"></i>
-                        <span class="ml-3 font-medium flex-1">পেন্ডিং অ্যাকশন</span>
+                       class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'pending-actions.php' ? 'active' : 'text-gray-700'; ?>">
+                        <i class="fas fa-tasks w-6 transition-colors"></i>
+                        <span class="font-medium flex-1">পেন্ডিং অ্যাকশন</span>
                         <?php if ($pending_count > 0): ?>
                             <span class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full"><?php echo $pending_count; ?></span>
                         <?php endif; ?>
