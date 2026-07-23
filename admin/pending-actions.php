@@ -64,6 +64,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
         }
+    } elseif ($type === 'new') {
+        // Pending New Post
+        $new_post = $post_model->getById($id);
+        if ($new_post && $new_post['status'] === 'pending_review' && empty($new_post['parent_id'])) {
+            if ($action === 'approve') {
+                $update_data = [
+                    'status' => 'published',
+                    'published_at' => date('Y-m-d H:i:s')
+                ];
+                if ($post_model->update($id, $update_data)) {
+                    setFlash('success', 'নতুন সংবাদটি অনুমোদিত হয়েছে এবং লাইভ হয়েছে।');
+                } else {
+                    setFlash('error', 'সংবাদটি অনুমোদন করতে সমস্যা হয়েছে।');
+                }
+            } elseif ($action === 'reject') {
+                // Delete the pending new post completely
+                $post_model->forceDelete($id);
+                setFlash('success', 'নতুন সংবাদটি বাতিল করা হয়েছে।');
+            }
+        }
     }
     
     redirect(ADMIN_URL . '/pending-actions.php');
@@ -93,6 +113,17 @@ $stmt2 = $db->query("
 ");
 $pending_deletes = $stmt2->fetchAll();
 
+// Fetch Pending New Posts (Posts with status = pending_review AND parent_id IS NULL)
+$stmt3 = $db->query("
+    SELECT p.*, 
+           u.full_name as author_name
+    FROM posts p 
+    LEFT JOIN users u ON p.author_id = u.id 
+    WHERE p.status = 'pending_review' AND p.parent_id IS NULL
+    ORDER BY p.created_at DESC
+");
+$pending_new = $stmt3->fetchAll();
+
 $page_title = 'পেন্ডিং অ্যাকশন (Pending Actions)';
 ob_start();
 ?>
@@ -104,8 +135,78 @@ ob_start();
                 <i class="fas fa-tasks text-yellow-500 mr-2"></i>
                 পেন্ডিং অ্যাকশন
             </h2>
-            <p class="text-gray-500 mt-1">রাইটারদের এডিট ও ডিলিট অনুরোধ সমূহ যাচাই করুন</p>
+            <p class="text-gray-500 mt-1">রাইটারদের নতুন সংবাদ, এডিট ও ডিলিট অনুরোধ সমূহ যাচাই করুন</p>
         </div>
+    </div>
+
+    <!-- Pending New Posts -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
+        <div class="bg-purple-50 px-6 py-4 border-b border-gray-200">
+            <h3 class="font-bold text-purple-800 text-lg flex items-center">
+                <i class="fas fa-plus-circle mr-2"></i> নতুন সংবাদ (Pending New Posts)
+                <span class="ml-2 bg-purple-200 text-purple-800 text-xs px-2 py-1 rounded-full"><?php echo count($pending_new); ?></span>
+            </h3>
+        </div>
+        
+        <?php if (empty($pending_new)): ?>
+            <div class="p-8 text-center text-gray-500">
+                <i class="fas fa-check-circle text-4xl mb-3 text-green-300"></i>
+                <p>কোনো পেন্ডিং নতুন সংবাদ নেই</p>
+            </div>
+        <?php else: ?>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 text-gray-600 text-sm">
+                        <tr>
+                            <th class="px-6 py-3">রাইটার</th>
+                            <th class="px-6 py-3">সংবাদ টাইটেল</th>
+                            <th class="px-6 py-3">সময়</th>
+                            <th class="px-6 py-3 text-right">অ্যাকশন</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        <?php foreach($pending_new as $newp): ?>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 font-semibold text-gray-800">
+                                <?php echo escape($newp['author_name'] ?? 'Unknown'); ?>
+                            </td>
+                            <td class="px-6 py-4 text-sm font-medium">
+                                <?php echo escape($newp['title']); ?>
+                            </td>
+                            <td class="px-6 py-4 text-xs text-gray-500">
+                                <?php echo formatDateBengali($newp['created_at']); ?>
+                            </td>
+                            <td class="px-6 py-4 text-right">
+                                <div class="flex items-center justify-end space-x-2">
+                                    <a href="<?php echo ADMIN_URL; ?>/post-edit.php?id=<?php echo $newp['id']; ?>" target="_blank" class="px-3 py-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 text-xs font-semibold">
+                                        প্রিভিউ ও এডিট (Preview/Edit)
+                                    </a>
+                                    <form method="POST" class="inline">
+                                        <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+                                        <input type="hidden" name="action" value="approve">
+                                        <input type="hidden" name="type" value="new">
+                                        <input type="hidden" name="id" value="<?php echo $newp['id']; ?>">
+                                        <button type="submit" class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-xs font-semibold" onclick="return confirm('অ্যাপ্রুভ করে লাইভ করতে চান?')">
+                                            অ্যাপ্রুভ
+                                        </button>
+                                    </form>
+                                    <form method="POST" class="inline">
+                                        <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+                                        <input type="hidden" name="action" value="reject">
+                                        <input type="hidden" name="type" value="new">
+                                        <input type="hidden" name="id" value="<?php echo $newp['id']; ?>">
+                                        <button type="submit" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs font-semibold" onclick="return confirm('একেবারে মুছে ফেলতে চান?')">
+                                            বাতিল
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
     </div>
 
     <!-- Pending Edits -->
