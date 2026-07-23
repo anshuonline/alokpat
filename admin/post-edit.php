@@ -235,17 +235,29 @@ ob_start();
             'published' => 'bg-green-100 text-green-800',
             'draft' => 'bg-yellow-100 text-yellow-800',
             'scheduled' => 'bg-blue-100 text-blue-800',
-            'archived' => 'bg-gray-100 text-gray-800'
+            'archived' => 'bg-gray-100 text-gray-800',
+            'trashed' => 'bg-red-100 text-red-800',
+            'unlisted' => 'bg-purple-100 text-purple-800',
+            'pending_review' => 'bg-yellow-100 text-yellow-800',
+            'pending_delete' => 'bg-orange-100 text-orange-800'
         ];
         $status_labels = [
             'published' => 'প্রকাশিত',
             'draft' => 'খসড়া',
             'scheduled' => 'নির্ধারিত',
-            'archived' => 'সংরক্ষিত'
+            'archived' => 'সংরক্ষিত',
+            'trashed' => 'ট্র্যাশ',
+            'unlisted' => 'আনলিস্টেড',
+            'pending_review' => 'পেন্ডিং এডিট',
+            'pending_delete' => 'পেন্ডিং ডিলিট'
         ];
+        
+        $current_status = $post['status'];
+        $badge_class = $status_classes[$current_status] ?? 'bg-gray-100 text-gray-800';
+        $badge_label = $status_labels[$current_status] ?? $current_status;
         ?>
-        <span class="px-4 py-2 text-sm font-semibold rounded-full <?php echo $status_classes[$post['status']]; ?>">
-            <?php echo $status_labels[$post['status']]; ?>
+        <span class="px-4 py-2 text-sm font-semibold rounded-full <?php echo $badge_class; ?>">
+            <?php echo $badge_label; ?>
         </span>
         <span class="text-gray-500 text-sm">
             <i class="fas fa-calendar mr-1"></i>
