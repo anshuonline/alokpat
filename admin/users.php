@@ -6,6 +6,8 @@
  */
 
 require_once '../config/config.php';
+requireAuth();
+requirePermission('manage_users');
 
 $userModel = new User();
 $db = (new Database())->getConnection();
