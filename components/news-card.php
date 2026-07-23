@@ -22,8 +22,15 @@ $categoryClass = $theme === 'dark' ? 'bg-gray-800 text-primary-400 border border
 
 // Image Logic
 $hasImage = !empty($post['featured_image']);
-$settingModel = new Setting();
-$site_info = $settingModel->getSiteInfo();
+global $site_info;
+if (!isset($site_info) || empty($site_info)) {
+    // If not provided globally, create static to avoid N+1 query
+    static $local_site_info = null;
+    if ($local_site_info === null) {
+        $local_site_info = (new Setting())->getSiteInfo();
+    }
+    $site_info = $local_site_info;
+}
 $imgSrc = $hasImage ? escape($post['featured_image']) : escape($site_info['site_logo'] ?? '');
 $imgClass = $hasImage ? 'object-contain animate-pulse bg-gray-200' : 'object-contain p-4 animate-pulse opacity-30 bg-gray-50';
 
@@ -57,7 +64,7 @@ if ($showFlags) {
                 <img src="<?php echo $imgSrc; ?>" 
                      alt="<?php echo escape($post['title']); ?>" 
                      class="w-full h-full <?php echo $imgClass; ?> object-cover group-hover:scale-105 transition duration-500"
-                     loading="lazy" onload="this.classList.remove('animate-pulse', 'bg-gray-200');">
+                     fetchpriority="high" onload="this.classList.remove('animate-pulse', 'bg-gray-200');">
             </a>
             <?php echo $badgeHtml; ?>
         </div>
@@ -190,10 +197,12 @@ if ($showFlags) {
     <div class="relative rounded-xl shadow-xl overflow-hidden group aspect-video">
         <?php if (!empty($post['featured_image'])): ?>
             <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
-                <img src="<?php echo escape($post['featured_image']); ?>" 
-                     alt="<?php echo escape($post['featured_image_alt'] ?? $post['title']); ?>" 
-                     class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                     loading="lazy" onload="this.classList.remove('animate-pulse', 'bg-gray-200');">
+                <div class="relative w-full h-full overflow-hidden">
+                <img src="<?php echo $imgSrc; ?>" alt="<?php echo escape($post['featured_image_alt'] ?? $post['title']); ?>" 
+                     class="w-full h-full object-cover transition-transform duration-700 hover:scale-105 <?php echo $imgClass; ?>" 
+                     fetchpriority="high" onload="this.classList.remove('animate-pulse', 'bg-gray-200');">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                </div>
             </a>
         <?php else: ?>
             <div class="w-full h-full bg-gradient-to-br from-primary-500 to-purple-600"></div>

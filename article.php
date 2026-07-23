@@ -17,14 +17,17 @@ if (!is_dir($cache_dir)) {
     @mkdir($cache_dir, 0777, true);
 }
 $cache_file = $cache_dir . '/' . md5($slug) . '.html';
-$cache_setting = (new Setting())->get('article_cache_time');
-$cache_time = ($cache_setting !== false) ? (int)$cache_setting : 3600;
 
-if (file_exists($cache_file) && (time() - filemtime($cache_file)) < $cache_time) {
-    // Serve from cache instantly
-    readfile($cache_file);
-    echo "<!-- Cached: " . date('Y-m-d H:i:s', filemtime($cache_file)) . " -->";
-    exit;
+// Try to serve from cache first
+if (file_exists($cache_file)) {
+    $cache_setting = (new Setting())->get('article_cache_time');
+    $cache_time = ($cache_setting !== false) ? (int)$cache_setting : 3600;
+    
+    if ((time() - filemtime($cache_file)) < $cache_time) {
+        readfile($cache_file);
+        echo "<!-- Cached: " . date('Y-m-d H:i:s', filemtime($cache_file)) . " -->";
+        exit;
+    }
 }
 
 $post = new Post();

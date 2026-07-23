@@ -8,10 +8,35 @@
 class Setting {
     private $conn;
     private $table = 'settings';
+    private static $cache = null; // In-memory cache: loaded once per request
 
     public function __construct() {
         global $db;
         $this->conn = $db;
+    }
+
+    /**
+     * Load all settings into memory (1 query for entire request lifecycle)
+     */
+    private function loadCache() {
+        if (self::$cache === null) {
+            self::$cache = [];
+            try {
+                $stmt = $this->conn->query("SELECT setting_key, setting_value FROM " . $this->table);
+                while ($row = $stmt->fetch()) {
+                    self::$cache[$row['setting_key']] = $row['setting_value'];
+                }
+            } catch (PDOException $e) {
+                error_log("Load Settings Cache Error: " . $e->getMessage());
+            }
+        }
+    }
+
+    /**
+     * Clear the static cache (call after updates)
+     */
+    public static function clearCache() {
+        self::$cache = null;
     }
 
     /**
@@ -32,24 +57,17 @@ class Setting {
     }
 
     /**
-     * Get setting by key
+     * Get setting by key (served from memory cache)
      * 
      * @param string $key
      * @return string|false
      */
     public function get($key) {
-        try {
-            $sql = "SELECT setting_value FROM " . $this->table . " WHERE setting_key = :key LIMIT 1";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bindParam(':key', $key);
-            $stmt->execute();
-            $result = $stmt->fetch();
-            
-            return $result ? $result['setting_value'] : false;
-        } catch(PDOException $e) {
-            error_log("Get Setting Error: " . $e->getMessage());
-            return false;
+        $this->loadCache();
+        if (array_key_exists($key, self::$cache)) {
+            return self::$cache[$key];
         }
+        return false;
     }
 
     /**
@@ -59,22 +77,14 @@ class Setting {
      * @return array
      */
     public function getMultiple($keys) {
-        try {
-            $placeholders = implode(',', array_fill(0, count($keys), '?'));
-            $sql = "SELECT setting_key, setting_value FROM " . $this->table . " WHERE setting_key IN ($placeholders)";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute($keys);
-            
-            $settings = [];
-            while ($row = $stmt->fetch()) {
-                $settings[$row['setting_key']] = $row['setting_value'];
+        $this->loadCache();
+        $settings = [];
+        foreach ($keys as $key) {
+            if (array_key_exists($key, self::$cache)) {
+                $settings[$key] = self::$cache[$key];
             }
-            
-            return $settings;
-        } catch(PDOException $e) {
-            error_log("Get Multiple Settings Error: " . $e->getMessage());
-            return [];
         }
+        return $settings;
     }
 
     /**
@@ -90,7 +100,9 @@ class Setting {
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':value', $value);
             $stmt->bindParam(':key', $key);
-            return $stmt->execute();
+            $result = $stmt->execute();
+            self::clearCache();
+            return $result;
         } catch(PDOException $e) {
             error_log("Update Setting Error: " . $e->getMessage());
             return false;
@@ -116,6 +128,7 @@ class Setting {
             }
             
             $this->conn->commit();
+            self::clearCache();
             return true;
         } catch(PDOException $e) {
             $this->conn->rollBack();
@@ -146,6 +159,7 @@ class Setting {
             $stmt->bindParam(':description', $description);
             
             if ($stmt->execute()) {
+                self::clearCache();
                 return $this->conn->lastInsertId();
             }
             
@@ -167,7 +181,9 @@ class Setting {
             $sql = "DELETE FROM " . $this->table . " WHERE setting_key = :key";
             $stmt = $this->conn->prepare($sql);
             $stmt->bindParam(':key', $key);
-            return $stmt->execute();
+            $result = $stmt->execute();
+            self::clearCache();
+            return $result;
         } catch(PDOException $e) {
             error_log("Delete Setting Error: " . $e->getMessage());
             return false;

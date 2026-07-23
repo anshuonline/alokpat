@@ -283,12 +283,12 @@ class Post {
                 $where .= " AND p.category_id = :category_id";
             }
             
-            $sql = "SELECT p.*, u.full_name as author_name, c.name as category_name, c.slug as category_slug
+            $sql = "SELECT p.id, p.title, p.slug, p.excerpt, p.featured_image, p.featured_image_alt, p.category_id, p.author_id, p.published_at, p.created_at, p.view_count, p.is_trending, p.is_breaking, p.is_featured, p.post_type, p.status, u.full_name as author_name, c.name as category_name, c.slug as category_slug
                     FROM " . $this->table . " p
                     LEFT JOIN users u ON p.author_id = u.id
                     LEFT JOIN categories c ON p.category_id = c.id
                     $where
-                    ORDER BY COALESCE(p.published_at, p.created_at) DESC
+                    ORDER BY p.published_at DESC
                     LIMIT :limit OFFSET :offset";
             
             $stmt = $this->conn->prepare($sql);

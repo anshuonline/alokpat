@@ -13,14 +13,17 @@ if (!is_dir($cache_dir)) {
     @mkdir($cache_dir, 0777, true);
 }
 $cache_file = $cache_dir . '/index.html';
-$cache_setting = (new Setting())->get('home_cache_time');
-$cache_time = ($cache_setting !== false) ? (int)$cache_setting : 300;
 
-if (file_exists($cache_file) && (time() - filemtime($cache_file)) < $cache_time) {
-    // Serve from cache instantly
-    readfile($cache_file);
-    echo "<!-- Cached: " . date('Y-m-d H:i:s', filemtime($cache_file)) . " -->";
-    exit;
+// Try to serve from cache first
+if (file_exists($cache_file)) {
+    $cache_setting = (new Setting())->get('home_cache_time');
+    $cache_time = ($cache_setting !== false) ? (int)$cache_setting : 300;
+    
+    if ((time() - filemtime($cache_file)) < $cache_time) {
+        readfile($cache_file);
+        echo "<!-- Cached: " . date('Y-m-d H:i:s', filemtime($cache_file)) . " -->";
+        exit;
+    }
 }
 
 // Get data
@@ -51,8 +54,6 @@ if (!empty($homepage_categories_json)) {
         $categories = $filtered_categories;
     }
 }
-$featured_posts = $post->getFeatured(5);
-$trending_posts = $post->getTrending(10);
 $latest_posts = $post->getPublished(5); // Fetch exactly 5 for the 1+4 layout
 
 $home_seo_title = $setting->get('home_seo_title');
