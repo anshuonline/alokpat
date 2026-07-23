@@ -51,10 +51,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Generate slug if changed
     if (!empty($_POST['slug'])) {
-        $slug = generateSlug($_POST['slug']);
+        $slug = $_POST['slug'];
     } else {
-        $slug = generateSlug($title);
+        $slug = $title;
     }
+    
+    // Generate unique slug, excluding the current post ID
+    $slug = generateUniqueSlug($slug, 'posts', 'slug', $post_id);
     
     // Validate required fields
     $errors = [];

@@ -35,10 +35,13 @@ if (empty($title)) {
 
 // Generate slug
 if (!empty($_POST['slug'])) {
-    $slug = generateSlug($_POST['slug']);
+    $slug = $_POST['slug'];
 } else {
-    $slug = generateSlug($title);
+    $slug = $title;
 }
+
+$autosave_id = !empty($_POST['autosave_post_id']) ? (int)$_POST['autosave_post_id'] : null;
+$slug = generateUniqueSlug($slug, 'posts', 'slug', $autosave_id);
 
 // Process Tags
 $processed_tags = [];

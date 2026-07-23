@@ -28,10 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Generate slug
     if (!empty($_POST['slug'])) {
-        $slug = generateSlug($_POST['slug']);
+        $slug = $_POST['slug'];
     } else {
-        $slug = generateSlug($title);
+        $slug = $title;
     }
+    
+    // Generate unique slug
+    $autosave_id = !empty($_POST['autosave_post_id']) ? (int)$_POST['autosave_post_id'] : null;
+    $slug = generateUniqueSlug($slug, 'posts', 'slug', $autosave_id);
     
     // Validate required fields
     $errors = [];

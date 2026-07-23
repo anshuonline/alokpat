@@ -46,6 +46,53 @@ function generateSlug($text) {
 }
 
 /**
+ * Generate a unique slug for a given table
+ * 
+ * @param string $text
+ * @param string $table
+ * @param string $column
+ * @param int $exclude_id
+ * @return string
+ */
+function generateUniqueSlug($text, $table = 'posts', $column = 'slug', $exclude_id = null) {
+    $slug = generateSlug($text);
+    if (empty($slug)) {
+        $slug = 'post-' . time();
+    }
+    
+    $original_slug = $slug;
+    $count = 1;
+    
+    try {
+        $db = (new Database())->getConnection();
+        
+        while (true) {
+            $sql = "SELECT id FROM {$table} WHERE {$column} = ?";
+            $params = [$slug];
+            
+            if ($exclude_id !== null) {
+                $sql .= " AND id != ?";
+                $params[] = $exclude_id;
+            }
+            
+            $stmt = $db->prepare($sql);
+            $stmt->execute($params);
+            
+            if ($stmt->rowCount() == 0) {
+                break;
+            }
+            
+            $slug = $original_slug . '-' . $count;
+            $count++;
+        }
+    } catch(PDOException $e) {
+        $slug = $original_slug . '-' . time();
+    }
+    
+    return $slug;
+}
+
+/**
  * Redirect to URL
  * 
  * @param string $url
