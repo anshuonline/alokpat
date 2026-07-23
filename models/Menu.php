@@ -144,6 +144,7 @@ class Menu {
                 }
                 $item['children'] = [];
             }
+            unset($item); // Break the reference to prevent last element being overwritten
         }
         
         // Build Tree Structure (1 Level deep)
