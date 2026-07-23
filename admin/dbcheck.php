@@ -5,6 +5,19 @@ if (!hasPermission('manage_settings')) die('Access denied');
 
 $db = (new Database())->getConnection();
 
+// FIX: Set published_at for post ID 132
+if (isset($_GET['fix']) && $_GET['fix'] == '132') {
+    $fix = $db->prepare("UPDATE posts SET published_at = NOW() WHERE id = 132 AND status = 'published'");
+    if ($fix->execute()) {
+        // Also clear all caches
+        if (function_exists('clear_page_caches')) clear_page_caches();
+        echo '<div style="background:green;color:white;padding:20px;font-size:16px;font-family:sans-serif;">✅ Fixed! published_at set for post ID 132. Cache cleared. <a href="https://alokpat.in/india/monsoon-session-will-a-new-bill-be-passed-pm-modi-s-latest-video-message-on-paper-leaks.html" target="_blank" style="color:yellow;">Check live post</a></div>';
+    } else {
+        echo '<div style="background:red;color:white;padding:20px;">❌ Fix failed.</div>';
+    }
+}
+
+
 // Check the specific post
 $stmt = $db->prepare("SELECT p.id, p.title, p.slug, p.category_id, p.status, p.parent_id, p.published_at, c.name as cat_name 
                        FROM posts p LEFT JOIN categories c ON p.category_id = c.id 
