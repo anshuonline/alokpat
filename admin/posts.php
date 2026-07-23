@@ -475,6 +475,15 @@ ob_start();
     }
 
     // Inline Status Update
+    const statusClasses = {
+        'published': 'bg-green-100 text-green-800',
+        'draft': 'bg-yellow-100 text-yellow-800',
+        'scheduled': 'bg-blue-100 text-blue-800',
+        'archived': 'bg-gray-100 text-gray-800',
+        'trashed': 'bg-red-100 text-red-800',
+        'unlisted': 'bg-gray-200 text-gray-600'
+    };
+
     document.querySelectorAll('.inline-status-update').forEach(select => {
         select.addEventListener('change', function() {
             const postId = this.getAttribute('data-id');
@@ -494,6 +503,14 @@ ob_start();
                 this.style.opacity = '1';
                 if (data.success) {
                     showToast('স্ট্যাটাস সফলভাবে আপডেট হয়েছে', 'success');
+                    // Remove old status classes
+                    Object.values(statusClasses).forEach(cls => {
+                        cls.split(' ').forEach(c => this.classList.remove(c));
+                    });
+                    // Add new status class
+                    if (statusClasses[newStatus]) {
+                        statusClasses[newStatus].split(' ').forEach(c => this.classList.add(c));
+                    }
                 } else {
                     showToast('স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে', 'error');
                 }
