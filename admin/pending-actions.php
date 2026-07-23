@@ -31,6 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 unset($update_data['id']);
                 unset($update_data['parent_id']);
                 $update_data['status'] = 'published'; // Publish it again
+                // Remove the -rev-[time] suffix that was added to avoid duplicate slug constraint
+                $update_data['slug'] = preg_replace('/-rev-\d+$/', '', $pending_post['slug']);
                 
                 if ($post_model->update($parent_id, $update_data)) {
                     // Delete the pending revision

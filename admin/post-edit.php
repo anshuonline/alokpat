@@ -153,6 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $data['status'] = 'pending_review';
                 $data['parent_id'] = $post_id;
                 $data['author_id'] = $post['author_id']; // keep original author
+                $data['slug'] = $data['slug'] . '-rev-' . time(); // Make slug unique for the revision
                 
                 if ($post_model->create($data)) {
                     setFlash('success', 'আপনার এডিটটি অ্যাডমিনের অনুমোদনের জন্য পেন্ডিং এ পাঠানো হয়েছে।');
