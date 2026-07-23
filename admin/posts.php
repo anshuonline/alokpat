@@ -88,7 +88,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_action'])) {
                     if ($post->restore($id)) $count++;
                 }
             } elseif (in_array($action, ['published', 'draft', 'archived'])) {
-                $stmt = $db->prepare("UPDATE posts SET status = ? WHERE id = ?");
+                if ($action === 'published' && !hasPermission('publish_posts')) {
+                    continue; // Skip if no permission to publish
+                }
+                
+                if ($action === 'published') {
+                    $stmt = $db->prepare("UPDATE posts SET status = ?, published_at = COALESCE(published_at, NOW()) WHERE id = ?");
+                } else {
+                    $stmt = $db->prepare("UPDATE posts SET status = ? WHERE id = ?");
+                }
                 if ($stmt->execute([$action, $id])) $count++;
             }
         }
@@ -253,9 +261,11 @@ ob_start();
         <div class="mb-4 flex items-center space-x-3">
             <select name="bulk_action" class="border-gray-300 rounded-lg text-sm px-3 py-2 outline-none focus:border-blue-500">
                 <option value="">বাল্ক অ্যাকশন (Bulk Action)</option>
+                <?php if (hasPermission('publish_posts')): ?>
                 <option value="published">পাবলিশ করুন (Publish)</option>
-                <option value="draft">ড্রাফট করুন (Draft)</option>
                 <option value="archived">প্রাইভেট/আর্কাইভ (Archive)</option>
+                <?php endif; ?>
+                <option value="draft">ড্রাফট করুন (Draft)</option>
                 <?php if(hasPermission('delete_posts')): ?>
                 <option value="delete">ট্র্যাশে পাঠান (Trash)</option>
                 <option value="restore">রিস্টোর করুন (Restore)</option>
