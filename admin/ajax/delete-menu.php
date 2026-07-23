@@ -16,6 +16,7 @@ if ($menu_id <= 0) {
 
 $menuModel = new Menu();
 if ($menuModel->deleteMenu($menu_id)) {
+    if (function_exists('clear_page_caches')) clear_page_caches();
     echo json_encode(['status' => 'success']);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Database error']);
