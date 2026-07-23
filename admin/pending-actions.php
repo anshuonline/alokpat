@@ -26,15 +26,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($action === 'approve') {
                 // Apply pending data to original post
                 $parent_id = $pending_post['parent_id'];
+                $parent_post = $post_model->getById($parent_id);
                 
                 $update_data = $pending_post;
                 unset($update_data['id']);
                 unset($update_data['parent_id']);
+                // Remove JOIN-computed fields that are not DB columns
+                unset($update_data['author_name']);
+                unset($update_data['author_username']);
+                unset($update_data['author_avatar']);
+                unset($update_data['author_bio']);
+                unset($update_data['author_facebook']);
+                unset($update_data['author_twitter']);
+                unset($update_data['author_youtube']);
+                unset($update_data['category_name']);
+                unset($update_data['category_slug']);
+                unset($update_data['updater_name']);
+                unset($update_data['tags']);
+                
                 $update_data['status'] = 'published'; // Publish it again
                 // Remove the -rev-[time] suffix that was added to avoid duplicate slug constraint
                 $update_data['slug'] = preg_replace('/-rev-\d+$/', '', $pending_post['slug']);
                 
+                // Preserve parent's category_id if revision has null (editor didn't change it)
+                if (empty($update_data['category_id']) && $parent_post && !empty($parent_post['category_id'])) {
+                    $update_data['category_id'] = $parent_post['category_id'];
+                }
+                
                 if ($post_model->update($parent_id, $update_data)) {
+                    // Re-attach tags from the revision to the parent post
+                    $pending_tags = $pending_post['tags'] ?? [];
+                    if (!empty($pending_tags)) {
+                        $db->prepare("DELETE FROM post_tags WHERE post_id = ?")->execute([$parent_id]);
+                        $tag_insert = $db->prepare("INSERT IGNORE INTO post_tags (post_id, tag_id) VALUES (?, ?)");
+                        foreach ($pending_tags as $tag) {
+                            $tag_insert->execute([$parent_id, $tag['id']]);
+                        }
+                    }
                     // Delete the pending revision
                     $post_model->forceDelete($id);
                     setFlash('success', 'এডিটটি অনুমোদিত হয়েছে এবং লাইভ হয়েছে।');
