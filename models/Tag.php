@@ -31,6 +31,47 @@ class Tag {
         }
     }
 
+    public function getPaginatedAndSearch($search = '', $limit = 20, $offset = 0) {
+        try {
+            $sql = "SELECT * FROM " . $this->table;
+            if (!empty($search)) {
+                $sql .= " WHERE name LIKE :search OR slug LIKE :search";
+            }
+            $sql .= " ORDER BY id DESC LIMIT :limit OFFSET :offset";
+            
+            $stmt = $this->conn->prepare($sql);
+            if (!empty($search)) {
+                $stmt->bindValue(':search', '%' . $search . '%');
+            }
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            
+            return $stmt->fetchAll();
+        } catch(PDOException $e) {
+            error_log("Get Paginated Tags Error: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    public function getTotalTagsCount($search = '') {
+        try {
+            $sql = "SELECT COUNT(id) FROM " . $this->table;
+            if (!empty($search)) {
+                $sql .= " WHERE name LIKE :search OR slug LIKE :search";
+            }
+            $stmt = $this->conn->prepare($sql);
+            if (!empty($search)) {
+                $stmt->bindValue(':search', '%' . $search . '%');
+            }
+            $stmt->execute();
+            
+            return (int)$stmt->fetchColumn();
+        } catch(PDOException $e) {
+            return 0;
+        }
+    }
+
     /**
      * Get tag by ID
      * 

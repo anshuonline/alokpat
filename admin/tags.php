@@ -64,8 +64,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     }
 }
 
+// Pagination and Search setup
+$page_num = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($page_num < 1) $page_num = 1;
+$limit = 15;
+$offset = ($page_num - 1) * $limit;
+
+$search_query = isset($_GET['search']) ? sanitize($_GET['search']) : '';
+
 // Fetch Tags
-$tags = $tagModel->getAll();
+$tags = $tagModel->getPaginatedAndSearch($search_query, $limit, $offset);
+$total_tags = $tagModel->getTotalTagsCount($search_query);
+$total_pages = ceil($total_tags / $limit);
 
 $page_title = 'ট্যাগ ব্যবস্থাপনা (Tags)';
 ob_start();
@@ -78,9 +88,9 @@ ob_start();
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
         <!-- Add Tag Form -->
-        <div class="lg:col-span-1">
+        <div class="lg:col-span-1 sticky top-6">
             <div class="bg-white rounded-xl shadow-md p-6">
                 <h3 class="text-lg font-bold text-gray-800 border-b pb-3 mb-4">নতুন ট্যাগ যোগ করুন</h3>
                 <form method="POST" action="">
@@ -110,6 +120,26 @@ ob_start();
 
         <!-- Tags List -->
         <div class="lg:col-span-2">
+            <!-- Search Bar -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 mb-6">
+                <form action="" method="GET" class="flex flex-col sm:flex-row gap-4">
+                    <div class="flex-1 relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </div>
+                        <input type="text" name="search" value="<?php echo escape($search_query); ?>" placeholder="ট্যাগ খুঁজুন (নাম বা স্লাগ)..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <button type="submit" class="px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition whitespace-nowrap font-medium">
+                        খুঁজুন
+                    </button>
+                    <?php if(!empty($search_query)): ?>
+                        <a href="tags.php" class="px-6 py-2 bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 transition whitespace-nowrap font-medium text-center">
+                            ক্লিয়ার
+                        </a>
+                    <?php endif; ?>
+                </form>
+            </div>
+
             <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
@@ -142,6 +172,48 @@ ob_start();
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination -->
+            <?php if($total_pages > 1): ?>
+            <div class="mt-6">
+                <nav class="flex items-center justify-between bg-white px-4 py-3 sm:px-6 rounded-lg shadow-sm border border-gray-100">
+                    <div class="hidden sm:block">
+                        <p class="text-sm text-gray-700">
+                            মোট <span class="font-medium"><?php echo $total_tags; ?></span> টি ট্যাগের মধ্যে <span class="font-medium"><?php echo $offset + 1; ?></span> থেকে <span class="font-medium"><?php echo min($offset + $limit, $total_tags); ?></span> দেখানো হচ্ছে
+                        </p>
+                    </div>
+                    <div class="flex-1 flex justify-between sm:justify-end">
+                        <?php 
+                        $query_str = '';
+                        if (!empty($search_query)) {
+                            $query_str = '&search=' . urlencode($search_query);
+                        }
+                        ?>
+                        
+                        <?php if($page_num > 1): ?>
+                            <a href="tags.php?page=<?php echo $page_num - 1; ?><?php echo $query_str; ?>" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                পূর্ববর্তী
+                            </a>
+                        <?php else: ?>
+                            <span class="relative inline-flex items-center px-4 py-2 border border-gray-200 text-sm font-medium rounded-md text-gray-400 bg-gray-50 cursor-not-allowed">
+                                পূর্ববর্তী
+                            </span>
+                        <?php endif; ?>
+                        
+                        <?php if($page_num < $total_pages): ?>
+                            <a href="tags.php?page=<?php echo $page_num + 1; ?><?php echo $query_str; ?>" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                পরবর্তী
+                            </a>
+                        <?php else: ?>
+                            <span class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-200 text-sm font-medium rounded-md text-gray-400 bg-gray-50 cursor-not-allowed">
+                                পরবর্তী
+                            </span>
+                        <?php endif; ?>
+                    </div>
+                </nav>
+            </div>
+            <?php endif; ?>
+
         </div>
     </div>
 </div>
