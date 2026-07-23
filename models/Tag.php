@@ -35,13 +35,14 @@ class Tag {
         try {
             $sql = "SELECT * FROM " . $this->table;
             if (!empty($search)) {
-                $sql .= " WHERE name LIKE :search OR slug LIKE :search";
+                $sql .= " WHERE name LIKE :search_name OR slug LIKE :search_slug";
             }
             $sql .= " ORDER BY id DESC LIMIT :limit OFFSET :offset";
             
             $stmt = $this->conn->prepare($sql);
             if (!empty($search)) {
-                $stmt->bindValue(':search', '%' . $search . '%');
+                $stmt->bindValue(':search_name', '%' . $search . '%');
+                $stmt->bindValue(':search_slug', '%' . $search . '%');
             }
             $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
             $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
@@ -58,11 +59,12 @@ class Tag {
         try {
             $sql = "SELECT COUNT(id) FROM " . $this->table;
             if (!empty($search)) {
-                $sql .= " WHERE name LIKE :search OR slug LIKE :search";
+                $sql .= " WHERE name LIKE :search_name OR slug LIKE :search_slug";
             }
             $stmt = $this->conn->prepare($sql);
             if (!empty($search)) {
-                $stmt->bindValue(':search', '%' . $search . '%');
+                $stmt->bindValue(':search_name', '%' . $search . '%');
+                $stmt->bindValue(':search_slug', '%' . $search . '%');
             }
             $stmt->execute();
             
