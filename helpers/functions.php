@@ -171,7 +171,7 @@ function hasAnyRole($roles) {
  */
 function requireAuth() {
     if (!isLoggedIn()) {
-        setFlash('error', 'αª¬αºìαª░αªÑαª«αºç αª▓αªùαªçαª¿ αªòαª░αºüαª¿');
+        setFlash('error', 'প্রথমে লগইন করুন');
         redirect(ADMIN_URL . '/login.php');
     }
 }
@@ -184,7 +184,7 @@ function requireAuth() {
 function requireRole($role) {
     requireAuth();
     if (!hasRole($role)) {
-        setFlash('error', 'αªåαª¬αª¿αª╛αª░ αªÅαªç αªòαª╛αª£ αªòαª░αª╛αª░ αªàαª¿αºüαª«αªñαª┐ αª¿αºçαªç');
+        setFlash('error', 'আপনার এই কাজ করার অনুমতি নেই');
         redirect(ADMIN_URL . '/dashboard.php');
     }
 }
@@ -223,7 +223,7 @@ function formatDateBengali($date, $format = 'd F Y, h:i A') {
     $english_date = date($format, $timestamp);
     
     // Bengali numerals
-    $bengali_numbers = ['αºª', 'αºº', 'αº¿', 'αº⌐', 'αº¬', 'αº½', 'αº¼', 'αº¡', 'αº«', 'αº»'];
+    $bengali_numbers = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
     $english_numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     
     return str_replace($english_numbers, $bengali_numbers, $english_date);
@@ -236,7 +236,7 @@ function formatDateBengali($date, $format = 'd F Y, h:i A') {
  * @return string
  */
 function formatNumberBengali($number) {
-    $bengali_numbers = ['αºª', 'αºº', 'αº¿', 'αº⌐', 'αº¬', 'αº½', 'αº¼', 'αº¡', 'αº«', 'αº»'];
+    $bengali_numbers = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
     $english_numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
     
     return str_replace($english_numbers, $bengali_numbers, $number);
@@ -268,16 +268,16 @@ function timeAgoBengali($date) {
     $difference = time() - $timestamp;
     
     if ($difference < 60) {
-        return 'αªÅαªçαª«αª╛αªñαºìαª░';
+        return 'এইমাত্র';
     } elseif ($difference < 3600) {
         $mins = floor($difference / 60);
-        return formatNumberBengali($mins) . ' αª«αª┐αª¿αª┐αªƒ αªåαªùαºç';
+        return formatNumberBengali($mins) . ' মিনিট আগে';
     } elseif ($difference < 86400) {
         $hours = floor($difference / 3600);
-        return formatNumberBengali($hours) . ' αªÿαªúαºìαªƒαª╛ αªåαªùαºç';
+        return formatNumberBengali($hours) . ' ঘণ্টা আগে';
     } elseif ($difference < 2592000) {
         $days = floor($difference / 86400);
-        return formatNumberBengali($days) . ' αªªαª┐αª¿ αªåαªùαºç';
+        return formatNumberBengali($days) . ' দিন আগে';
     } else {
         return formatDateBengali($date, 'd F Y');
     }
@@ -296,12 +296,12 @@ function uploadFile($file, $directory = 'uploads') {
     
     // Check for upload errors
     if ($file['error'] !== UPLOAD_ERR_OK) {
-        return ['error' => 'αª½αª╛αªçαª▓ αªåαª¬αª▓αºïαªíαºç αª╕αª«αª╕αºìαª»αª╛ αª╣αª»αª╝αºçαª¢αºç'];
+        return ['error' => 'ফাইল আপলোডে সমস্যা হয়েছে'];
     }
     
     // Check file size
     if ($file['size'] > $max_size) {
-        return ['error' => 'αª½αª╛αªçαª▓αºçαª░ αª╕αª╛αªçαª£ ' . ($max_size / 1048576) . 'MB αªÅαª░ αª¼αºçαª╢αª┐'];
+        return ['error' => 'ফাইলের সাইজ ' . ($max_size / 1048576) . 'MB এর বেশি'];
     }
     
     // Get file extension
@@ -309,7 +309,7 @@ function uploadFile($file, $directory = 'uploads') {
     
     // Validate extension
     if (!in_array($extension, $allowed_extensions)) {
-        return ['error' => 'αª╢αºüαªºαºü ' . implode(', ', $allowed_extensions) . ' αª½αª╛αªçαª▓ αªåαª¬αª▓αºïαªí αªòαª░αª╛ αª»αª╛αª¼αºç'];
+        return ['error' => 'শুধু ' . implode(', ', $allowed_extensions) . ' ফাইল আপলোড করা যাবে'];
     }
     
     // Create directory structure by date
@@ -438,7 +438,7 @@ function uploadFile($file, $directory = 'uploads') {
         ];
     }
     
-    return ['error' => 'αª½αª╛αªçαª▓ αªåαª¬αª▓αºïαªí αªòαª░αª╛ αª»αª╛αª»αª╝αª¿αª┐'];
+    return ['error' => 'ফাইল আপলোড করা যায়নি'];
 }
 
 /**
