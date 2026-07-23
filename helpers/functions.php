@@ -174,6 +174,18 @@ function requireAuth() {
         setFlash('error', 'প্রথমে লগইন করুন');
         redirect(ADMIN_URL . '/login.php');
     }
+    
+    // Check 2FA setup enforcement
+    $current_page = basename($_SERVER['PHP_SELF']);
+    $allowed_pages = ['setup-2fa.php', 'logout.php', 'login.php', 'verify-2fa.php'];
+    
+    if (!in_array($current_page, $allowed_pages)) {
+        $user = getCurrentUser();
+        if ($user && isset($user['two_factor_enabled']) && $user['two_factor_enabled'] == 0) {
+            setFlash('warning', 'আপনার 2FA সেটআপ করা নেই। এটি এখনই সেটআপ করা বাধ্যতামূলক!');
+            redirect(ADMIN_URL . '/setup-2fa.php');
+        }
+    }
 }
 
 /**

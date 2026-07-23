@@ -55,17 +55,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $authenticated = $user->authenticate($username, $password);
             
             if ($authenticated) {
-                // Prevent Session Fixation attacks
-                session_regenerate_id(true);
-                
-                // Set session
-                $_SESSION['user_id'] = $authenticated['id'];
-                $_SESSION['username'] = $authenticated['username'];
-                $_SESSION['role'] = $authenticated['role'];
-                
                 clearRateLimit('login_' . $_SERVER['REMOTE_ADDR']);
-                setFlash('success', 'স্বাগতম, ' . $authenticated['full_name'] . '!');
-                redirect(ADMIN_URL . '/dashboard.php');
+                
+                if (isset($authenticated['two_factor_enabled']) && $authenticated['two_factor_enabled'] == 1) {
+                    $_SESSION['2fa_pending_user_id'] = $authenticated['id'];
+                    redirect(ADMIN_URL . '/verify-2fa.php');
+                } else {
+                    // Prevent Session Fixation attacks
+                    session_regenerate_id(true);
+                    
+                    // Set session
+                    $_SESSION['user_id'] = $authenticated['id'];
+                    $_SESSION['username'] = $authenticated['username'];
+                    $_SESSION['role'] = $authenticated['role'];
+                    
+                    setFlash('warning', 'আপনার 2FA সেটআপ করা নেই। নিরাপত্তার স্বার্থে এখনই সেটআপ করা বাধ্যতামূলক!');
+                    redirect(ADMIN_URL . '/setup-2fa.php');
+                }
             } else {
                 setFlash('error', 'ভুল ইউজারনেম বা পাসওয়ার্ড');
             }
