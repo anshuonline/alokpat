@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action']) && $_P
     header('Content-Type: application/json');
     $id = (int)$_POST['post_id'];
     $status = $_POST['status'];
-    $allowed_statuses = ['published', 'draft', 'scheduled', 'archived', 'trashed', 'unlisted'];
+    $allowed_statuses = ['published', 'draft', 'scheduled', 'archived', 'trashed', 'unlisted', 'pending_review'];
     
     if (!in_array($status, $allowed_statuses)) {
         echo json_encode(['success' => false, 'message' => 'অবৈধ স্ট্যাটাস']);
