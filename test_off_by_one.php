@@ -4,6 +4,6 @@ $stmt = $db->query("SELECT mi.*, ml.location FROM menu_items mi JOIN menu_locati
 $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 echo "Count: " . count($items) . "\n";
 foreach ($items as $idx => $it) {
-    echo $idx . ": " . $it['title'] . " (Order: " . $it['display_order'] . ")\n";
+    echo $idx . ": " . $it['title'] . " (ID: " . $it['id'] . ", Parent: " . ($it['parent_id'] ? $it['parent_id'] : 'NULL') . ")\n";
 }
 ?>
