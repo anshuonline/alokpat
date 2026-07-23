@@ -65,6 +65,12 @@
                     <span class="font-medium">সংবাদ</span>
                 </a>
                 
+                <a href="<?php echo ADMIN_URL; ?>/prompts.php" 
+                   class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'prompts.php' ? 'active' : 'text-gray-700'; ?>">
+                    <i class="fas fa-robot w-6 transition-colors"></i>
+                    <span class="font-medium">এআই প্রম্পট</span>
+                </a>
+                
                 <a href="<?php echo ADMIN_URL; ?>/short-links.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'short-links.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-link w-6 transition-colors"></i>
