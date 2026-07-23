@@ -42,6 +42,13 @@ function generateSlug($text) {
     $text = preg_replace('/[^a-zA-Z0-9\-_\p{Bengali}]/u', '-', $text);
     $text = preg_replace('/-+/', '-', $text);
     $text = trim($text, '-');
+    
+    // Truncate to max 240 characters to leave room for unique suffixes and fit within 255 DB limit
+    if (mb_strlen($text, 'UTF-8') > 240) {
+        $text = mb_substr($text, 0, 240, 'UTF-8');
+        $text = trim($text, '-');
+    }
+    
     return $text;
 }
 
