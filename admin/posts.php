@@ -51,7 +51,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action']) && $_P
         exit;
     }
     
-    $stmt = $db->prepare("UPDATE posts SET status = ? WHERE id = ?");
+    // When publishing, also set published_at if not already set
+    if ($status === 'published') {
+        $stmt = $db->prepare("UPDATE posts SET status = ?, published_at = COALESCE(published_at, NOW()) WHERE id = ?");
+    } else {
+        $stmt = $db->prepare("UPDATE posts SET status = ? WHERE id = ?");
+    }
     if ($stmt->execute([$status, $id])) {
         echo json_encode(['success' => true]);
     } else {

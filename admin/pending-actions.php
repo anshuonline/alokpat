@@ -53,6 +53,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $update_data['category_id'] = $parent_post['category_id'];
                 }
                 
+                // Preserve original published_at if exists, otherwise set now
+                if (empty($update_data['published_at']) && $parent_post && !empty($parent_post['published_at'])) {
+                    $update_data['published_at'] = $parent_post['published_at'];
+                } elseif (empty($update_data['published_at'])) {
+                    $update_data['published_at'] = date('Y-m-d H:i:s');
+                }
+                
                 if ($post_model->update($parent_id, $update_data)) {
                     // Re-attach tags from the revision to the parent post
                     $pending_tags = $pending_post['tags'] ?? [];
