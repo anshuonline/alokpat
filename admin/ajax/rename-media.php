@@ -6,6 +6,12 @@
 require_once '../../config/config.php';
 requireAuth();
 
+if (!hasPermission('manage_media')) {
+    header('Content-Type: application/json');
+    echo json_encode(['status' => 'error', 'message' => 'আপনার এই কাজটি করার অনুমতি নেই']);
+    exit;
+}
+
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

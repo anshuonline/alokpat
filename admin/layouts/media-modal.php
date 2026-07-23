@@ -50,9 +50,11 @@
                         <button type="button" onclick="navigator.clipboard.writeText(selectedMediaUrl); alert('URL কপি করা হয়েছে!');" class="w-full text-center block px-4 py-2 bg-gray-50 text-gray-700 rounded-lg hover:bg-gray-200 border border-gray-200 transition font-medium text-sm">
                             <i class="fas fa-copy mr-2"></i> URL কপি করুন
                         </button>
+                        <?php if (hasPermission('manage_media')): ?>
                         <button type="button" onclick="deleteSelectedMedia()" class="w-full text-center block px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition font-medium text-sm mt-2">
                             <i class="fas fa-trash-alt mr-2"></i> ছবিটি ডিলিট করুন
                         </button>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

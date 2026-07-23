@@ -5,6 +5,12 @@
 require_once '../../config/config.php';
 requireAuth();
 
+if (!hasPermission('manage_appearance')) {
+    header('Content-Type: application/json');
+    echo json_encode(['status' => 'error', 'message' => 'আপনার এই কাজটি করার অনুমতি নেই']);
+    exit;
+}
+
 header('Content-Type: application/json');
 $data = json_decode(file_get_contents('php://input'), true);
 
