@@ -6,7 +6,9 @@ require_once '../../config/config.php';
 requireAuth();
 
 header('Content-Type: application/json');
-$data = json_decode(file_get_contents('php://input'), true);
+$rawInput = file_get_contents('php://input');
+file_put_contents(__DIR__ . '/../../debug_json.txt', $rawInput);
+$data = json_decode($rawInput, true);
 
 if (!isset($data['name']) || trim($data['name']) === '') {
     echo json_encode(['status' => 'error', 'message' => 'মেনুর নাম আবশ্যক']);
