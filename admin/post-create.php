@@ -132,6 +132,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         if (empty($errors)) {
+            // Writers Approval Workflow
+            if (!hasPermission('publish_posts') && in_array($status, ['published', 'scheduled'])) {
+                $data['status'] = 'pending_review';
+            }
+
             // AUTOSAVE LOGIC: check if we are updating an autosaved draft
             if (!empty($_POST['autosave_post_id'])) {
                 $post_id = (int)$_POST['autosave_post_id'];
@@ -141,9 +146,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             
             if ($post_id) {
-                setFlash('success', 'সংবাদ সফলভাবে তৈরি হয়েছে');
+                if ($data['status'] === 'pending_review') {
+                    setFlash('success', 'সংবাদটি অনুমোদনের জন্য অ্যাডমিনের কাছে পাঠানো হয়েছে।');
+                } else {
+                    setFlash('success', 'সংবাদ সফলভাবে তৈরি হয়েছে');
+                }
                 
-                if ($status === 'published') {
+                if ($status === 'published' && $data['status'] !== 'pending_review') {
                     redirect(ADMIN_URL . '/posts.php');
                 } else {
                     redirect(ADMIN_URL . '/post-edit.php?id=' . $post_id);

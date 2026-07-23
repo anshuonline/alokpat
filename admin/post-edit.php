@@ -145,13 +145,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $data['published_at'] = date('Y-m-d H:i:s', strtotime($_POST['published_at']));
         }
         
+        $data['updated_by'] = getCurrentUser()['id'];
+        
         if (empty($errors)) {
-            if ($post_model->update($post_id, $data)) {
-                setFlash('success', 'সংবাদ সফলভাবে আপডেট হয়েছে');
+            // Writers Approval Workflow for Edits
+            if (!hasPermission('publish_posts') && $post['status'] === 'published') {
+                $data['status'] = 'pending_review';
+                $data['parent_id'] = $post_id;
+                $data['author_id'] = $post['author_id']; // keep original author
                 
-                redirect(ADMIN_URL . '/post-edit.php?id=' . $post_id);
+                if ($post_model->create($data)) {
+                    setFlash('success', 'আপনার এডিটটি অ্যাডমিনের অনুমোদনের জন্য পেন্ডিং এ পাঠানো হয়েছে।');
+                    redirect(ADMIN_URL . '/posts.php');
+                } else {
+                    $errors[] = 'সংবাদ আপডেটে সমস্যা হয়েছে';
+                }
             } else {
-                $errors[] = 'সংবাদ আপডেটে সমস্যা হয়েছে';
+                // Normal update
+                if ($post_model->update($post_id, $data)) {
+                    setFlash('success', 'সংবাদ সফলভাবে আপডেট হয়েছে');
+                    redirect(ADMIN_URL . '/post-edit.php?id=' . $post_id);
+                } else {
+                    $errors[] = 'সংবাদ আপডেটে সমস্যা হয়েছে';
+                }
             }
         }
     }

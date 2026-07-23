@@ -26,12 +26,12 @@ class Post {
                     (title, slug, content, excerpt, featured_image, featured_image_alt, author_id, 
                      category_id, status, post_type, is_featured, is_breaking, is_trending, published_at, 
                      seo_title, seo_description, seo_keywords, canonical_url, meta_og_title, 
-                     meta_og_description, meta_og_image, meta_twitter_card, robots_meta, schema_markup, is_live, flags_expiry) 
+                     meta_og_description, meta_og_image, meta_twitter_card, robots_meta, schema_markup, is_live, flags_expiry, updated_by, parent_id) 
                     VALUES 
                     (:title, :slug, :content, :excerpt, :featured_image, :featured_image_alt, :author_id, 
                      :category_id, :status, :post_type, :is_featured, :is_breaking, :is_trending, :published_at, 
                      :seo_title, :seo_description, :seo_keywords, :canonical_url, :meta_og_title, 
-                     :meta_og_description, :meta_og_image, :meta_twitter_card, :robots_meta, :schema_markup, :is_live, :flags_expiry)";
+                     :meta_og_description, :meta_og_image, :meta_twitter_card, :robots_meta, :schema_markup, :is_live, :flags_expiry, :updated_by, :parent_id)";
             
             $stmt = $this->conn->prepare($sql);
             
@@ -65,6 +65,8 @@ class Post {
             $meta_twitter_card = isset($data['meta_twitter_card']) ? $data['meta_twitter_card'] : 'summary_large_image';
             $robots_meta = isset($data['robots_meta']) ? sanitize($data['robots_meta']) : 'index,follow';
             $schema_markup = isset($data['schema_markup']) ? $data['schema_markup'] : null;
+            $updated_by = isset($data['updated_by']) ? $data['updated_by'] : null;
+            $parent_id = isset($data['parent_id']) ? $data['parent_id'] : null;
             
             $stmt->bindParam(':title', $title);
             $stmt->bindParam(':slug', $slug);
@@ -92,6 +94,8 @@ class Post {
             $stmt->bindParam(':schema_markup', $schema_markup);
             $stmt->bindParam(':is_live', $is_live, PDO::PARAM_INT);
             $stmt->bindParam(':flags_expiry', $flags_expiry);
+            $stmt->bindParam(':updated_by', $updated_by, PDO::PARAM_INT);
+            $stmt->bindParam(':parent_id', $parent_id, PDO::PARAM_INT);
             
             if ($stmt->execute()) {
                 $postId = $this->conn->lastInsertId();
@@ -135,7 +139,7 @@ class Post {
                 'category_id', 'status', 'post_type', 'is_featured', 'is_breaking', 'is_trending', 'is_live', 'flags_expiry', 'published_at',
                 'seo_title', 'seo_description', 'seo_keywords', 'canonical_url',
                 'meta_og_title', 'meta_og_description', 'meta_og_image', 'meta_twitter_card',
-                'robots_meta', 'schema_markup'
+                'robots_meta', 'schema_markup', 'updated_by', 'parent_id'
             ];
             
             foreach ($allowed_fields as $field) {
@@ -240,9 +244,11 @@ class Post {
     public function getBySlug($slug) {
         try {
             $sql = "SELECT p.*, u.full_name as author_name, u.username as author_username, u.avatar as author_avatar, u.bio as author_bio, u.facebook_url as author_facebook, u.twitter_url as author_twitter, u.youtube_url as author_youtube,
-                           c.name as category_name, c.slug as category_slug
+                           c.name as category_name, c.slug as category_slug,
+                           upd.full_name as updater_name
                     FROM " . $this->table . " p
                     LEFT JOIN users u ON p.author_id = u.id
+                    LEFT JOIN users upd ON p.updated_by = upd.id
                     LEFT JOIN categories c ON p.category_id = c.id
                     WHERE p.slug = :slug
                     AND (p.status = 'published' OR p.status = 'unlisted' OR (p.status = 'scheduled' AND p.published_at <= NOW()))

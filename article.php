@@ -141,10 +141,17 @@ component('header', ['categories' => $categories]);
             <?php endif; ?>
             
             <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
-                <button onclick="document.getElementById('authorModal').classList.remove('hidden')" class="text-sm md:text-base font-bold text-blue-600 hover:text-blue-800 flex items-center transition cursor-pointer">
-                    <i class="fas fa-pen-nib mr-2 text-gray-500"></i>
-                    <?php echo escape($article['author_name']); ?>
-                </button>
+                <div class="flex flex-col">
+                    <button onclick="document.getElementById('authorModal').classList.remove('hidden')" class="text-sm md:text-base font-bold text-blue-600 hover:text-blue-800 flex items-center transition cursor-pointer">
+                        <i class="fas fa-pen-nib mr-2 text-gray-500"></i>
+                        <?php echo escape($article['author_name']); ?>
+                    </button>
+                    <?php if (!empty($article['updater_name']) && $article['updated_by'] != $article['author_id']): ?>
+                    <span class="text-xs text-gray-500 mt-1">
+                        আপডেট by- <?php echo escape($article['updater_name']); ?>: <?php echo formatDateBengali($article['updated_at']); ?>
+                    </span>
+                    <?php endif; ?>
+                </div>
                 <div class="flex items-center gap-2 no-print">
                     <a href="<?php echo SITE_URL; ?>/print.php?slug=<?php echo escape($article['slug']); ?>" target="_blank" class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition" title="Print Article">
                         <i class="fas fa-print"></i>

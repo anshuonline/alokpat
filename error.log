@@ -1,3 +1,7 @@
 [23-Jul-2026 19:27:41 Asia/Kolkata] PHP Warning:  session_name(): Session name cannot be changed after headers have already been sent in C:\xampp\htdocs\alokpath\config\config.php on line 85
 [23-Jul-2026 19:27:41 Asia/Kolkata] PHP Warning:  session_start(): Session cannot be started after headers have already been sent in C:\xampp\htdocs\alokpath\config\config.php on line 86
 [23-Jul-2026 19:27:41 Asia/Kolkata] PHP Parse error:  syntax error, unexpected token "elseif" in C:\xampp\htdocs\alokpath\helpers\functions.php on line 674
+[24-Jul-2026 01:35:16 Asia/Kolkata] PHP Warning:  session_name(): Session name cannot be changed after headers have already been sent in C:\xampp\htdocs\alokpath\config\config.php on line 85
+[24-Jul-2026 01:35:16 Asia/Kolkata] PHP Warning:  session_start(): Session cannot be started after headers have already been sent in C:\xampp\htdocs\alokpath\config\config.php on line 86
+[24-Jul-2026 01:35:16 Asia/Kolkata] PHP Deprecated:  Required parameter $tagId follows optional parameter $limit in C:\xampp\htdocs\alokpath\models\Post.php on line 317
+[24-Jul-2026 01:35:21 Asia/Kolkata] Database Connection Error: SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it

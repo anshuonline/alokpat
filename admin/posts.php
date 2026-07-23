@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action']) && $_P
     header('Content-Type: application/json');
     $id = (int)$_POST['post_id'];
     $status = $_POST['status'];
-    if (in_array($status, ['published', 'draft', 'scheduled', 'archived', 'trashed', 'unlisted'])) {
+    if (in_array($status, ['published', 'draft', 'scheduled', 'archived', 'trashed', 'unlisted', 'pending_review', 'pending_delete'])) {
         $stmt = $db->prepare("UPDATE posts SET status = ? WHERE id = ?");
         if ($stmt->execute([$status, $id])) {
             echo json_encode(['success' => true]);
@@ -310,15 +310,19 @@ ob_start();
                                         'scheduled' => 'bg-blue-100 text-blue-800',
                                         'archived' => 'bg-gray-100 text-gray-800',
                                         'trashed' => 'bg-red-100 text-red-800',
-                                        'unlisted' => 'bg-gray-200 text-gray-600'
+                                        'unlisted' => 'bg-purple-100 text-purple-800',
+                                        'pending_review' => 'bg-yellow-100 text-yellow-800',
+                                        'pending_delete' => 'bg-orange-100 text-orange-800'
                                     ];
                                     $status_labels = [
                                         'published' => 'প্রকাশিত',
                                         'draft' => 'খসড়া',
                                         'scheduled' => 'নির্ধারিত',
-                                        'archived' => 'সংরক্ষিত',
-                                        'trashed' => 'ট্র্যাশড',
-                                        'unlisted' => 'আনলিস্টেড'
+                                        'archived' => 'আর্কাইভ',
+                                        'trashed' => 'ট্র্যাশ',
+                                        'unlisted' => 'আনলিস্টেড',
+                                        'pending_review' => 'পেন্ডিং এডিট',
+                                        'pending_delete' => 'পেন্ডিং ডিলিট'
                                     ];
                                     ?>
                                     <select class="inline-status-update w-full px-2 py-1 text-xs font-semibold rounded outline-none border border-transparent hover:border-gray-300 cursor-pointer focus:border-blue-500 <?php echo $status_classes[$post_item['status']]; ?>" data-id="<?php echo $post_item['id']; ?>">
