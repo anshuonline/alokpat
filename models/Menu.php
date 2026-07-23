@@ -123,7 +123,13 @@ class Menu {
         $cache_dir = __DIR__ . '/../cache/menus';
         if (!is_dir($cache_dir)) @mkdir($cache_dir, 0777, true);
         $cache_file = $cache_dir . '/' . md5($location) . '.json';
-        $cache_ttl  = 600; // 10 minutes
+        // Read cache TTL from admin settings (default 600s = 10 min)
+        $cache_ttl = 600;
+        try {
+            $s = new Setting();
+            $val = $s->get('menu_cache_time');
+            if ($val !== false && is_numeric($val)) $cache_ttl = (int)$val;
+        } catch (Exception $e) {}
 
         if (file_exists($cache_file) && (time() - filemtime($cache_file)) < $cache_ttl) {
             $cached = json_decode(file_get_contents($cache_file), true);
