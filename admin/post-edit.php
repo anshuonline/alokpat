@@ -443,6 +443,7 @@ ob_start();
                                         <span class="text-sm">খসড়া (Draft)</span>
                                     </label>
                                     
+                                    <?php if (hasPermission('publish_posts')): ?>
                                     <label class="flex items-center p-2 rounded hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-200 transition">
                                         <input type="radio" 
                                                name="status" 
@@ -472,6 +473,17 @@ ob_start();
                                                class="mr-2 h-4 w-4 text-blue-600">
                                         <span class="text-sm text-gray-600"><i class="fas fa-eye-slash mr-1"></i> আনলিস্টেড (Unlisted)</span>
                                     </label>
+                                    <?php else: ?>
+                                    <label class="flex items-center p-2 rounded hover:bg-yellow-50 cursor-pointer border border-transparent hover:border-yellow-200 transition bg-yellow-50/50">
+                                        <input type="radio" 
+                                               name="status" 
+                                               value="published" 
+                                               onchange="toggleScheduleInput()"
+                                               <?php echo in_array($current_status, ['published', 'pending_review']) ? 'checked' : ''; ?>
+                                               class="mr-2 h-4 w-4 text-yellow-600">
+                                        <span class="text-sm font-semibold text-yellow-700"><i class="fas fa-paper-plane mr-1"></i> রিভিউয়ের জন্য পাঠান (Submit for Review)</span>
+                                    </label>
+                                    <?php endif; ?>
                                 </div>
                                 
                                 <?php 
