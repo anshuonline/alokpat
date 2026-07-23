@@ -14,6 +14,15 @@ $db = (new Database())->getConnection();
 $rolesStmt = $db->query("SELECT slug, name FROM roles ORDER BY id ASC");
 $allRoles = $rolesStmt->fetchAll();
 
+$currentUserRole = getCurrentUser()['role'];
+$role_ranks = [
+    'super_admin' => 100,
+    'admin' => 80,
+    'editor' => 50,
+    'writer' => 20
+];
+$currentUserRank = $role_ranks[$currentUserRole] ?? 0;
+
 // Handle Delete
 if (isset($_GET['delete'])) {
     requireCSRF();
@@ -24,8 +33,9 @@ if (isset($_GET['delete'])) {
         setFlash('error', 'আপনি নিজের অ্যাকাউন্ট মুছতে পারবেন না');
     } else {
         $userToDelete = $userModel->getById($id);
-        if ($userToDelete && $userToDelete['role'] === 'super_admin' && getCurrentUser()['role'] !== 'super_admin') {
-            setFlash('error', 'আপনার সুপার এডমিন একাউন্ট মুছতে অনুমতি নেই');
+        $targetRank = $userToDelete ? ($role_ranks[$userToDelete['role']] ?? 0) : 0;
+        if ($currentUserRole !== 'super_admin' && $targetRank >= $currentUserRank) {
+            setFlash('error', 'আপনার সমান বা উপরের রোলের ইউজার মুছতে পারবেন না');
         } else if ($userModel->delete($id)) {
             if (function_exists('clear_page_caches')) clear_page_caches();
             setFlash('success', 'ব্যবহারকারী সফলভাবে মুছে ফেলা হয়েছে');
@@ -94,11 +104,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    $currentUserRole = getCurrentUser()['role'];
+    $targetAssignRank = $role_ranks[$data['role']] ?? 0;
     
-    // Prevent assigning super_admin role if not super_admin
-    if ($data['role'] === 'super_admin' && $currentUserRole !== 'super_admin') {
-        setFlash('error', 'আপনার সুপার এডমিন রোল দেওয়ার অনুমতি নেই');
+    // Prevent assigning role >= own rank (except super_admin)
+    if ($currentUserRole !== 'super_admin' && $targetAssignRank >= $currentUserRank) {
+        setFlash('error', 'আপনার সমান বা উপরের রোল দেওয়ার অনুমতি নেই');
         redirect(ADMIN_URL . '/users.php');
         exit;
     }
@@ -107,8 +117,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = (int)$_POST['update_id'];
         
         $userToEdit = $userModel->getById($id);
-        if ($userToEdit && $userToEdit['role'] === 'super_admin' && $currentUserRole !== 'super_admin') {
-            setFlash('error', 'আপনার সুপার এডমিন একাউন্ট সম্পাদনা করার অনুমতি নেই');
+        $targetEditRank = $userToEdit ? ($role_ranks[$userToEdit['role']] ?? 0) : 0;
+        
+        if ($currentUserRole !== 'super_admin' && $targetEditRank >= $currentUserRank) {
+            setFlash('error', 'আপনার সমান বা উপরের রোলের ইউজার সম্পাদনা করার অনুমতি নেই');
             redirect(ADMIN_URL . '/users.php');
             exit;
         }
@@ -220,7 +232,10 @@ ob_start();
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm">
                                     <div class="flex space-x-3">
-                                        <?php $canEdit = ($u['role'] !== 'super_admin' || getCurrentUser()['role'] === 'super_admin'); ?>
+                                        <?php 
+                                        $targetRank = $role_ranks[$u['role']] ?? 0;
+                                        $canEdit = ($currentUserRole === 'super_admin' || $targetRank < $currentUserRank); 
+                                        ?>
                                         <?php if ($canEdit): ?>
                                             <button onclick="editUser(<?php echo htmlspecialchars((string)json_encode($u, JSON_INVALID_UTF8_IGNORE)); ?>)" 
                                                     class="text-blue-500 hover:text-blue-800 transition" title="সম্পাদনা">
@@ -303,7 +318,10 @@ ob_start();
                     <label class="block text-sm font-medium text-gray-700 mb-2">ভূমিকা (Role) <span class="text-red-500">*</span></label>
                     <select name="role" id="role" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition">
                         <?php foreach($allRoles as $r): ?>
-                            <?php if ($r['slug'] === 'super_admin' && getCurrentUser()['role'] !== 'super_admin') continue; ?>
+                            <?php 
+                            $rRank = $role_ranks[$r['slug']] ?? 0;
+                            if ($currentUserRole !== 'super_admin' && $rRank >= $currentUserRank) continue; 
+                            ?>
                             <option value="<?php echo escape($r['slug']); ?>"><?php echo escape($r['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
