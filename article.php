@@ -629,6 +629,7 @@ $content = ob_get_clean();
 
 // Start output buffering for the final HTML containing the layout
 ob_start();
+$load_social_sdks = true; // Enable social embed scripts (Twitter, FB, Instagram) on article pages
 include 'layouts/main.php';
 $final_html = ob_get_clean();
 

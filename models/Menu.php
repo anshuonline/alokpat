@@ -117,8 +117,19 @@ class Menu {
         }
     }
 
-    // Frontend: Get menu items for a specific location
+    // Frontend: Get menu items for a specific location (with file cache)
     public function getMenuByLocation($location) {
+        // --- File Cache ---
+        $cache_dir = __DIR__ . '/../cache/menus';
+        if (!is_dir($cache_dir)) @mkdir($cache_dir, 0777, true);
+        $cache_file = $cache_dir . '/' . md5($location) . '.json';
+        $cache_ttl  = 600; // 10 minutes
+
+        if (file_exists($cache_file) && (time() - filemtime($cache_file)) < $cache_ttl) {
+            $cached = json_decode(file_get_contents($cache_file), true);
+            if (is_array($cached)) return $cached;
+        }
+
         $stmt = $this->db->prepare("
             SELECT mi.* 
             FROM menu_items mi
@@ -165,6 +176,11 @@ class Menu {
             }
         }
         
-        return array_values($tree);
+        $result = array_values($tree);
+
+        // Write to cache
+        @file_put_contents($cache_file, json_encode($result));
+
+        return $result;
     }
 }

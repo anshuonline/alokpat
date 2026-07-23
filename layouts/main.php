@@ -50,6 +50,13 @@
     // Include centrally managed favicon tags
     component('favicon');
     ?>
+    <!-- Preconnect to external domains for faster loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
     <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.3.0/css/glightbox.min.css" />
     <?php
@@ -250,31 +257,14 @@
             });
         });
     </script>
-    <!-- Social Embed Scripts (Twitter, Facebook, Instagram) -->
+    <!-- Social Embed Scripts — only loaded on article pages -->
+    <?php if (!empty($load_social_sdks)): ?>
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v17.0"></script>
     <script async src="//www.instagram.com/embed.js"></script>
+    <?php endif; ?>
 
-    <script>
-        // Debug: log selected font names and computed font-family
-        (function(){
-            try {
-                var headingFont = '<?php echo addslashes($heading_font); ?>';
-                var bodyFont = '<?php echo addslashes($body_font); ?>';
-                console.info('[FONT DEBUG] requested heading font:', headingFont);
-                console.info('[FONT DEBUG] requested body font:', bodyFont);
-                console.info('[FONT DEBUG] google fonts url:', '<?php echo addslashes($google_fonts_url); ?>');
 
-                var bodyStyle = window.getComputedStyle(document.body).getPropertyValue('font-family');
-                var h1 = document.querySelector('h1');
-                var h1Style = h1 ? window.getComputedStyle(h1).getPropertyValue('font-family') : null;
-                console.info('[FONT DEBUG] computed body font-family:', bodyStyle);
-                console.info('[FONT DEBUG] computed h1 font-family:', h1Style);
-            } catch (e) {
-                console.warn('[FONT DEBUG] error while checking fonts', e);
-            }
-        })();
-    </script>
     
     <!-- Defer non-critical JS -->
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.3.0/js/glightbox.min.js"></script>
