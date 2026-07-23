@@ -75,6 +75,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_action'])) {
         $count = 0;
         foreach ($post_ids as $id) {
             $id = (int)$id;
+            
+            $target_post = $post->getById($id);
+            if (!$target_post) continue;
+            
+            $is_own_post = ($target_post['author_id'] == $_SESSION['user_id']);
+            if (!$is_own_post && !hasPermission('edit_others_posts')) {
+                continue; // Skip if no permission to edit others' posts
+            }
+            
             if ($action === 'delete') {
                 if (hasPermission('delete_posts')) {
                     if ($post->delete($id)) $count++;
