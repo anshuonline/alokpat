@@ -17,3 +17,4 @@ test*.php
 # System files
 .DS_Store
 Thumbs.db
+error.log
