@@ -7,12 +7,7 @@
 
 require_once '../config/config.php';
 requireAuth();
-
-// Permission check
-if (!in_array(getCurrentUser()['role'], ['super_admin', 'admin', 'editor', 'author'])) {
-    setFlash('error', 'আপনার এই পৃষ্ঠা দেখার অনুমতি নেই');
-    redirect(ADMIN_URL . '/dashboard.php');
-}
+requirePermission('manage_settings');
 
 $page_title = 'এআই প্রম্পট (AI Prompts)';
 

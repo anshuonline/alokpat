@@ -65,11 +65,15 @@
                     <span class="font-medium">সংবাদ</span>
                 </a>
                 
+                <?php if (hasPermission('manage_settings')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/prompts.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'prompts.php' ? 'active' : 'text-gray-700'; ?>">
-                    <i class="fas fa-robot w-6 transition-colors"></i>
-                    <span class="font-medium">এআই প্রম্পট</span>
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 <?php echo basename($_SERVER['PHP_SELF']) == 'prompts.php' ? 'bg-indigo-600/20 text-indigo-100' : 'bg-gray-100 text-gray-500'; ?>">
+                        <i class="fas fa-robot text-lg"></i>
+                    </div>
+                    <span>AI প্রম্পট</span>
                 </a>
+                <?php endif; ?>
                 
                 <a href="<?php echo ADMIN_URL; ?>/short-links.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'short-links.php' ? 'active' : 'text-gray-700'; ?>">
