@@ -146,11 +146,6 @@ component('header', ['categories' => $categories]);
                         <i class="fas fa-pen-nib mr-2 text-gray-500"></i>
                         <?php echo escape($article['author_name']); ?>
                     </button>
-                    <?php if (!empty($article['updater_name']) && $article['updated_by'] != $article['author_id']): ?>
-                    <span class="text-xs text-gray-500 mt-1">
-                        আপডেট by- <?php echo escape($article['updater_name']); ?>: <?php echo formatDateBengali($article['updated_at']); ?>
-                    </span>
-                    <?php endif; ?>
                 </div>
                 <div class="flex items-center gap-2 no-print">
                     <a href="<?php echo SITE_URL; ?>/print.php?slug=<?php echo escape($article['slug']); ?>" target="_blank" class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition" title="Print Article">
@@ -241,7 +236,12 @@ component('header', ['categories' => $categories]);
                     if ($upd_date !== $pub_date && strtotime($article['updated_at']) > strtotime($article['published_at'] ?? $article['created_at'])): 
                 ?>
                     <span class="flex items-center justify-center bg-gray-50 px-3 py-1.5 rounded-md border border-gray-100 text-gray-500 w-full sm:w-auto">
-                        <i class="fas fa-history mr-1.5"></i> আপডেট: <?php echo $upd_date; ?>
+                        <i class="fas fa-history mr-1.5"></i> 
+                        <?php if (!empty($article['updater_name']) && $article['updated_by'] != $article['author_id']): ?>
+                            আপডেট by- <?php echo escape($article['updater_name']); ?>: <?php echo $upd_date; ?>
+                        <?php else: ?>
+                            আপডেট: <?php echo $upd_date; ?>
+                        <?php endif; ?>
                     </span>
                 <?php 
                     endif; 
