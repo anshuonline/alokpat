@@ -11,6 +11,22 @@ requireAuth();
 $post = new Post();
 $db = (new Database())->getConnection();
 
+// Handle inline status update via AJAX
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action']) && $_POST['ajax_action'] === 'update_status') {
+    header('Content-Type: application/json');
+    $id = (int)$_POST['post_id'];
+    $status = $_POST['status'];
+    if (in_array($status, ['published', 'draft', 'scheduled', 'archived', 'trashed', 'unlisted'])) {
+        $stmt = $db->prepare("UPDATE posts SET status = ? WHERE id = ?");
+        if ($stmt->execute([$status, $id])) {
+            echo json_encode(['success' => true]);
+            exit;
+        }
+    }
+    echo json_encode(['success' => false]);
+    exit;
+}
+
 // Bulk Actions Logic
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_action'])) {
     requireCSRF();
@@ -95,7 +111,19 @@ if (!empty($conditions)) {
     $sql .= " WHERE " . implode(' AND ', $conditions);
 }
 
-$sql .= " ORDER BY p.created_at DESC LIMIT :limit OFFSET :offset";
+// Sorting logic
+$sort_by = $_GET['sort'] ?? 'date_desc';
+$order_by = 'p.created_at DESC';
+
+if ($sort_by === 'views_desc') {
+    $order_by = 'p.view_count DESC';
+} elseif ($sort_by === 'views_asc') {
+    $order_by = 'p.view_count ASC';
+} elseif ($sort_by === 'date_asc') {
+    $order_by = 'p.created_at ASC';
+}
+
+$sql .= " ORDER BY " . $order_by . " LIMIT :limit OFFSET :offset";
 
 $stmt = $db->prepare($sql);
 foreach ($params as $key => $val) {
@@ -204,8 +232,18 @@ ob_start();
                             <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">লেখক</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">ক্যাটাগরি</th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">স্ট্যাটাস</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">ভিউ</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">তারিখ</th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">
+                                <a href="?sort=<?php echo $sort_by === 'views_desc' ? 'views_asc' : 'views_desc'; ?>&filter=<?php echo urlencode($filter); ?>&search=<?php echo urlencode($search); ?>" class="hover:text-blue-600 flex items-center gap-1">
+                                    ভিউ
+                                    <i class="fas fa-sort<?php echo $sort_by === 'views_desc' ? '-amount-down' : ($sort_by === 'views_asc' ? '-amount-up' : ''); ?>"></i>
+                                </a>
+                            </th>
+                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">
+                                <a href="?sort=<?php echo $sort_by === 'date_desc' ? 'date_asc' : 'date_desc'; ?>&filter=<?php echo urlencode($filter); ?>&search=<?php echo urlencode($search); ?>" class="hover:text-blue-600 flex items-center gap-1">
+                                    তারিখ
+                                    <i class="fas fa-sort<?php echo $sort_by === 'date_desc' ? '-amount-down' : ($sort_by === 'date_asc' ? '-amount-up' : ''); ?>"></i>
+                                </a>
+                            </th>
                             <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600">কাজ</th>
                         </tr>
                     </thead>
@@ -275,13 +313,19 @@ ob_start();
                                         'unlisted' => 'আনলিস্টেড'
                                     ];
                                     ?>
-                                    <span class="px-2 py-1 text-xs font-semibold rounded <?php echo $status_classes[$post_item['status']]; ?>">
-                                        <?php echo $status_labels[$post_item['status']]; ?>
-                                    </span>
+                                    <select class="inline-status-update w-full px-2 py-1 text-xs font-semibold rounded outline-none border border-transparent hover:border-gray-300 cursor-pointer focus:border-blue-500 <?php echo $status_classes[$post_item['status']]; ?>" data-id="<?php echo $post_item['id']; ?>">
+                                        <?php foreach ($status_labels as $val => $label): ?>
+                                            <option value="<?php echo $val; ?>" <?php echo $post_item['status'] === $val ? 'selected' : ''; ?> class="bg-white text-gray-800 font-normal">
+                                                <?php echo $label; ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
                                     <?php if ($post_item['is_breaking']): ?>
-                                        <span class="ml-1 px-2 py-1 bg-red-100 text-red-800 text-xs rounded">
-                                            <i class="fas fa-bolt"></i>
-                                        </span>
+                                        <div class="mt-1">
+                                            <span class="px-2 py-0.5 bg-red-100 text-red-800 text-[10px] rounded-full" title="Breaking News">
+                                                <i class="fas fa-bolt mr-1"></i>ব্রেকিং
+                                            </span>
+                                        </div>
                                     <?php endif; ?>
                                 </td>
                                 <td class="px-6 py-4 text-sm text-gray-700">
@@ -429,6 +473,37 @@ ob_start();
             setTimeout(() => toast.remove(), 300);
         }, 6000);
     }
+
+    // Inline Status Update
+    document.querySelectorAll('.inline-status-update').forEach(select => {
+        select.addEventListener('change', function() {
+            const postId = this.getAttribute('data-id');
+            const newStatus = this.value;
+            
+            this.style.opacity = '0.5';
+            
+            fetch('posts.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'ajax_action=update_status&post_id=' + postId + '&status=' + newStatus
+            })
+            .then(response => response.json())
+            .then(data => {
+                this.style.opacity = '1';
+                if (data.success) {
+                    showToast('স্ট্যাটাস সফলভাবে আপডেট হয়েছে', 'success');
+                } else {
+                    showToast('স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে', 'error');
+                }
+            })
+            .catch(error => {
+                this.style.opacity = '1';
+                showToast('সার্ভার এরর!', 'error');
+            });
+        });
+    });
 
     // Instant Indexing
     document.querySelectorAll('.instant-index-btn').forEach(btn => {
