@@ -113,6 +113,12 @@
                     <span class="font-medium">ব্যবহারকারী</span>
                 </a>
                 
+                <a href="<?php echo ADMIN_URL; ?>/setup-2fa.php" 
+                   class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'setup-2fa.php' ? 'active' : 'text-gray-700'; ?>">
+                    <i class="fas fa-shield-alt w-6 transition-colors"></i>
+                    <span class="font-medium">2FA Security</span>
+                </a>
+                
                 <a href="<?php echo ADMIN_URL; ?>/seo.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'seo.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-search w-6 transition-colors"></i>

@@ -14,10 +14,7 @@ $db = (new Database())->getConnection();
 $user_model = new User();
 $current_user = $user_model->getById($user_id);
 
-if ($current_user['two_factor_enabled'] == 1) {
-    setFlash('info', 'আপনার 2FA আগে থেকেই সেটআপ করা আছে।');
-    redirect(ADMIN_URL . '/dashboard.php');
-}
+$is_active = ($current_user['two_factor_enabled'] == 1);
 
 $ga = new GoogleAuthenticator();
 
@@ -29,7 +26,7 @@ if (!isset($_SESSION['setup_2fa_secret'])) {
 $secret = $_SESSION['setup_2fa_secret'];
 $qrCodeUrl = $ga->getQRCodeGoogleUrl('Alokpat Admin (' . $current_user['username'] . ')', $secret, 'Alokpat');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$is_active) {
     requireCSRF();
     $code = $_POST['code'] ?? '';
     
@@ -44,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($stmt->execute([$secret, $user_id])) {
                 unset($_SESSION['setup_2fa_secret']);
                 setFlash('success', 'Two-Factor Authentication (2FA) সফলভাবে চালু হয়েছে!');
-                redirect(ADMIN_URL . '/dashboard.php');
+                redirect(ADMIN_URL . '/setup-2fa.php');
             } else {
                 setFlash('error', 'ডাটাবেস আপডেট করতে সমস্যা হয়েছে।');
             }
@@ -54,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-$page_title = 'Set Up 2FA';
+$page_title = '2FA Security';
 ob_start();
 ?>
 <div class="max-w-3xl mx-auto py-10 px-4">
@@ -65,6 +62,22 @@ ob_start();
         </div>
         
         <div class="p-8">
+            <?php if ($is_active): ?>
+            
+            <div class="flex flex-col items-center justify-center py-8">
+                <div class="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                    <i class="fas fa-check-circle text-6xl text-green-500"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">2FA সক্রিয় আছে</h3>
+                <p class="text-gray-600 text-center max-w-md">
+                    আপনার অ্যাকাউন্টটি বর্তমানে <strong>Two-Factor Authentication</strong> দ্বারা সুরক্ষিত। 
+                    প্রতিবার লগইন করার সময় আপনাকে Google Authenticator অ্যাপ থেকে কোড দিতে হবে।
+                </p>
+                <!-- If you need a reset option in the future, it can be added here -->
+            </div>
+            
+            <?php else: ?>
+            
             <div class="flex flex-col md:flex-row gap-8 items-center">
                 <div class="w-full md:w-1/2 flex flex-col items-center">
                     <p class="text-gray-600 mb-4 text-center">১. আপনার মোবাইলে <strong>Google Authenticator</strong> বা <strong>Authy</strong> অ্যাপ ওপেন করুন এবং নিচের QR কোডটি স্ক্যান করুন:</p>
@@ -104,6 +117,8 @@ ob_start();
                     </form>
                 </div>
             </div>
+            
+            <?php endif; ?>
         </div>
     </div>
 </div>
