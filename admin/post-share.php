@@ -77,7 +77,22 @@ try {
 
 $short_url = $short_code ? SITE_URL . '/u' . $short_code : 'Database Error: Table not created';
 $excerpt = !empty($post['meta_description']) ? escape($post['meta_description']) : escape(substr(strip_tags($post['content']), 0, 150)) . '...';
-$share_text = escape($post['title']) . "\n\n" . $excerpt . ($short_code ? "\n\nবিস্তারিত পড়ুন: " . $short_url : "");
+
+$hashtags_str = '';
+if (!empty($post['tags']) && is_array($post['tags'])) {
+    $hashtags = [];
+    foreach ($post['tags'] as $tag) {
+        if (!empty($tag['name'])) {
+            $tag_name = str_replace([' ', '-', '_'], '', $tag['name']);
+            $hashtags[] = '#' . $tag_name;
+        }
+    }
+    if (!empty($hashtags)) {
+        $hashtags_str = "\n\n" . implode(' ', $hashtags);
+    }
+}
+
+$share_text = escape($post['title']) . "\n\n" . $excerpt . ($short_code ? "\n\nবিস্তারিত পড়ুন: " . $short_url : "") . $hashtags_str;
 ?>
 
 <div class="space-y-6 max-w-5xl mx-auto">
