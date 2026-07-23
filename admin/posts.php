@@ -16,14 +16,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action']) && $_P
     header('Content-Type: application/json');
     $id = (int)$_POST['post_id'];
     $status = $_POST['status'];
-    if (in_array($status, ['published', 'draft', 'scheduled', 'archived', 'trashed', 'unlisted', 'pending_review', 'pending_delete'])) {
-        $stmt = $db->prepare("UPDATE posts SET status = ? WHERE id = ?");
-        if ($stmt->execute([$status, $id])) {
-            echo json_encode(['success' => true]);
-            exit;
-        }
+    $allowed_statuses = ['published', 'draft', 'scheduled', 'archived', 'trashed', 'unlisted'];
+    
+    if (!in_array($status, $allowed_statuses)) {
+        echo json_encode(['success' => false, 'message' => 'অবৈধ স্ট্যাটাস']);
+        exit;
     }
-    echo json_encode(['success' => false]);
+    
+    // Get the post to check ownership
+    $target_post = $post->getById($id);
+    if (!$target_post) {
+        echo json_encode(['success' => false, 'message' => 'পোস্ট পাওয়া যায়নি']);
+        exit;
+    }
+    
+    $current_user = getCurrentUser();
+    $is_own_post = ($target_post['author_id'] == $current_user['id']);
+    
+    // Permission: Can this user edit this post at all?
+    if (!$is_own_post && !hasPermission('edit_others_posts')) {
+        echo json_encode(['success' => false, 'message' => 'অন্যের পোস্ট পরিবর্তন করার অনুমতি নেই']);
+        exit;
+    }
+    
+    // Permission: publish_posts required to set published/scheduled/unlisted
+    if (in_array($status, ['published', 'scheduled', 'unlisted']) && !hasPermission('publish_posts')) {
+        echo json_encode(['success' => false, 'message' => 'পোস্ট প্রকাশ করার অনুমতি নেই']);
+        exit;
+    }
+    
+    // Permission: delete_posts required to trash
+    if ($status === 'trashed' && !hasPermission('delete_posts')) {
+        echo json_encode(['success' => false, 'message' => 'পোস্ট ট্র্যাশ করার অনুমতি নেই']);
+        exit;
+    }
+    
+    $stmt = $db->prepare("UPDATE posts SET status = ? WHERE id = ?");
+    if ($stmt->execute([$status, $id])) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'আপডেট ব্যর্থ']);
+    }
     exit;
 }
 
@@ -314,25 +347,47 @@ ob_start();
                                         'pending_review' => 'bg-yellow-100 text-yellow-800',
                                         'pending_delete' => 'bg-orange-100 text-orange-800'
                                     ];
-                                    $status_labels = [
-                                        'published' => 'প্রকাশিত',
-                                        'draft' => 'খসড়া',
-                                        'scheduled' => 'নির্ধারিত',
-                                        'archived' => 'আর্কাইভ',
-                                        'trashed' => 'ট্র্যাশ',
-                                        'unlisted' => 'আনলিস্টেড',
-                                        'pending_review' => 'পেন্ডিং এডিট',
-                                        'pending_delete' => 'পেন্ডিং ডিলিট'
+                                    // Build permission-aware status options
+                                    $current_user_posts = getCurrentUser();
+                                    $is_own = ($post_item['author_id'] == $current_user_posts['id']);
+                                    $can_edit = $is_own || hasPermission('edit_others_posts');
+                                    $can_publish = hasPermission('publish_posts');
+                                    $can_delete = hasPermission('delete_posts');
+                                    
+                                    // Statuses this user is allowed to SET
+                                    $allowed_options = ['draft' => 'খসড়া', 'archived' => 'আর্কাইভ'];
+                                    if ($can_publish) {
+                                        $allowed_options['published'] = 'প্রকাশিত';
+                                        $allowed_options['scheduled'] = 'নির্ধারিত';
+                                        $allowed_options['unlisted'] = 'আনলিস্টেড';
+                                    }
+                                    if ($can_delete) {
+                                        $allowed_options['trashed'] = 'ট্র্যাশ';
+                                    }
+                                    // Always show current status even if user can't change to it
+                                    $current_status = $post_item['status'];
+                                    $all_status_labels = [
+                                        'published' => 'প্রকাশিত', 'draft' => 'খসড়া', 'scheduled' => 'নির্ধারিত',
+                                        'archived' => 'আর্কাইভ', 'trashed' => 'ট্র্যাশ', 'unlisted' => 'আনলিস্টেড',
+                                        'pending_review' => 'পেন্ডিং এডিট', 'pending_delete' => 'পেন্ডিং ডিলিট'
                                     ];
+                                    if (!isset($allowed_options[$current_status])) {
+                                        $allowed_options[$current_status] = $all_status_labels[$current_status] ?? $current_status;
+                                    }
                                     ?>
-                                    <select class="inline-status-update w-full px-2 py-1 text-xs font-semibold rounded outline-none border border-transparent hover:border-gray-300 cursor-pointer focus:border-blue-500 <?php echo $status_classes[$post_item['status']]; ?>" data-id="<?php echo $post_item['id']; ?>">
-                                        <?php foreach ($status_labels as $val => $label): ?>
-                                            <?php if (in_array($val, ['pending_review', 'pending_delete']) && $post_item['status'] !== $val) continue; ?>
-                                            <option value="<?php echo $val; ?>" <?php echo $post_item['status'] === $val ? 'selected' : ''; ?> class="bg-white text-gray-800 font-normal">
+                                    <?php if ($can_edit): ?>
+                                    <select class="inline-status-update w-full px-2 py-1 text-xs font-semibold rounded outline-none border border-transparent hover:border-gray-300 cursor-pointer focus:border-blue-500 <?php echo $status_classes[$post_item['status']] ?? 'bg-gray-100 text-gray-800'; ?>" data-id="<?php echo $post_item['id']; ?>">
+                                        <?php foreach ($allowed_options as $val => $label): ?>
+                                            <option value="<?php echo $val; ?>" <?php echo $current_status === $val ? 'selected' : ''; ?> class="bg-white text-gray-800 font-normal">
                                                 <?php echo $label; ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
+                                    <?php else: ?>
+                                    <span class="px-2 py-1 text-xs font-semibold rounded <?php echo $status_classes[$current_status] ?? 'bg-gray-100 text-gray-800'; ?>">
+                                        <?php echo $all_status_labels[$current_status] ?? $current_status; ?>
+                                    </span>
+                                    <?php endif; ?>
                                     <?php if ($post_item['is_breaking']): ?>
                                         <div class="mt-1">
                                             <span class="px-2 py-0.5 bg-red-100 text-red-800 text-[10px] rounded-full" title="Breaking News">
@@ -361,10 +416,15 @@ ob_start();
                                             </a>
                                             <?php endif; ?>
                                         <?php else: ?>
+                                            <?php 
+                                            $can_edit_this = ($post_item['author_id'] == $current_user_posts['id'] && hasPermission('edit_own_posts')) || hasPermission('edit_others_posts');
+                                            ?>
+                                            <?php if ($can_edit_this): ?>
                                             <a href="<?php echo ADMIN_URL; ?>/post-edit.php?id=<?php echo $post_item['id']; ?>" 
                                                class="text-blue-600 hover:text-blue-800" title="সম্পাদনা">
                                                 <i class="fas fa-edit"></i>
                                             </a>
+                                            <?php endif; ?>
                                             <?php if ($post_item['status'] === 'published'): ?>
                                                 <button type="button" 
                                                         class="text-green-600 hover:text-green-800 instant-index-btn" 
@@ -374,13 +434,15 @@ ob_start();
                                                 </button>
                                             <?php endif; ?>
                                             <a href="<?php echo ADMIN_URL; ?>/post-share.php?id=<?php echo $post_item['id']; ?>" 
-                                               class="text-indigo-600 hover:text-indigo-800" title="সোশ্যাল শেয়ার ইমেজ (Share Image)">
+                                               class="text-indigo-600 hover:text-indigo-800" title="সোশ্যাল শেয়ার ইমেজ (Share Image)">
                                                 <i class="fas fa-share-alt"></i>
                                             </a>
+                                            <?php if (hasPermission('create_posts')): ?>
                                             <a href="<?php echo ADMIN_URL; ?>/post-duplicate.php?id=<?php echo $post_item['id']; ?>" 
                                                class="text-gray-600 hover:text-gray-800" title="ডুপ্লিকেট">
                                                 <i class="fas fa-copy"></i>
                                             </a>
+                                            <?php endif; ?>
                                             <?php if(hasPermission('delete_posts')): ?>
                                             <a href="<?php echo ADMIN_URL; ?>/post-delete.php?id=<?php echo $post_item['id']; ?>" 
                                                class="text-red-600 hover:text-red-800 delete-confirm" title="ট্র্যাশে পাঠান">
@@ -505,6 +567,11 @@ ob_start();
         select.addEventListener('change', function() {
             const postId = this.getAttribute('data-id');
             const newStatus = this.value;
+            const oldStatus = this._prevValue || this.options[this.selectedIndex].defaultSelected ? this.value : null;
+            const selectEl = this;
+            
+            // Store original value for reverting
+            const origValue = Array.from(this.options).find(o => o.defaultSelected)?.value || this.value;
             
             this.style.opacity = '0.5';
             
@@ -517,24 +584,27 @@ ob_start();
             })
             .then(response => response.json())
             .then(data => {
-                this.style.opacity = '1';
+                selectEl.style.opacity = '1';
                 if (data.success) {
                     showToast('স্ট্যাটাস সফলভাবে আপডেট হয়েছে', 'success');
                     // Remove old status classes
                     Object.values(statusClasses).forEach(cls => {
-                        cls.split(' ').forEach(c => this.classList.remove(c));
+                        cls.split(' ').forEach(c => selectEl.classList.remove(c));
                     });
                     // Add new status class
                     if (statusClasses[newStatus]) {
-                        statusClasses[newStatus].split(' ').forEach(c => this.classList.add(c));
+                        statusClasses[newStatus].split(' ').forEach(c => selectEl.classList.add(c));
                     }
                 } else {
-                    showToast('স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে', 'error');
+                    showToast(data.message || 'স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে', 'error');
+                    // Revert to previous value
+                    selectEl.value = origValue;
                 }
             })
             .catch(error => {
-                this.style.opacity = '1';
+                selectEl.style.opacity = '1';
                 showToast('সার্ভার এরর!', 'error');
+                selectEl.value = origValue;
             });
         });
     });

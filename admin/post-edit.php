@@ -28,6 +28,15 @@ if (!$post) {
     redirect(ADMIN_URL . '/posts.php');
 }
 
+// Permission check: own post or others' post
+$current_user_edit = getCurrentUser();
+$is_own_post_edit = ($post['author_id'] == $current_user_edit['id']);
+if ($is_own_post_edit) {
+    requirePermission('edit_own_posts');
+} else {
+    requirePermission('edit_others_posts');
+}
+
 // Get categories and tags for dropdown
 $categories = $category->getAll();
 $all_tags = $tag->getAll();

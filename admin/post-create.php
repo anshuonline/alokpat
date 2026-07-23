@@ -7,6 +7,7 @@
 
 require_once '../config/config.php';
 requireAuth();
+requirePermission('create_posts');
 
 $post = new Post();
 $category = new Category();

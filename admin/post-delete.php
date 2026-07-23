@@ -25,9 +25,10 @@ if (!$post_data) {
 }
 
 // Check delete_posts permission or if the writer is trying to delete their own post
+$current_user_del = getCurrentUser();
 if (!hasPermission('delete_posts')) {
-    // Writer requesting deletion
-    if (!hasPermission('edit_own_posts') || $post_data['author_id'] !== $user['id']) {
+    // Writer requesting deletion - must have edit_own_posts and be the author
+    if (!hasPermission('edit_own_posts') || $post_data['author_id'] != $current_user_del['id']) {
         setFlash('error', 'আপনার এই পোস্ট মুছে ফেলার অনুমতি নেই');
         redirect(ADMIN_URL . '/posts.php');
     }
@@ -35,7 +36,7 @@ if (!hasPermission('delete_posts')) {
     // Change status to pending_delete
     $db = (new Database())->getConnection();
     $stmt = $db->prepare("UPDATE posts SET status = 'pending_delete', updated_by = ? WHERE id = ?");
-    if ($stmt->execute([$user['id'], $id])) {
+    if ($stmt->execute([$current_user_del['id'], $id])) {
         setFlash('success', 'পোস্টটি ডিলিট করার অনুরোধ অ্যাডমিনের কাছে পাঠানো হয়েছে।');
     } else {
         setFlash('error', 'অনুরোধ পাঠাতে সমস্যা হয়েছে');
