@@ -116,6 +116,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($is_update) {
         $id = (int)$_POST['update_id'];
         
+        // Prevent changing own role
+        if ($id === $_SESSION['user_id'] && $data['role'] !== $currentUserRole) {
+            setFlash('error', 'আপনি নিজের রোল পরিবর্তন করতে পারবেন না');
+            redirect(ADMIN_URL . '/users.php');
+            exit;
+        }
+        
         $userToEdit = $userModel->getById($id);
         $targetEditRank = $userToEdit ? ($role_ranks[$userToEdit['role']] ?? 0) : 0;
         
@@ -417,6 +424,24 @@ ob_start();
         document.getElementById('youtube_url').value = user.youtube_url ? user.youtube_url : '';
         document.getElementById('status').checked = user.status === 'active';
         document.getElementById('passwordHint').innerText = "(ফাঁকা রাখলে বর্তমান পাসওয়ার্ডই থাকবে)";
+        
+        if (user.id == <?php echo $_SESSION['user_id']; ?>) {
+            document.getElementById('role').setAttribute('disabled', 'disabled');
+            // Add hidden input so role is still submitted
+            if (!document.getElementById('hidden_role')) {
+                let hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = 'role';
+                hidden.id = 'hidden_role';
+                document.getElementById('role').parentNode.appendChild(hidden);
+            }
+            document.getElementById('hidden_role').value = user.role;
+        } else {
+            document.getElementById('role').removeAttribute('disabled');
+            if (document.getElementById('hidden_role')) {
+                document.getElementById('hidden_role').remove();
+            }
+        }
         
         if (user.avatar) {
             document.getElementById('avatarImage').src = user.avatar;
