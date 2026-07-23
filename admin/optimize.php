@@ -8,6 +8,7 @@
 require_once '../config/config.php';
 requireAuth();
 
+requirePermission('manage_optimize');
 // Permission check
 $allowed_roles = ['super_admin', 'admin'];
 if (!in_array(getCurrentUser()['role'], $allowed_roles)) {

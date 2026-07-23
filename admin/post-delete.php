@@ -8,6 +8,7 @@
 require_once '../config/config.php';
 requireAuth();
 
+requirePermission('delete_posts');
 if (!isset($_GET['id'])) {
     redirect(ADMIN_URL . '/posts.php');
 }

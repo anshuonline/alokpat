@@ -8,6 +8,7 @@
 require_once '../config/config.php';
 requireAuth();
 
+requirePermission('manage_tags');
 // Permission check
 if (!in_array(getCurrentUser()['role'], ['super_admin', 'admin', 'editor'])) {
     setFlash('error', 'আপনার এই পৃষ্ঠা দেখার অনুমতি নেই');

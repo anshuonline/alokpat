@@ -8,6 +8,7 @@
 require_once '../config/config.php';
 requireAuth();
 
+requirePermission('manage_settings');
 // Only super_admin or admin can change theme
 $user = getCurrentUser();
 if ($user['role'] !== 'super_admin' && $user['role'] !== 'admin') {

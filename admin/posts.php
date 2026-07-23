@@ -38,11 +38,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_action'])) {
         foreach ($post_ids as $id) {
             $id = (int)$id;
             if ($action === 'delete') {
-                if ($post->delete($id)) $count++;
+                if (hasPermission('delete_posts')) {
+                    if ($post->delete($id)) $count++;
+                }
             } elseif ($action === 'force_delete') {
-                if ($post->forceDelete($id)) $count++;
+                if (hasPermission('delete_posts')) {
+                    if ($post->forceDelete($id)) $count++;
+                }
             } elseif ($action === 'restore') {
-                if ($post->restore($id)) $count++;
+                if (hasPermission('delete_posts')) {
+                    if ($post->restore($id)) $count++;
+                }
             } elseif (in_array($action, ['published', 'draft', 'archived'])) {
                 $stmt = $db->prepare("UPDATE posts SET status = ? WHERE id = ?");
                 if ($stmt->execute([$action, $id])) $count++;
@@ -212,9 +218,11 @@ ob_start();
                 <option value="published">পাবলিশ করুন (Publish)</option>
                 <option value="draft">ড্রাফট করুন (Draft)</option>
                 <option value="archived">প্রাইভেট/আর্কাইভ (Archive)</option>
+                <?php if(hasPermission('delete_posts')): ?>
                 <option value="delete">ট্র্যাশে পাঠান (Trash)</option>
                 <option value="restore">রিস্টোর করুন (Restore)</option>
                 <option value="force_delete">স্থায়ীভাবে মুছুন (Perm. Delete)</option>
+                <?php endif; ?>
             </select>
             <button type="submit" onclick="return confirm('আপনি কি নিশ্চিত?')" class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-700 transition">এপ্লাই</button>
         </div>
@@ -337,6 +345,7 @@ ob_start();
                                 <td class="px-6 py-4 text-sm">
                                     <div class="flex space-x-2">
                                         <?php if ($post_item['status'] === 'trashed'): ?>
+                                            <?php if(hasPermission('delete_posts')): ?>
                                             <a href="<?php echo ADMIN_URL; ?>/post-restore.php?id=<?php echo $post_item['id']; ?>" 
                                                class="text-green-600 hover:text-green-800" title="রিস্টোর করুন">
                                                 <i class="fas fa-undo"></i>
@@ -345,6 +354,7 @@ ob_start();
                                                class="text-red-600 hover:text-red-800 delete-confirm" title="স্থায়ীভাবে মুছুন">
                                                 <i class="fas fa-trash"></i>
                                             </a>
+                                            <?php endif; ?>
                                         <?php else: ?>
                                             <a href="<?php echo ADMIN_URL; ?>/post-edit.php?id=<?php echo $post_item['id']; ?>" 
                                                class="text-blue-600 hover:text-blue-800" title="সম্পাদনা">
@@ -366,10 +376,12 @@ ob_start();
                                                class="text-gray-600 hover:text-gray-800" title="ডুপ্লিকেট">
                                                 <i class="fas fa-copy"></i>
                                             </a>
+                                            <?php if(hasPermission('delete_posts')): ?>
                                             <a href="<?php echo ADMIN_URL; ?>/post-delete.php?id=<?php echo $post_item['id']; ?>" 
                                                class="text-red-600 hover:text-red-800 delete-confirm" title="ট্র্যাশে পাঠান">
                                                 <i class="fas fa-trash"></i>
                                             </a>
+                                            <?php endif; ?>
                                         <?php endif; ?>
                                     </div>
                                 </td>

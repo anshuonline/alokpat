@@ -77,41 +77,61 @@
                     <span class="font-medium">শর্ট লিংক</span>
                 </a>
                 
+                <?php if(hasPermission('manage_categories')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/categories.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'categories.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-folder w-6 transition-colors"></i>
                     <span class="font-medium">ক্যাটাগরি</span>
                 </a>
+                <?php endif; ?>
                 
+                <?php if(hasPermission('manage_menus')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/menus.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'menus.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-bars w-6 transition-colors"></i>
                     <span class="font-medium">মেনু</span>
                 </a>
+                <?php endif; ?>
                 
+                <?php if(hasPermission('manage_tags')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/tags.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'tags.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-tags w-6 transition-colors"></i>
                     <span class="font-medium">ট্যাগ</span>
                 </a>
+                <?php endif; ?>
                 
+                <?php if(hasPermission('manage_media')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/media.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'media.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-images w-6 transition-colors"></i>
                     <span class="font-medium">মিডিয়া</span>
                 </a>
+                <?php endif; ?>
                 
+                <?php if(hasPermission('manage_optimize')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/optimize.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'optimize.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-rocket w-6 transition-colors"></i>
                     <span class="font-medium">অপ্টিমাইজ</span>
                 </a>
+                <?php endif; ?>
                 
+                <?php if(hasPermission('manage_users')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/users.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'users.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-users w-6 transition-colors"></i>
                     <span class="font-medium">ব্যবহারকারী</span>
                 </a>
+                <?php endif; ?>
+                
+                <?php if(hasPermission('manage_roles')): ?>
+                <a href="<?php echo ADMIN_URL; ?>/roles.php" 
+                   class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'roles.php' ? 'active' : 'text-gray-700'; ?>">
+                    <i class="fas fa-user-shield w-6 transition-colors"></i>
+                    <span class="font-medium">রোল ও পারমিশন</span>
+                </a>
+                <?php endif; ?>
                 
                 <a href="<?php echo ADMIN_URL; ?>/setup-2fa.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'setup-2fa.php' ? 'active' : 'text-gray-700'; ?>">
@@ -119,19 +139,23 @@
                     <span class="font-medium">2FA Security</span>
                 </a>
                 
+                <?php if(hasPermission('manage_seo')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/seo.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'seo.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-search w-6 transition-colors"></i>
                     <span class="font-medium">এসইও</span>
                 </a>
+                <?php endif; ?>
                 
-                <?php if(hasAnyRole(['admin', 'super_admin'])): ?>
+                <?php if(hasPermission('manage_contacts')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/contacts.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'contacts.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-envelope w-6 transition-colors"></i>
                     <span class="font-medium">যোগাযোগ (Contacts)</span>
                 </a>
+                <?php endif; ?>
                 
+                <?php if(hasPermission('view_reports')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/reports.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'reports.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-chart-line w-6 transition-colors"></i>
@@ -139,7 +163,7 @@
                 </a>
                 <?php endif; ?>
                 
-                <?php if(hasAnyRole(['super_admin'])): ?>
+                <?php if(hasPermission('manage_subscribers')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/subscribers.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'subscribers.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-users-cog w-6 transition-colors"></i>
@@ -147,28 +171,37 @@
                 </a>
                 <?php endif; ?>
                 
+                <?php if(hasPermission('manage_ads')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/ads.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'ads.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-bullhorn w-6 transition-colors"></i>
                     <span class="font-medium">বিজ্ঞাপন</span>
                 </a>
+                <?php endif; ?>
+                
+                <?php if(hasPermission('manage_settings')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/appearance.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'appearance.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-palette w-6 transition-colors"></i>
                     <span class="font-medium">এপিয়ারেন্স</span>
                 </a>
+                <?php endif; ?>
                 
+                <?php if(hasPermission('manage_homepage')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/homepage-settings.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'homepage-settings.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-home w-6 transition-colors"></i>
                     <span class="font-medium">হোমপেজ সেটিংস</span>
                 </a>
+                <?php endif; ?>
                 
+                <?php if(hasPermission('manage_settings')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/settings.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-cog w-6 transition-colors"></i>
                     <span class="font-medium">সেটিংস</span>
                 </a>
+                <?php endif; ?>
             </nav>
             
             <div class="p-4 border-t bg-white shrink-0">
@@ -197,14 +230,7 @@
                             </p>
                             <p class="text-xs text-gray-500">
                                 <?php 
-                                $roles = [
-                                    'super_admin' => 'সুপার অ্যাডমিন',
-                                    'admin' => 'অ্যাডমিন',
-                                    'editor' => 'এডিটর',
-                                    'writer' => 'লেখক',
-                                    'seo_manager' => 'এসইও ম্যানেজার'
-                                ];
-                                echo $roles[getCurrentUser()['role']] ?? getCurrentUser()['role'];
+                                echo ucfirst(str_replace('_', ' ', getCurrentUser()['role']));
                                 ?>
                             </p>
                         </div>

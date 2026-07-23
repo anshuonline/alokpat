@@ -8,6 +8,7 @@
 require_once '../config/config.php';
 requireAuth();
 
+requirePermission('manage_seo');
 // Check if user is SEO Manager or higher
 $allowed_roles = ['super_admin', 'admin', 'seo_manager'];
 if (!in_array(getCurrentUser()['role'], $allowed_roles)) {

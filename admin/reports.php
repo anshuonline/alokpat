@@ -8,6 +8,7 @@
 require_once '../config/config.php';
 requireAuth();
 
+requirePermission('view_reports');
 // Only admin and super_admin can access
 if (!hasAnyRole(['admin', 'super_admin'])) {
     setFlash('error', 'You do not have permission to view this page');

@@ -4,6 +4,7 @@
 require_once '../config/config.php';
 requireAuth();
 
+requirePermission('manage_ads');
 $setting = new Setting();
 
 // Define ad positions to manage

@@ -6,8 +6,6 @@
  */
 
 require_once '../config/config.php';
-requireRole('super_admin');
-
 $subscriberModel = new Subscriber();
 
 // Handle Delete

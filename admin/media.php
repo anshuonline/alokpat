@@ -5,6 +5,7 @@
 require_once '../config/config.php';
 requireAuth();
 
+requirePermission('manage_media');
 $mediaModel = new Media();
 
 // Handle Pagination

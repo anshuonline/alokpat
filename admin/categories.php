@@ -8,6 +8,7 @@
 require_once '../config/config.php';
 requireAuth();
 
+requirePermission('manage_categories');
 $category = new Category();
 
 // Handle delete

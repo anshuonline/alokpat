@@ -202,6 +202,72 @@ function requireRole($role) {
 }
 
 /**
+ * Check if user has specific permission
+ * 
+ * @param string $permission
+ * @return bool
+ */
+function hasPermission($permission) {
+    if (!isLoggedIn()) return false;
+    
+    static $user_permissions = null;
+    
+    if ($user_permissions === null) {
+        $user = getCurrentUser();
+        if (!$user) return false;
+        
+        try {
+            $db = (new Database())->getConnection();
+            $stmt = $db->prepare("SELECT permissions FROM roles WHERE slug = ?");
+            $stmt->execute([$user['role']]);
+            $row = $stmt->fetch();
+            
+            if ($row && !empty($row['permissions'])) {
+                $user_permissions = json_decode($row['permissions'], true);
+                if (!is_array($user_permissions)) $user_permissions = [];
+            } else {
+                $user_permissions = [];
+            }
+        } catch(PDOException $e) {
+            $user_permissions = [];
+        }
+    }
+    
+    // Super Admin wildcard
+    if (in_array('*', $user_permissions)) {
+        return true;
+    }
+    
+    return in_array($permission, $user_permissions);
+}
+
+/**
+ * Require specific permission
+ * 
+ * @param string $permission
+ */
+function requirePermission($permission) {
+    requireAuth();
+    if (!hasPermission($permission)) {
+        setFlash('error', 'আপনার এই কাজ করার বা এই পেজে প্রবেশ করার অনুমতি নেই।');
+        redirect(ADMIN_URL . '/dashboard.php');
+    }
+}
+
+/**
+ * Check if user has ANY of the specific permissions
+ * 
+ * @param array $permissions
+ * @return bool
+ */
+function hasAnyPermission($permissions) {
+    foreach ($permissions as $perm) {
+        if (hasPermission($perm)) return true;
+    }
+    return false;
+}
+
+/**
  * Generate CSRF token
  * 
  * @return string

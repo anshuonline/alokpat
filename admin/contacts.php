@@ -1,6 +1,7 @@
 <?php
 require_once '../config/config.php';
 requireAuth();
+requirePermission('manage_contacts');
 if (!hasAnyRole(['admin', 'super_admin'])) {
     setFlash('error', 'আপনার এই কাজ করার অনুমতি নেই');
     redirect(ADMIN_URL . '/dashboard.php');
