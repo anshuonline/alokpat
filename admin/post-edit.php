@@ -161,19 +161,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         if (empty($errors)) {
             // Writers Approval Workflow for Edits
-            if (!hasPermission('publish_posts') && $post['status'] === 'published') {
-                $data['status'] = 'pending_review';
-                $data['parent_id'] = $post_id;
-                $data['author_id'] = $post['author_id']; // keep original author
-                $data['slug'] = $data['slug'] . '-rev-' . time(); // Make slug unique for the revision
-                
-                if ($post_model->create($data)) {
-                    setFlash('success', 'আপনার এডিটটি অ্যাডমিনের অনুমোদনের জন্য পেন্ডিং এ পাঠানো হয়েছে।');
-                    redirect(ADMIN_URL . '/posts.php');
+            if (!hasPermission('publish_posts')) {
+                if ($post['status'] === 'published') {
+                    // Create a revision if editing an already published post
+                    $data['status'] = 'pending_review';
+                    $data['parent_id'] = $post_id;
+                    $data['author_id'] = $post['author_id']; // keep original author
+                    $data['slug'] = $data['slug'] . '-rev-' . time(); // Make slug unique for the revision
+                    
+                    if ($post_model->create($data)) {
+                        setFlash('success', 'আপনার এডিটটি অ্যাডমিনের অনুমোদনের জন্য পেন্ডিং এ পাঠানো হয়েছে।');
+                        redirect(ADMIN_URL . '/posts.php');
+                    } else {
+                        $errors[] = 'সংবাদ আপডেটে সমস্যা হয়েছে';
+                    }
+                    $is_revision = true;
                 } else {
-                    $errors[] = 'সংবাদ আপডেটে সমস্যা হয়েছে';
+                    // If editing a draft/pending_review, ensure they cannot publish it directly
+                    if (in_array($data['status'], ['published', 'scheduled'])) {
+                        $data['status'] = 'pending_review';
+                    }
                 }
-            } else {
+            }
+            
+            if (!isset($is_revision)) {
                 // Normal update
                 if ($post_model->update($post_id, $data)) {
                     setFlash('success', 'সংবাদ সফলভাবে আপডেট হয়েছে');
