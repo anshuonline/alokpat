@@ -116,8 +116,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($is_update) {
         $id = (int)$_POST['update_id'];
         
-        // Prevent changing own role
-        if ($id === $_SESSION['user_id'] && $data['role'] !== $currentUserRole) {
+        // Prevent changing own role (unless super_admin)
+        if ($id === $_SESSION['user_id'] && $data['role'] !== $currentUserRole && $currentUserRole !== 'super_admin') {
             setFlash('error', 'আপনি নিজের রোল পরিবর্তন করতে পারবেন না');
             redirect(ADMIN_URL . '/users.php');
             exit;
@@ -425,7 +425,7 @@ ob_start();
         document.getElementById('status').checked = user.status === 'active';
         document.getElementById('passwordHint').innerText = "(ফাঁকা রাখলে বর্তমান পাসওয়ার্ডই থাকবে)";
         
-        if (user.id == <?php echo $_SESSION['user_id']; ?>) {
+        if (user.id == <?php echo $_SESSION['user_id']; ?> && '<?php echo $currentUserRole; ?>' !== 'super_admin') {
             document.getElementById('role').setAttribute('disabled', 'disabled');
             // Add hidden input so role is still submitted
             if (!document.getElementById('hidden_role')) {
