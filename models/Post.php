@@ -113,6 +113,7 @@ class Post {
             
             return false;
         } catch(PDOException $e) {
+            file_put_contents(dirname(__DIR__) . '/error.txt', "Create Post Error: " . $e->getMessage() . "\n", FILE_APPEND);
             error_log("Create Post Error: " . $e->getMessage());
             return false;
         }
@@ -196,6 +197,7 @@ class Post {
             
             return false;
         } catch(PDOException $e) {
+            file_put_contents(dirname(__DIR__) . '/error.txt', "Update Post Error: " . $e->getMessage() . "\n", FILE_APPEND);
             error_log("Update Post Error: " . $e->getMessage());
             return false;
         }
