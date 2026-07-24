@@ -467,37 +467,35 @@
                 try {
                     const permission = await Notification.requestPermission();
                     if (permission === 'granted') {
-                        const token = await messaging.getToken({ vapidKey: "<?php echo escape($fcm_vapid_key); ?>" });
-                        if (token) {
-                            // Send token to our server
-                            const resp = await fetch('<?php echo SITE_URL; ?>/api/fcm_subscribe.php', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({ token: token })
-                            });
-                            const data = await resp.json();
-                            console.log('FCM subscribe response:', data);
+                        // Show success view IMMEDIATELY for better UX
+                        document.getElementById('fcm-subscribe-view').classList.add('hidden');
+                        document.getElementById('fcm-success-view').classList.remove('hidden');
+                        
+                        // Animate the check icon
+                        setTimeout(() => {
+                            document.getElementById('fcm-success-icon').classList.remove('scale-0');
+                            document.getElementById('fcm-success-icon').classList.add('scale-100');
+                        }, 50);
+                        
+                        // Once subscribed, never show popup again
+                        localStorage.setItem('fcm_dismissed_forever', 'true');
+                        
+                        // Dismiss popup after 2 seconds
+                        setTimeout(dismissPopup, 2000);
+                        
+                        // Fetch token and save to DB in the BACKGROUND
+                        messaging.getToken({ vapidKey: "<?php echo escape($fcm_vapid_key); ?>" })
+                            .then(token => {
+                                if (token) {
+                                    fetch('<?php echo SITE_URL; ?>/api/fcm_subscribe.php', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify({ token: token })
+                                    }).catch(e => console.error('DB Save error:', e));
+                                }
+                            })
+                            .catch(e => console.error('Token error:', e));
                             
-                            // Show success view regardless (permission was granted)
-                            document.getElementById('fcm-subscribe-view').classList.add('hidden');
-                            document.getElementById('fcm-success-view').classList.remove('hidden');
-                            
-                            // Animate the check icon
-                            setTimeout(() => {
-                                document.getElementById('fcm-success-icon').classList.remove('scale-0');
-                                document.getElementById('fcm-success-icon').classList.add('scale-100');
-                            }, 50);
-                            
-                            // Once subscribed, never show popup again
-                            localStorage.setItem('fcm_dismissed_forever', 'true');
-                            
-                            // Dismiss popup after showing thank you for 3 seconds
-                            setTimeout(dismissPopup, 3000);
-                        } else {
-                            throw new Error('No registration token available.');
-                        }
                     } else {
                         throw new Error('Permission denied');
                     }
