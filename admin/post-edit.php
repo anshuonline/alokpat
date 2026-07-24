@@ -829,6 +829,67 @@ function toggleScheduleInput() {
         container.classList.add('hidden');
     }
 }
+
+// Auto-fill SEO and OG fields
+document.addEventListener('DOMContentLoaded', function() {
+    const titleInput = document.querySelector('input[name="title"]');
+    const slugInput = document.querySelector('input[name="slug"]');
+    const excerptInput = document.querySelector('textarea[name="excerpt"]');
+    const seoTitleInput = document.querySelector('input[name="seo_title"]');
+    const seoDescInput = document.querySelector('textarea[name="seo_description"]');
+    const ogTitleInput = document.querySelector('input[name="meta_og_title"]');
+    const ogDescInput = document.querySelector('textarea[name="meta_og_description"]');
+
+    let slugEdited = slugInput && slugInput.value.trim() !== '';
+    let seoDescEdited = seoDescInput && seoDescInput.value.trim() !== '';
+    let ogDescEdited = ogDescInput && ogDescInput.value.trim() !== '';
+    let ogTitleEdited = ogTitleInput && ogTitleInput.value.trim() !== '';
+
+    if(slugInput) slugInput.addEventListener('input', () => slugEdited = true);
+    if(seoDescInput) seoDescInput.addEventListener('input', () => seoDescEdited = true);
+    if(ogDescInput) ogDescInput.addEventListener('input', () => ogDescEdited = true);
+    if(ogTitleInput) ogTitleInput.addEventListener('input', () => ogTitleEdited = true);
+
+    if(excerptInput) {
+        excerptInput.addEventListener('input', function() {
+            if(seoDescInput && !seoDescEdited) seoDescInput.value = this.value;
+            if(ogDescInput && !ogDescEdited) ogDescInput.value = this.value;
+        });
+    }
+
+    if(seoTitleInput) {
+        seoTitleInput.addEventListener('input', function() {
+            if(ogTitleInput && !ogTitleEdited) ogTitleInput.value = this.value;
+        });
+    }
+
+    let translateTimeout;
+    if(titleInput && slugInput) {
+        titleInput.addEventListener('input', function() {
+            if(!slugEdited) {
+                clearTimeout(translateTimeout);
+                const text = this.value.trim();
+                if(text === '') {
+                    slugInput.value = '';
+                    return;
+                }
+                translateTimeout = setTimeout(() => {
+                    fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=bn&tl=en&dt=t&q=' + encodeURIComponent(text))
+                    .then(res => res.json())
+                    .then(data => {
+                        let translated = '';
+                        if (data && data[0]) {
+                            data[0].forEach(item => { if (item[0]) translated += item[0]; });
+                        }
+                        if (translated) {
+                            slugInput.value = translated.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+                        }
+                    }).catch(err => console.error(err));
+                }, 800);
+            }
+        });
+    }
+});
 </script>
 
 <!-- TinyMCE Rich Text Editor -->
