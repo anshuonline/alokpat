@@ -5,13 +5,26 @@
 require_once 'config/config.php';
 require_once 'database/Database.php';
 require_once 'models/Post.php';
+require_once 'models/Category.php';
 require_once 'helpers/functions.php';
 
 header("Content-Type: application/rss+xml; charset=UTF-8");
 
 $postModel = new Post();
+$categoryId = null;
+$categoryName = '';
+
+if (!empty($_GET['category'])) {
+    $categoryModel = new Category();
+    $category = $categoryModel->getBySlug(trim($_GET['category']));
+    if ($category) {
+        $categoryId = $category['id'];
+        $categoryName = ' - ' . $category['name'];
+    }
+}
+
 // Get the latest 30 published posts
-$posts = $postModel->getPublished(30, 0);
+$posts = $postModel->getPublished(30, 0, $categoryId);
 
 $site_name = SITE_NAME ?? 'Alokpat';
 $site_desc = DEFAULT_META_DESCRIPTION ?? 'Alokpat - Bengali News Portal';
