@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
@@ -303,78 +303,222 @@
                 zoomable: true
             });
         });
-
     </script>
-
     <?php
+    // FCM Configuration & Popup logic
     $fcm_api_key = $setting->get('fcm_api_key');
     if (!empty($fcm_api_key)) {
-        $fcm_project_id      = $setting->get('fcm_project_id');
-        $fcm_sender_id       = $setting->get('fcm_messaging_sender_id');
-        $fcm_app_id          = $setting->get('fcm_app_id');
-        $fcm_vapid_key       = $setting->get('fcm_vapid_key');
-        $fcm_popup_title     = $setting->get('fcm_popup_title')     ?: 'আমাদের নোটিফিকেশন সাবস্ক্রাইব করুন';
-        $fcm_popup_desc      = $setting->get('fcm_popup_desc')      ?: 'সর্বশেষ খবরের আপডেট পেতে পুশ নোটিফিকেশন চালু করুন।';
-        $fcm_btn_subscribe   = $setting->get('fcm_btn_subscribe')   ?: 'সাবস্ক্রাইব করুন';
-        $fcm_btn_later       = $setting->get('fcm_btn_later')       ?: 'পরে';
+        $fcm_project_id = $setting->get('fcm_project_id');
+        $fcm_messaging_sender_id = $setting->get('fcm_messaging_sender_id');
+        $fcm_app_id = $setting->get('fcm_app_id');
+        $fcm_vapid_key = $setting->get('fcm_vapid_key');
+        
+        $fcm_popup_title = $setting->get('fcm_popup_title') ?: 'আমাদের নোটিফিকেশন সাবস্ক্রাইব করুন';
+        $fcm_popup_desc = $setting->get('fcm_popup_desc') ?: 'সর্বশেষ খবরের আপডেট পেতে আমাদের পুশ নোটিফিকেশন চালু করুন।';
+        $fcm_btn_subscribe = $setting->get('fcm_btn_subscribe') ?: 'সাবস্ক্রাইব করুন';
+        $fcm_btn_later = $setting->get('fcm_btn_later') ?: 'পরে';
         $fcm_popup_frequency = $setting->get('fcm_popup_frequency') ?: 'once_forever';
-        $fcm_popup_delay     = (int)($setting->get('fcm_popup_delay') ?: 5);
+        $fcm_popup_delay = (int)($setting->get('fcm_popup_delay') ?: 5);
+        $fcm_popup_delay_ms = $fcm_popup_delay * 1000;
+        $fcm_popup_thank_you = $setting->get('fcm_popup_thank_you') ?: 'সাবস্ক্রাইব করার জন্য ধন্যবাদ!';
+        $fcm_popup_enable = $setting->get('fcm_popup_enable') === '0' ? '0' : '1';
     ?>
-    <div id="fcm-popup" style="display:none;position:fixed;bottom:20px;right:20px;width:340px;max-width:calc(100vw - 32px);background:#fff;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,.18);border:1px solid #e5e7eb;z-index:99999;">
-        <div style="padding:22px;position:relative;">
-            <button onclick="fcmHide()" style="position:absolute;top:10px;right:12px;background:none;border:none;cursor:pointer;color:#9ca3af;font-size:18px;line-height:1;">&#x2715;</button>
-            <div style="width:48px;height:48px;border-radius:50%;background:#eff6ff;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:22px;">&#x1F514;</div>
-            <h4 style="font-size:17px;font-weight:700;color:#111827;text-align:center;margin:0 0 8px;"><?php echo escape($fcm_popup_title); ?></h4>
-            <p style="font-size:13px;color:#6b7280;text-align:center;margin:0 0 18px;line-height:1.6;"><?php echo escape($fcm_popup_desc); ?></p>
-            <div style="display:flex;gap:8px;">
-                <button onclick="fcmHide()" style="flex:1;padding:9px 12px;border:1px solid #d1d5db;border-radius:8px;font-size:13px;font-weight:600;color:#374151;background:#fff;cursor:pointer;"><?php echo escape($fcm_btn_later); ?></button>
-                <button id="fcm-sub-btn" style="flex:1;padding:9px 12px;border:none;border-radius:8px;font-size:13px;font-weight:600;color:#fff;background:#2563eb;cursor:pointer;"><?php echo escape($fcm_btn_subscribe); ?></button>
+    <?php if ($fcm_popup_enable === '1'): ?>
+    <!-- FCM Subscription Popup UI -->
+    <div id="fcm-popup-overlay" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-[9998] transition-opacity duration-300 opacity-0 hidden" style="align-items: center; justify-content: center;">
+        <div id="fcm-popup" class="w-[90%] md:w-[380px] bg-white rounded-2xl shadow-2xl border border-gray-100 transition-all duration-300 ease-out opacity-0 z-[9999]" style="transform: scale(0.95);" onclick="event.stopPropagation()">
+            <div class="p-6 relative">
+            <button id="fcm-close-btn" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors rounded-full p-1 hover:bg-gray-100 z-10">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <!-- Subscribe View -->
+            <div id="fcm-subscribe-view">
+                <div class="flex items-center justify-center w-14 h-14 rounded-full bg-blue-50 text-blue-600 mb-5 mx-auto border border-blue-100 shadow-inner relative">
+                    <i class="fas fa-bell text-2xl animate-pulse"></i>
+                    <span class="absolute top-0 right-0 flex h-3 w-3">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+                    </span>
+                </div>
+                <h4 class="text-xl font-bold text-gray-900 text-center mb-2"><?php echo escape($fcm_popup_title); ?></h4>
+                <p class="text-sm text-gray-600 text-center mb-6 leading-relaxed"><?php echo escape($fcm_popup_desc); ?></p>
+                <div class="flex space-x-3">
+                    <button id="fcm-later-btn" class="flex-1 py-2.5 px-4 border border-gray-300 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"><?php echo escape($fcm_btn_later); ?></button>
+                    <button id="fcm-subscribe-btn" class="flex-1 py-2.5 px-4 border border-transparent rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200 flex justify-center items-center">
+                        <span><?php echo escape($fcm_btn_subscribe); ?></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Success/Thank You View -->
+            <div id="fcm-success-view" class="hidden py-2 text-center">
+                <div class="flex items-center justify-center w-16 h-16 rounded-full bg-green-50 text-green-500 mb-5 mx-auto border border-green-100 shadow-inner transform transition-transform duration-500 scale-0" id="fcm-success-icon">
+                    <i class="fas fa-check text-3xl"></i>
+                </div>
+                <h4 class="text-xl font-bold text-gray-900 mb-2"><?php echo escape($fcm_popup_thank_you); ?></h4>
+                <p class="text-sm text-gray-500">আপনি এখন সর্বশেষ খবরের আপডেট পাবেন।</p>
             </div>
         </div>
     </div>
+
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
+
     <script>
-    (function(){
-        var C={apiKey:"<?php echo addslashes($fcm_api_key);?>",projectId:"<?php echo addslashes($fcm_project_id);?>",messagingSenderId:"<?php echo addslashes($fcm_sender_id);?>",appId:"<?php echo addslashes($fcm_app_id);?>"};
-        var VAPID="<?php echo addslashes($fcm_vapid_key);?>",SW="<?php echo SITE_URL;?>/firebase-messaging-sw.js",API="<?php echo SITE_URL;?>/api/fcm_subscribe.php";
-        var FREQ="<?php echo $fcm_popup_frequency;?>",DELAY=<?php echo $fcm_popup_delay*1000;?>,BTN="<?php echo addslashes($fcm_btn_subscribe);?>";
-        function canShow(){
-            if(!('Notification' in window)||Notification.permission!=='default')return false;
-            if(FREQ==='every_session')return !sessionStorage.getItem('fcm_s');
-            if(FREQ==='once_daily'){var t=localStorage.getItem('fcm_d');return !t||(Date.now()-parseInt(t))>86400000;}
-            return !localStorage.getItem('fcm_f');
+    document.addEventListener('DOMContentLoaded', function() {
+        const firebaseConfig = {
+            apiKey: "<?php echo escape($fcm_api_key); ?>",
+            projectId: "<?php echo escape($fcm_project_id); ?>",
+            messagingSenderId: "<?php echo escape($fcm_messaging_sender_id); ?>",
+            appId: "<?php echo escape($fcm_app_id); ?>"
+        };
+
+        const popupFreq = "<?php echo escape($fcm_popup_frequency); ?>";
+        const popupDelay = <?php echo $fcm_popup_delay_ms; ?>;
+
+        function shouldShowPopup() {
+            // First check if Notification API exists and is not denied or granted already
+            if (!('Notification' in window) || Notification.permission !== 'default') {
+                return false;
+            }
+
+            if (popupFreq === 'every_session') {
+                return !sessionStorage.getItem('fcm_dismissed_session');
+            } else if (popupFreq === 'once_daily') {
+                const lastDismissed = localStorage.getItem('fcm_dismissed_daily');
+                if (!lastDismissed) return true;
+                
+                // Check if 24 hours have passed
+                const timePassed = Date.now() - parseInt(lastDismissed, 10);
+                return timePassed > (24 * 60 * 60 * 1000); 
+            } else {
+                // once_forever
+                return !localStorage.getItem('fcm_dismissed_forever');
+            }
         }
-        function save(){
-            if(FREQ==='every_session')sessionStorage.setItem('fcm_s','1');
-            else if(FREQ==='once_daily')localStorage.setItem('fcm_d',Date.now().toString());
-            else localStorage.setItem('fcm_f','1');
+
+        function recordDismissal() {
+            if (popupFreq === 'every_session') {
+                sessionStorage.setItem('fcm_dismissed_session', 'true');
+            } else if (popupFreq === 'once_daily') {
+                localStorage.setItem('fcm_dismissed_daily', Date.now().toString());
+            } else {
+                localStorage.setItem('fcm_dismissed_forever', 'true');
+            }
         }
-        window.fcmHide=function(){var p=document.getElementById('fcm-popup');if(!p)return;p.style.transition='opacity .3s,transform .3s';p.style.opacity='0';p.style.transform='translateY(16px)';setTimeout(function(){p.style.display='none';},320);save();};
-        function fcmShow(){var p=document.getElementById('fcm-popup');if(!p)return;p.style.display='block';p.style.opacity='0';p.style.transform='translateY(16px)';p.style.transition='opacity .35s,transform .35s';setTimeout(function(){p.style.opacity='1';p.style.transform='translateY(0)';},30);}
-        function init(){
-            if(typeof firebase==='undefined'){console.warn('Firebase SDK missing');return;}
-            try{
-                firebase.initializeApp(C);
-                var msg=firebase.messaging();
-                if('serviceWorker' in navigator)navigator.serviceWorker.register(SW).catch(function(e){console.log('SW:',e);});
-                if(canShow())setTimeout(fcmShow,DELAY);
-                var btn=document.getElementById('fcm-sub-btn');
-                if(btn)btn.addEventListener('click',function(){
-                    btn.textContent='⏳';btn.disabled=true;
-                    Notification.requestPermission().then(function(p){
-                        if(p==='granted'){
-                            msg.getToken({vapidKey:VAPID}).then(function(tok){
-                                if(tok){fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:tok})});btn.textContent='✅';btn.style.background='#16a34a';localStorage.setItem('fcm_f','1');setTimeout(window.fcmHide,1500);}
-                            }).catch(function(e){console.log(e);btn.textContent=BTN;btn.disabled=false;});
-                        }else window.fcmHide();
-                    });
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+            const messaging = firebase.messaging();
+            
+            // Wait for service worker registration to ensure it works properly
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('<?php echo SITE_URL; ?>/firebase-messaging-sw.js').then((registration) => {
+                    // console.log('Service Worker registered with scope:', registration.scope);
+                }).catch((err) => {
+                    console.log('Service Worker registration failed:', err);
                 });
-            }catch(e){console.log('FCM:',e);}
+            }
+
+            const popup = document.getElementById('fcm-popup');
+            const overlay = document.getElementById('fcm-popup-overlay');
+            const subscribeBtn = document.getElementById('fcm-subscribe-btn');
+            const laterBtn = document.getElementById('fcm-later-btn');
+            const closeBtn = document.getElementById('fcm-close-btn');
+
+            if (shouldShowPopup()) {
+                setTimeout(() => {
+                    overlay.classList.remove('hidden');
+                    overlay.style.display = 'flex';
+                    // small delay to allow display:flex to apply before animating transform
+                    setTimeout(() => {
+                        popup.classList.remove('opacity-0');
+                        popup.classList.add('opacity-100');
+                        popup.style.transform = 'scale(1)';
+                        overlay.classList.remove('opacity-0');
+                        overlay.classList.add('opacity-100');
+                    }, 50);
+                }, popupDelay);
+            }
+
+            function dismissPopup() {
+                popup.classList.remove('opacity-100');
+                popup.classList.add('opacity-0');
+                popup.style.transform = 'scale(0.95)';
+                overlay.classList.remove('opacity-100');
+                overlay.classList.add('opacity-0');
+                recordDismissal();
+                setTimeout(() => {
+                    overlay.classList.add('hidden');
+                    overlay.style.display = 'none';
+                }, 300);
+            }
+
+            laterBtn.addEventListener('click', dismissPopup);
+            closeBtn.addEventListener('click', dismissPopup);
+
+            subscribeBtn.addEventListener('click', async () => {
+                // UI feedback
+                subscribeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                subscribeBtn.disabled = true;
+
+                try {
+                    const permission = await Notification.requestPermission();
+                    if (permission === 'granted') {
+                        // In Firebase compat v8/9/10, getToken automatically looks for service worker
+                        const token = await messaging.getToken({ vapidKey: "<?php echo escape($fcm_vapid_key); ?>" });
+                        if (token) {
+                            // Send token to our server
+                            await fetch('<?php echo SITE_URL; ?>/api/fcm_subscribe.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ token: token })
+                            });
+                            
+                            // Show success view
+                            document.getElementById('fcm-subscribe-view').classList.add('hidden');
+                            document.getElementById('fcm-success-view').classList.remove('hidden');
+                            
+                            // Animate the check icon
+                            setTimeout(() => {
+                                document.getElementById('fcm-success-icon').classList.remove('scale-0');
+                                document.getElementById('fcm-success-icon').classList.add('scale-100');
+                            }, 50);
+                            
+                            // Once subscribed, never show popup again
+                            localStorage.setItem('fcm_dismissed_forever', 'true');
+                            
+                            // Dismiss popup after showing thank you for 3 seconds
+                            setTimeout(dismissPopup, 3000);
+                        } else {
+                            throw new Error('No registration token available.');
+                        }
+                    } else {
+                        throw new Error('Permission denied');
+                    }
+                } catch (err) {
+                    console.error('An error occurred while retrieving token. ', err);
+                    subscribeBtn.innerHTML = '<span><?php echo escape($fcm_btn_subscribe); ?></span>';
+                    subscribeBtn.disabled = false;
+                    dismissPopup();
+                }
+            });
+
+            // Handle incoming messages while the app is in the foreground
+            messaging.onMessage((payload) => {
+                console.log('Message received. ', payload);
+            });
+
+        } catch(e) {
+            console.log('Firebase setup error:', e);
         }
-        if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-    })();
+    });
     </script>
-    <?php } ?>
+    <?php endif; // end if $fcm_popup_enable === '1' ?>
+    <?php } // end if !empty($fcm_api_key) ?>
 </body>
 </html>

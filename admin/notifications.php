@@ -19,6 +19,9 @@ $fcm_btn_subscribe = $setting->get('fcm_btn_subscribe') ?: 'সাবস্ক�
 $fcm_btn_later = $setting->get('fcm_btn_later') ?: 'পরে';
 $fcm_auto_send_on_publish = $setting->get('fcm_auto_send_on_publish') ?: '0';
 $fcm_popup_frequency = $setting->get('fcm_popup_frequency') ?: 'once_forever';
+$fcm_popup_delay = $setting->get('fcm_popup_delay') ?: '5';
+$fcm_popup_enable = $setting->get('fcm_popup_enable') === '0' ? '0' : '1';
+$fcm_popup_thank_you = $setting->get('fcm_popup_thank_you') ?: 'সাবস্ক্রাইব করার জন্য ধন্যবাদ!';
 
 $fcm_api_key = $setting->get('fcm_api_key') ?: '';
 $fcm_project_id = $setting->get('fcm_project_id') ?: '';
@@ -31,18 +34,36 @@ $fcm_service_account_json = $setting->get('fcm_service_account_json') ?: '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_settings') {
     requireCSRF();
     
-    // Save popup settings
-    $setting->update('fcm_popup_title', trim($_POST['fcm_popup_title']));
-    $setting->update('fcm_popup_desc', trim($_POST['fcm_popup_desc']));
-    $setting->update('fcm_btn_subscribe', trim($_POST['fcm_btn_subscribe']));
-    $setting->update('fcm_btn_later', trim($_POST['fcm_btn_later']));
-    $setting->update('fcm_auto_send_on_publish', isset($_POST['fcm_auto_send_on_publish']) ? '1' : '0');
+    // Helper function to save or create robustly
+    $save_setting = function($key, $val, $label = '', $type = 'text') use ($setting) {
+        global $db;
+        $setting->update($key, $val);
+        $stmt = $db->prepare("SELECT setting_key FROM settings WHERE setting_key = ?");
+        $stmt->execute([$key]);
+        if (!$stmt->fetch()) {
+            try {
+                $stmt = $db->prepare("INSERT INTO settings (setting_key, setting_value, setting_type, description) VALUES (?, ?, ?, ?)");
+                $stmt->execute([$key, $val, $type, $label]);
+            } catch(PDOException $e) {
+                try {
+                    $stmt = $db->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)");
+                    $stmt->execute([$key, $val]);
+                } catch(PDOException $e2) {}
+            }
+            $setting->clearCache();
+        }
+    };
     
-    if ($setting->get('fcm_popup_frequency') === null) {
-        $setting->create('fcm_popup_frequency', trim($_POST['fcm_popup_frequency']), 'text', 'FCM Popup Frequency');
-    } else {
-        $setting->update('fcm_popup_frequency', trim($_POST['fcm_popup_frequency']));
-    }
+    // Save popup settings
+    $save_setting('fcm_popup_enable', isset($_POST['fcm_popup_enable']) ? '1' : '0', 'Enable FCM Popup', 'boolean');
+    $save_setting('fcm_popup_title', trim($_POST['fcm_popup_title']), 'FCM Popup Title');
+    $save_setting('fcm_popup_desc', trim($_POST['fcm_popup_desc']), 'FCM Popup Description', 'textarea');
+    $save_setting('fcm_btn_subscribe', trim($_POST['fcm_btn_subscribe']), 'FCM Subscribe Button');
+    $save_setting('fcm_btn_later', trim($_POST['fcm_btn_later']), 'FCM Later Button');
+    $save_setting('fcm_popup_thank_you', trim($_POST['fcm_popup_thank_you']), 'FCM Thank You Message');
+    $save_setting('fcm_auto_send_on_publish', isset($_POST['fcm_auto_send_on_publish']) ? '1' : '0', 'Auto send FCM on publish', 'boolean');
+    $save_setting('fcm_popup_frequency', trim($_POST['fcm_popup_frequency']), 'FCM Popup Frequency');
+    $save_setting('fcm_popup_delay', trim($_POST['fcm_popup_delay']), 'FCM Popup Delay (Seconds)', 'number');
     
     // Save API settings
     $setting->update('fcm_api_key', trim($_POST['fcm_api_key']));
@@ -160,7 +181,15 @@ ob_start();
                 <!-- Tab 2: Popup Settings -->
                 <div id="tab-content-popup" class="tab-content hidden">
                     <div class="space-y-6">
-                        <h3 class="text-lg font-bold text-gray-800 border-b pb-2">পপআপ উইন্ডো কাস্টমাইজেশন</h3>
+                        <h3 class="text-lg font-bold text-gray-800 border-b pb-2 mb-4">পপআপ উইন্ডো কাস্টমাইজেশন</h3>
+                        
+                        <div class="mb-6 bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
+                            <label class="flex items-center space-x-3 cursor-pointer">
+                                <input type="checkbox" name="fcm_popup_enable" value="1" <?php echo $fcm_popup_enable === '1' ? 'checked' : ''; ?> class="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                                <span class="text-gray-900 font-bold">পপআপ চালু করুন (Enable Popup)</span>
+                            </label>
+                            <p class="text-sm text-gray-500 ml-8 mt-1">এটি অফ করলে ওয়েবসাইটের ভিজিটরদের নোটিফিকেশন সাবস্ক্রাইব করার পপআপটি আর দেখাবে না।</p>
+                        </div>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div class="space-y-4">
@@ -172,6 +201,11 @@ ob_start();
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Popup Message (বার্তা)</label>
                                     <textarea name="fcm_popup_desc" rows="3" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border"><?php echo escape($fcm_popup_desc); ?></textarea>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Thank You Message (সাবস্ক্রাইব করার পরের বার্তা)</label>
+                                    <input type="text" name="fcm_popup_thank_you" value="<?php echo escape($fcm_popup_thank_you); ?>" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
                                 </div>
                                 
                                 <div class="grid grid-cols-2 gap-4">
@@ -193,6 +227,12 @@ ob_start();
                                         <option value="every_session" <?php echo $fcm_popup_frequency == 'every_session' ? 'selected' : ''; ?>>প্রতিটি নতুন সেশনে দেখাবে (Every Session)</option>
                                     </select>
                                     <p class="text-xs text-gray-500 mt-1">ভিজিটররা নোটিফিকেশন সাবস্ক্রাইব না করা পর্যন্ত পপআপটি কতবার দেখানো হবে তা নির্ধারণ করুন।</p>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">পপআপ ডিলে (Popup Delay in seconds)</label>
+                                    <input type="number" name="fcm_popup_delay" min="0" max="60" value="<?php echo escape($fcm_popup_delay); ?>" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
+                                    <p class="text-xs text-gray-500 mt-1">ওয়েবসাইটে প্রবেশ করার কত সেকেন্ড পর পপআপটি দেখাবে তা নির্ধারণ করুন। (যেমন: 5)</p>
                                 </div>
                             </div>
                             
