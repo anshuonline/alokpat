@@ -467,19 +467,20 @@
                 try {
                     const permission = await Notification.requestPermission();
                     if (permission === 'granted') {
-                        // In Firebase compat v8/9/10, getToken automatically looks for service worker
                         const token = await messaging.getToken({ vapidKey: "<?php echo escape($fcm_vapid_key); ?>" });
                         if (token) {
                             // Send token to our server
-                            await fetch('<?php echo SITE_URL; ?>/api/fcm_subscribe.php', {
+                            const resp = await fetch('<?php echo SITE_URL; ?>/api/fcm_subscribe.php', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
                                 },
                                 body: JSON.stringify({ token: token })
                             });
+                            const data = await resp.json();
+                            console.log('FCM subscribe response:', data);
                             
-                            // Show success view
+                            // Show success view regardless (permission was granted)
                             document.getElementById('fcm-subscribe-view').classList.add('hidden');
                             document.getElementById('fcm-success-view').classList.remove('hidden');
                             
@@ -501,10 +502,9 @@
                         throw new Error('Permission denied');
                     }
                 } catch (err) {
-                    console.error('An error occurred while retrieving token. ', err);
+                    console.error('FCM Error:', err);
                     subscribeBtn.innerHTML = '<span><?php echo escape($fcm_btn_subscribe); ?></span>';
                     subscribeBtn.disabled = false;
-                    dismissPopup();
                 }
             });
 

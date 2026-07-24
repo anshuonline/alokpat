@@ -20,8 +20,6 @@ if (empty($token)) {
 }
 
 try {
-    global $db;
-    
     // Check if token exists
     $stmt = $db->prepare("SELECT id FROM fcm_subscribers WHERE token = ?");
     $stmt->execute([$token]);
@@ -34,5 +32,6 @@ try {
     
     echo json_encode(['success' => true]);
 } catch (PDOException $e) {
-    echo json_encode(['success' => false, 'error' => 'Database error']);
+    error_log("FCM Subscribe Error: " . $e->getMessage());
+    echo json_encode(['success' => false, 'error' => 'Database error: ' . $e->getMessage()]);
 }
