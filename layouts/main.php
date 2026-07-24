@@ -316,6 +316,7 @@
         $fcm_popup_desc = $setting->get('fcm_popup_desc') ?: 'সর্বশেষ খবরের আপডেট পেতে আমাদের পুশ নোটিফিকেশন চালু করুন।';
         $fcm_btn_subscribe = $setting->get('fcm_btn_subscribe') ?: 'সাবস্ক্রাইব করুন';
         $fcm_btn_later = $setting->get('fcm_btn_later') ?: 'পরে';
+        $fcm_popup_frequency = $setting->get('fcm_popup_frequency') ?: 'once_forever';
     ?>
     <!-- FCM Subscription Popup UI -->
     <div id="fcm-popup" class="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:w-[380px] bg-white rounded-2xl shadow-2xl border border-gray-100 z-[9999] transform translate-y-[150%] transition-transform duration-500 ease-out hidden">
@@ -348,17 +349,58 @@
             appId: "<?php echo escape($fcm_app_id); ?>"
         };
 
+        const popupFreq = "<?php echo escape($fcm_popup_frequency); ?>";
+
+        function shouldShowPopup() {
+            // First check if Notification API exists and is not denied or granted already
+            if (!('Notification' in window) || Notification.permission !== 'default') {
+                return false;
+            }
+
+            if (popupFreq === 'every_session') {
+                return !sessionStorage.getItem('fcm_dismissed_session');
+            } else if (popupFreq === 'once_daily') {
+                const lastDismissed = localStorage.getItem('fcm_dismissed_daily');
+                if (!lastDismissed) return true;
+                
+                // Check if 24 hours have passed
+                const timePassed = Date.now() - parseInt(lastDismissed, 10);
+                return timePassed > (24 * 60 * 60 * 1000); 
+            } else {
+                // once_forever
+                return !localStorage.getItem('fcm_dismissed_forever');
+            }
+        }
+
+        function recordDismissal() {
+            if (popupFreq === 'every_session') {
+                sessionStorage.setItem('fcm_dismissed_session', 'true');
+            } else if (popupFreq === 'once_daily') {
+                localStorage.setItem('fcm_dismissed_daily', Date.now().toString());
+            } else {
+                localStorage.setItem('fcm_dismissed_forever', 'true');
+            }
+        }
+
         try {
             firebase.initializeApp(firebaseConfig);
             const messaging = firebase.messaging();
             
+            // Wait for service worker registration to ensure it works properly
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('<?php echo SITE_URL; ?>/firebase-messaging-sw.js').then((registration) => {
+                    // console.log('Service Worker registered with scope:', registration.scope);
+                }).catch((err) => {
+                    console.log('Service Worker registration failed:', err);
+                });
+            }
+
             const popup = document.getElementById('fcm-popup');
             const subscribeBtn = document.getElementById('fcm-subscribe-btn');
             const laterBtn = document.getElementById('fcm-later-btn');
             const closeBtn = document.getElementById('fcm-close-btn');
 
-            // Show popup if not dismissed and permission is default
-            if (Notification.permission === 'default' && !localStorage.getItem('fcm_dismissed')) {
+            if (shouldShowPopup()) {
                 setTimeout(() => {
                     popup.classList.remove('hidden');
                     // small delay to allow display:block to apply before animating transform
@@ -372,7 +414,7 @@
             function dismissPopup() {
                 popup.classList.remove('translate-y-0');
                 popup.classList.add('translate-y-[150%]');
-                localStorage.setItem('fcm_dismissed', 'true');
+                recordDismissal();
                 setTimeout(() => popup.classList.add('hidden'), 500);
             }
 
@@ -387,6 +429,7 @@
                 try {
                     const permission = await Notification.requestPermission();
                     if (permission === 'granted') {
+                        // In Firebase compat v8/9/10, getToken automatically looks for service worker
                         const token = await messaging.getToken({ vapidKey: "<?php echo escape($fcm_vapid_key); ?>" });
                         if (token) {
                             // Send token to our server
@@ -401,6 +444,9 @@
                             subscribeBtn.innerHTML = '<i class="fas fa-check mr-1"></i>';
                             subscribeBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
                             subscribeBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                            
+                            // Once subscribed, never show popup again
+                            localStorage.setItem('fcm_dismissed_forever', 'true');
                             
                             setTimeout(dismissPopup, 1500);
                         } else {
@@ -420,7 +466,6 @@
             // Handle incoming messages while the app is in the foreground
             messaging.onMessage((payload) => {
                 console.log('Message received. ', payload);
-                // Optionally show a custom toast notification here if you want
             });
 
         } catch(e) {

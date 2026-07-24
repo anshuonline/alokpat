@@ -18,6 +18,7 @@ $fcm_popup_desc = $setting->get('fcm_popup_desc') ?: 'সর্বশেষ খ�
 $fcm_btn_subscribe = $setting->get('fcm_btn_subscribe') ?: 'সাবস্ক্রাইব করুন';
 $fcm_btn_later = $setting->get('fcm_btn_later') ?: 'পরে';
 $fcm_auto_send_on_publish = $setting->get('fcm_auto_send_on_publish') ?: '0';
+$fcm_popup_frequency = $setting->get('fcm_popup_frequency') ?: 'once_forever';
 
 $fcm_api_key = $setting->get('fcm_api_key') ?: '';
 $fcm_project_id = $setting->get('fcm_project_id') ?: '';
@@ -36,6 +37,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $setting->update('fcm_btn_subscribe', trim($_POST['fcm_btn_subscribe']));
     $setting->update('fcm_btn_later', trim($_POST['fcm_btn_later']));
     $setting->update('fcm_auto_send_on_publish', isset($_POST['fcm_auto_send_on_publish']) ? '1' : '0');
+    
+    if ($setting->get('fcm_popup_frequency') === null) {
+        $setting->create('fcm_popup_frequency', trim($_POST['fcm_popup_frequency']), 'text', 'FCM Popup Frequency');
+    } else {
+        $setting->update('fcm_popup_frequency', trim($_POST['fcm_popup_frequency']));
+    }
     
     // Save API settings
     $setting->update('fcm_api_key', trim($_POST['fcm_api_key']));
@@ -176,6 +183,16 @@ ob_start();
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Later Button</label>
                                         <input type="text" name="fcm_btn_later" value="<?php echo escape($fcm_btn_later); ?>" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2 border">
                                     </div>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">পপআপ দেখানোর সময় (Popup Frequency)</label>
+                                    <select name="fcm_popup_frequency" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 bg-white border">
+                                        <option value="once_forever" <?php echo $fcm_popup_frequency == 'once_forever' ? 'selected' : ''; ?>>একবার "Later" ক্লিক করলে আর কখনো দেখাবে না (Once Forever)</option>
+                                        <option value="once_daily" <?php echo $fcm_popup_frequency == 'once_daily' ? 'selected' : ''; ?>>দিনে একবার দেখাবে (Once Daily)</option>
+                                        <option value="every_session" <?php echo $fcm_popup_frequency == 'every_session' ? 'selected' : ''; ?>>প্রতিটি নতুন সেশনে দেখাবে (Every Session)</option>
+                                    </select>
+                                    <p class="text-xs text-gray-500 mt-1">ভিজিটররা নোটিফিকেশন সাবস্ক্রাইব না করা পর্যন্ত পপআপটি কতবার দেখানো হবে তা নির্ধারণ করুন।</p>
                                 </div>
                             </div>
                             
