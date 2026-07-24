@@ -102,23 +102,23 @@ ob_start();
 
     <?php displayFlash(); ?>
 
-    <!-- Tabs Component from uiverse inspiration (sleek modern design) -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden" x-data="{ tab: 'send' }">
+    <!-- Tabs Component -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="flex border-b border-gray-200">
-            <button @click="tab = 'send'" :class="{ 'border-blue-500 text-blue-600': tab === 'send', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': tab !== 'send' }" class="flex-1 py-4 px-6 text-center border-b-2 font-medium transition-colors">
+            <button type="button" onclick="switchTab('send')" id="tab-btn-send" class="flex-1 py-4 px-6 text-center border-b-2 font-medium transition-colors border-blue-500 text-blue-600">
                 <i class="fas fa-paper-plane mr-2"></i> নোটিফিকেশন পাঠান
             </button>
-            <button @click="tab = 'popup'" :class="{ 'border-blue-500 text-blue-600': tab === 'popup', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': tab !== 'popup' }" class="flex-1 py-4 px-6 text-center border-b-2 font-medium transition-colors">
+            <button type="button" onclick="switchTab('popup')" id="tab-btn-popup" class="flex-1 py-4 px-6 text-center border-b-2 font-medium transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
                 <i class="fas fa-window-restore mr-2"></i> পপআপ সেটিংস
             </button>
-            <button @click="tab = 'api'" :class="{ 'border-blue-500 text-blue-600': tab === 'api', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': tab !== 'api' }" class="flex-1 py-4 px-6 text-center border-b-2 font-medium transition-colors">
+            <button type="button" onclick="switchTab('api')" id="tab-btn-api" class="flex-1 py-4 px-6 text-center border-b-2 font-medium transition-colors border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
                 <i class="fas fa-cogs mr-2"></i> ফায়ারবেস এপিআই (API)
             </button>
         </div>
 
         <div class="p-6">
             <!-- Tab 1: Send Push -->
-            <div x-show="tab === 'send'" x-transition.opacity>
+            <div id="tab-content-send" class="tab-content block">
                 <form action="" method="POST" class="space-y-6">
                     <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
                     <input type="hidden" name="action" value="send_push">
@@ -145,14 +145,14 @@ ob_start();
                 </form>
             </div>
 
-            <!-- Tab 2: Settings (Popup & API) -->
-            <div x-show="tab === 'popup' || tab === 'api'" style="display: none;">
-                <form action="" method="POST" class="space-y-8">
-                    <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
-                    <input type="hidden" name="action" value="update_settings">
-                    
-                    <!-- Popup Settings Content -->
-                    <div x-show="tab === 'popup'" class="space-y-6">
+            <!-- Forms for Settings (Popup & API) -->
+            <form action="" method="POST" class="space-y-8" id="settings-form">
+                <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+                <input type="hidden" name="action" value="update_settings">
+                
+                <!-- Tab 2: Popup Settings -->
+                <div id="tab-content-popup" class="tab-content hidden">
+                    <div class="space-y-6">
                         <h3 class="text-lg font-bold text-gray-800 border-b pb-2">পপআপ উইন্ডো কাস্টমাইজেশন</h3>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -203,9 +203,11 @@ ob_start();
                             <p class="text-sm text-gray-500 ml-8 mt-1">নতুন কোনো পোস্ট পাবলিশ হলে তা স্বয়ংক্রিয়ভাবে সব সাবস্ক্রাইবারের কাছে চলে যাবে।</p>
                         </div>
                     </div>
+                </div>
 
-                    <!-- API Settings Content -->
-                    <div x-show="tab === 'api'" class="space-y-6">
+                <!-- Tab 3: API Settings Content -->
+                <div id="tab-content-api" class="tab-content hidden">
+                    <div class="space-y-6">
                         <div class="bg-yellow-50 text-yellow-800 p-4 rounded-lg text-sm border border-yellow-200">
                             <i class="fas fa-exclamation-triangle mr-2"></i> <strong>সতর্কতা:</strong> এই ফিল্ডগুলো ঠিকভাবে না দিলে নোটিফিকেশন কাজ করবে না। আপনার Firebase Console থেকে এই ডেটাগুলো সংগ্রহ করুন।
                         </div>
@@ -237,17 +239,49 @@ ob_start();
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div class="pt-5 border-t border-gray-200 flex justify-end">
-                        <button type="submit" class="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 font-medium transition-colors shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            সেটিংস সেভ করুন (Save Settings)
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div id="settings-submit-btn" class="pt-5 border-t border-gray-200 flex justify-end hidden">
+                    <button type="submit" class="bg-blue-600 text-white px-6 py-2.5 rounded-lg hover:bg-blue-700 font-medium transition-colors shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        সেটিংস সেভ করুন (Save Settings)
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+function switchTab(tabId) {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(el => {
+        el.classList.remove('block');
+        el.classList.add('hidden');
+    });
+    
+    // Reset all tab buttons
+    document.querySelectorAll('[id^="tab-btn-"]').forEach(el => {
+        el.classList.remove('border-blue-500', 'text-blue-600');
+        el.classList.add('border-transparent', 'text-gray-500');
+    });
+    
+    // Show active tab content
+    const activeContent = document.getElementById('tab-content-' + tabId);
+    if(activeContent) {
+        activeContent.classList.remove('hidden');
+        activeContent.classList.add('block');
+    }
+    
+    // Highlight active button
+    const activeBtn = document.getElementById('tab-btn-' + tabId);
+    if(activeBtn) {
+        activeBtn.classList.remove('border-transparent', 'text-gray-500');
+        activeBtn.classList.add('border-blue-500', 'text-blue-600');
+    }
+}
+
+// Ensure the form gets submitted correctly for API settings too
+</script>
 
 <?php
 $content = ob_get_clean();
