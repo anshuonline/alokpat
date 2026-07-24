@@ -278,9 +278,17 @@ function switchTab(tabId) {
         activeBtn.classList.remove('border-transparent', 'text-gray-500');
         activeBtn.classList.add('border-blue-500', 'text-blue-600');
     }
+    
+    // Toggle save button visibility
+    const saveBtn = document.getElementById('settings-submit-btn');
+    if (saveBtn) {
+        if (tabId === 'popup' || tabId === 'api') {
+            saveBtn.classList.remove('hidden');
+        } else {
+            saveBtn.classList.add('hidden');
+        }
+    }
 }
-
-// Ensure the form gets submitted correctly for API settings too
 </script>
 
 <?php
