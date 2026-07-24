@@ -13,9 +13,10 @@ require_once __DIR__ . '/models/Post.php';
 require_once __DIR__ . '/helpers/functions.php';
 
 // Only allow super_admin for security (or comment this out if you just want to test without login)
-if (!isset($_SESSION['user']) || !in_array($_SESSION['user']['role'], ['admin', 'super_admin', 'editor', 'writer'])) {
-    die("<h3>Error: You must be logged in as an admin or staff to run this debug script.</h3>");
+if (!isLoggedIn()) {
+    die("<h3>Error: Not logged in. Session dump: <pre>" . print_r($_SESSION, true) . "</pre></h3>");
 }
+$currentUser = getCurrentUser();
 
 $post_id = $_GET['id'] ?? null;
 if (!$post_id) {
