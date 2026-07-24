@@ -505,6 +505,16 @@
                     console.error('FCM Error:', err);
                     subscribeBtn.innerHTML = '<span><?php echo escape($fcm_btn_subscribe); ?></span>';
                     subscribeBtn.disabled = false;
+                    
+                    // Show error in the UI
+                    let errorMsg = document.getElementById('fcm-error-msg');
+                    if (!errorMsg) {
+                        errorMsg = document.createElement('div');
+                        errorMsg.id = 'fcm-error-msg';
+                        errorMsg.className = 'mt-4 p-3 bg-red-50 text-red-600 text-sm rounded-lg text-left break-words border border-red-100';
+                        document.getElementById('fcm-subscribe-view').appendChild(errorMsg);
+                    }
+                    errorMsg.innerHTML = '<strong>Error:</strong> ' + (err.message || err.toString());
                 }
             });
 
