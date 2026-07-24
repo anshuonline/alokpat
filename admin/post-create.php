@@ -158,6 +158,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 
                 if ($status === 'published' && $data['status'] !== 'pending_review') {
+                    // FCM Auto Push
+                    $setting = new Setting();
+                    if ($setting->get('fcm_auto_send_on_publish') == '1') {
+                        require_once BASE_PATH . '/admin/api/send_push.php';
+                        sendFirebasePushNotification($post_id);
+                    }
                     redirect(ADMIN_URL . '/posts.php');
                 } else {
                     redirect(ADMIN_URL . '/post-edit.php?id=' . $post_id);

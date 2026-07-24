@@ -187,6 +187,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!isset($is_revision)) {
                 // Normal update
                 if ($post_model->update($post_id, $data)) {
+                    // FCM Auto Push on Publish (if it wasn't published before)
+                    if ($status === 'published' && $post['status'] !== 'published') {
+                        $setting = new Setting();
+                        if ($setting->get('fcm_auto_send_on_publish') == '1') {
+                            require_once BASE_PATH . '/admin/api/send_push.php';
+                            sendFirebasePushNotification($post_id);
+                        }
+                    }
                     setFlash('success', 'সংবাদ সফলভাবে আপডেট হয়েছে');
                     redirect(ADMIN_URL . '/post-edit.php?id=' . $post_id);
                 } else {

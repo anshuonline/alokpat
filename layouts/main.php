@@ -303,6 +303,131 @@
                 zoomable: true
             });
         });
+    <?php
+    // FCM Configuration & Popup logic
+    $fcm_api_key = $setting->get('fcm_api_key');
+    if (!empty($fcm_api_key)) {
+        $fcm_project_id = $setting->get('fcm_project_id');
+        $fcm_messaging_sender_id = $setting->get('fcm_messaging_sender_id');
+        $fcm_app_id = $setting->get('fcm_app_id');
+        $fcm_vapid_key = $setting->get('fcm_vapid_key');
+        
+        $fcm_popup_title = $setting->get('fcm_popup_title') ?: 'আমাদের নোটিফিকেশন সাবস্ক্রাইব করুন';
+        $fcm_popup_desc = $setting->get('fcm_popup_desc') ?: 'সর্বশেষ খবরের আপডেট পেতে আমাদের পুশ নোটিফিকেশন চালু করুন।';
+        $fcm_btn_subscribe = $setting->get('fcm_btn_subscribe') ?: 'সাবস্ক্রাইব করুন';
+        $fcm_btn_later = $setting->get('fcm_btn_later') ?: 'পরে';
+    ?>
+    <!-- FCM Subscription Popup UI -->
+    <div id="fcm-popup" class="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:w-[380px] bg-white rounded-2xl shadow-2xl border border-gray-100 z-[9999] transform translate-y-[150%] transition-transform duration-500 ease-out hidden">
+        <div class="p-6 relative">
+            <button id="fcm-close-btn" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors rounded-full p-1 hover:bg-gray-100">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="flex items-center justify-center w-14 h-14 rounded-full bg-blue-50 text-blue-600 mb-5 mx-auto border border-blue-100 shadow-inner">
+                <i class="fas fa-bell text-2xl animate-pulse"></i>
+            </div>
+            <h4 class="text-xl font-bold text-gray-900 text-center mb-2"><?php echo escape($fcm_popup_title); ?></h4>
+            <p class="text-sm text-gray-600 text-center mb-6 leading-relaxed"><?php echo escape($fcm_popup_desc); ?></p>
+            <div class="flex space-x-3">
+                <button id="fcm-later-btn" class="flex-1 py-2.5 px-4 border border-gray-300 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"><?php echo escape($fcm_btn_later); ?></button>
+                <button id="fcm-subscribe-btn" class="flex-1 py-2.5 px-4 border border-transparent rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200"><?php echo escape($fcm_btn_subscribe); ?></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const firebaseConfig = {
+            apiKey: "<?php echo escape($fcm_api_key); ?>",
+            projectId: "<?php echo escape($fcm_project_id); ?>",
+            messagingSenderId: "<?php echo escape($fcm_messaging_sender_id); ?>",
+            appId: "<?php echo escape($fcm_app_id); ?>"
+        };
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+            const messaging = firebase.messaging();
+            
+            const popup = document.getElementById('fcm-popup');
+            const subscribeBtn = document.getElementById('fcm-subscribe-btn');
+            const laterBtn = document.getElementById('fcm-later-btn');
+            const closeBtn = document.getElementById('fcm-close-btn');
+
+            // Show popup if not dismissed and permission is default
+            if (Notification.permission === 'default' && !localStorage.getItem('fcm_dismissed')) {
+                setTimeout(() => {
+                    popup.classList.remove('hidden');
+                    // small delay to allow display:block to apply before animating transform
+                    setTimeout(() => {
+                        popup.classList.remove('translate-y-[150%]');
+                        popup.classList.add('translate-y-0');
+                    }, 50);
+                }, 3000); // Show after 3 seconds
+            }
+
+            function dismissPopup() {
+                popup.classList.remove('translate-y-0');
+                popup.classList.add('translate-y-[150%]');
+                localStorage.setItem('fcm_dismissed', 'true');
+                setTimeout(() => popup.classList.add('hidden'), 500);
+            }
+
+            laterBtn.addEventListener('click', dismissPopup);
+            closeBtn.addEventListener('click', dismissPopup);
+
+            subscribeBtn.addEventListener('click', async () => {
+                // UI feedback
+                subscribeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                subscribeBtn.disabled = true;
+
+                try {
+                    const permission = await Notification.requestPermission();
+                    if (permission === 'granted') {
+                        const token = await messaging.getToken({ vapidKey: "<?php echo escape($fcm_vapid_key); ?>" });
+                        if (token) {
+                            // Send token to our server
+                            await fetch('<?php echo SITE_URL; ?>/api/fcm_subscribe.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ token: token })
+                            });
+                            
+                            subscribeBtn.innerHTML = '<i class="fas fa-check mr-1"></i>';
+                            subscribeBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                            subscribeBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                            
+                            setTimeout(dismissPopup, 1500);
+                        } else {
+                            throw new Error('No registration token available.');
+                        }
+                    } else {
+                        throw new Error('Permission denied');
+                    }
+                } catch (err) {
+                    console.error('An error occurred while retrieving token. ', err);
+                    subscribeBtn.innerHTML = '<?php echo escape($fcm_btn_subscribe); ?>';
+                    subscribeBtn.disabled = false;
+                    dismissPopup();
+                }
+            });
+
+            // Handle incoming messages while the app is in the foreground
+            messaging.onMessage((payload) => {
+                console.log('Message received. ', payload);
+                // Optionally show a custom toast notification here if you want
+            });
+
+        } catch(e) {
+            console.log('Firebase setup error:', e);
+        }
+    });
     </script>
+    <?php } ?>
 </body>
 </html>

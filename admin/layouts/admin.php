@@ -183,6 +183,14 @@
                 </a>
                 <?php endif; ?>
                 
+                <?php if(hasPermission('manage_settings')): ?>
+                <a href="<?php echo ADMIN_URL; ?>/notifications.php" 
+                   class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'notifications.php' ? 'active' : 'text-gray-700'; ?>">
+                    <i class="fas fa-bell w-6 transition-colors"></i>
+                    <span class="font-medium">নোটিফিকেশন</span>
+                </a>
+                <?php endif; ?>
+                
                 <?php if(hasPermission('manage_ads')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/ads.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'ads.php' ? 'active' : 'text-gray-700'; ?>">
