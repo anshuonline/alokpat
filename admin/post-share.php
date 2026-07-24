@@ -215,7 +215,7 @@ $share_text = escape($post['title']) . "\n\n" . $excerpt . ($short_code ? "\n\nà
 </div>
 
     <!-- Inject Font URL dynamically -->
-    <link href="<?php echo SITE_FONT_URL; ?>" rel="stylesheet">
+    <link href="<?php echo SITE_FONT_URL; ?>" rel="stylesheet" crossorigin="anonymous">
 
 <!-- Load html-to-image (Most modern and bug-free canvas renderer) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Wait for UI to update
         setTimeout(() => {
-            htmlToImage.toJpeg(node, {
+            const options = {
                 quality: 0.95,
                 backgroundColor: '#ffffff',
                 width: 1080,
@@ -282,7 +282,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 style: {
                     transform: 'scale(1)',
                     transformOrigin: 'top left'
-                }
+                },
+                pixelRatio: 1
+            };
+
+            // First call forces the library to fetch and cache web fonts
+            htmlToImage.toJpeg(node, options)
+            .then(() => {
+                // Second call generates the actual image with fonts applied
+                return htmlToImage.toJpeg(node, options);
             })
             .then(function (dataUrl) {
                 // Restore UI
@@ -306,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 loader.classList.add('hidden');
                 loader.classList.remove('flex');
             });
-        }, 300);
+        }, 500);
     });
 });
 </script>
