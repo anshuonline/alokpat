@@ -27,7 +27,7 @@ $page = $_GET['page'] ?? 1;
 $limit = POSTS_PER_PAGE ?? 15; // default 15
 $offset = ($page - 1) * $limit;
 
-$posts = $post->getPublishedByTag($limit, $offset, $tag_data['id']);
+$posts = $post->getPublishedByTag($tag_data['id'], $limit, $offset);
 $total = $tagModel->getPostCount($tag_data['id']);
 $total_pages = ceil($total / $limit);
 

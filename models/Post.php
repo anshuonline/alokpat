@@ -322,7 +322,7 @@ class Post {
      * @param int $tagId
      * @return array
      */
-    public function getPublishedByTag($limit = 10, $offset = 0, $tagId) {
+    public function getPublishedByTag($tagId, $limit = 10, $offset = 0) {
         try {
             $sql = "SELECT p.*, u.full_name as author_name, c.name as category_name, c.slug as category_slug
                     FROM " . $this->table . " p
