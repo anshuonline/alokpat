@@ -21,7 +21,9 @@ $categories = $categoryModel->getAll();
 $main_feed_url = rtrim(SITE_URL, '/') . '/feed.php';
 ?>
 
-<?php require_once 'layouts/admin.php'; ?>
+<?php
+ob_start();
+?>
 
 <!-- Top Action Bar -->
 <div class="flex justify-between items-center mb-6">
@@ -85,4 +87,7 @@ function copyUrl(inputId) {
 }
 </script>
 
-<?php require_once 'layouts/admin_footer.php'; ?>
+<?php 
+$content = ob_get_clean();
+require_once 'layouts/admin.php'; 
+?>
