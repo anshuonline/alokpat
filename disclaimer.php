@@ -18,6 +18,8 @@ component('header', ['categories' => $categories]);
             <h2>Medical, Legal & Professional Advice</h2>
             <p>Content published in our health, economy, or legal sections is strictly for informational purposes. It is not a substitute for professional advice. Always consult a relevant expert before making any crucial decisions based on our content.</p>
             <p>By using our website, you hereby consent to our disclaimer and agree to its terms.</p>
+            <h2>Contact</h2>
+            <p>For any questions regarding this disclaimer, please email us at <a href="mailto:support@alokpat.in" class="text-blue-600 hover:underline">support@alokpat.in</a>.</p>
         </div>
     </div>
 </main>

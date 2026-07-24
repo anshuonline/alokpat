@@ -21,7 +21,7 @@ component('header', ['categories' => $categories]);
             <p>We ensure the highest level of security for the data we collect. Under no circumstances do we sell or share your personal information with third parties (unless required by law).</p>
             <h2>Changes to the Privacy Policy</h2>
             <p>We reserve the right to modify or update this Privacy Policy at any time. Any changes will be posted and updated on this page immediately.</p>
-            <p>If you have any questions, please <a href="<?php echo SITE_URL; ?>/contact.php">Contact Us</a>.</p>
+            <p>If you have any questions, please <a href="<?php echo SITE_URL; ?>/contact.php" class="text-blue-600 hover:underline">Contact Us</a> or email us directly at <a href="mailto:support@alokpat.in" class="text-blue-600 hover:underline">support@alokpat.in</a>.</p>
         </div>
     </div>
 </main>

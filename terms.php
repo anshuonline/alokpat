@@ -21,6 +21,8 @@ component('header', ['categories' => $categories]);
             <p>While we strive to provide accurate information, we do not guarantee the 100% accuracy, completeness, or timeliness of any news report. The responsibility for verifying information before making any decisions based on news reports lies entirely with you.</p>
             <h2>Changes to Terms</h2>
             <p>We reserve the right to modify or amend these terms and conditions at any time without prior announcement.</p>
+            <h2>Contact Information</h2>
+            <p>If you have any queries regarding any of our terms, please contact us at <a href="mailto:support@alokpat.in" class="text-blue-600 hover:underline">support@alokpat.in</a>.</p>
         </div>
     </div>
 </main>
