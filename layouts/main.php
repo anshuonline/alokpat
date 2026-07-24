@@ -334,18 +334,18 @@
             
             <!-- Subscribe View -->
             <div id="fcm-subscribe-view">
-                <div class="flex items-center justify-center w-14 h-14 rounded-full bg-blue-50 text-blue-600 mb-5 mx-auto border border-blue-100 shadow-inner relative">
+                <div class="flex items-center justify-center w-14 h-14 rounded-full bg-primary-50 text-primary-600 mb-5 mx-auto border border-primary-100 shadow-inner relative">
                     <i class="fas fa-bell text-2xl animate-pulse"></i>
                     <span class="absolute top-0 right-0 flex h-3 w-3">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-primary-500"></span>
                     </span>
                 </div>
                 <h4 class="text-xl font-bold text-gray-900 text-center mb-2"><?php echo escape($fcm_popup_title); ?></h4>
                 <p class="text-sm text-gray-600 text-center mb-6 leading-relaxed"><?php echo escape($fcm_popup_desc); ?></p>
                 <div class="flex space-x-3">
                     <button id="fcm-later-btn" class="flex-1 py-2.5 px-4 border border-gray-300 rounded-xl text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"><?php echo escape($fcm_btn_later); ?></button>
-                    <button id="fcm-subscribe-btn" class="flex-1 py-2.5 px-4 border border-transparent rounded-xl text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-sm shadow-blue-200 flex justify-center items-center">
+                    <button id="fcm-subscribe-btn" class="flex-1 py-2.5 px-4 border border-transparent rounded-xl text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 transition-colors shadow-sm shadow-primary-200 flex justify-center items-center">
                         <span><?php echo escape($fcm_btn_subscribe); ?></span>
                     </button>
                 </div>
@@ -353,7 +353,7 @@
 
             <!-- Success/Thank You View -->
             <div id="fcm-success-view" class="hidden py-2 text-center">
-                <div class="flex items-center justify-center w-16 h-16 rounded-full bg-green-50 text-green-500 mb-5 mx-auto border border-green-100 shadow-inner transform transition-transform duration-500 scale-0" id="fcm-success-icon">
+                <div class="flex items-center justify-center w-16 h-16 rounded-full bg-primary-50 text-primary-500 mb-5 mx-auto border border-primary-100 shadow-inner transform transition-transform duration-500 scale-0" id="fcm-success-icon">
                     <i class="fas fa-check text-3xl"></i>
                 </div>
                 <h4 class="text-xl font-bold text-gray-900 mb-2"><?php echo escape($fcm_popup_thank_you); ?></h4>
