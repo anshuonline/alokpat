@@ -93,14 +93,12 @@ $categories = $category->getActive();
             <div>
                 <h4 class="text-lg font-bold mb-4">যোগাযোগ</h4>
                 <ul class="space-y-3">
-                    <?php if (!empty($site_info['site_email'])): ?>
-                        <li class="flex items-start">
-                            <i class="fas fa-envelope mt-1 mr-3 text-primary-400"></i>
-                            <a href="mailto:<?php echo escape($site_info['site_email']); ?>" class="text-gray-400 hover:text-white transition">
-                                <?php echo escape($site_info['site_email']); ?>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-envelope mt-1 text-gray-500"></i>
+                            <a href="mailto:support@alokpat.in" class="text-gray-400 hover:text-white transition">
+                                support@alokpat.in
                             </a>
                         </li>
-                    <?php endif; ?>
                     <?php if (!empty($site_info['site_phone'])): ?>
                         <li class="flex items-start">
                             <i class="fas fa-phone mt-1 mr-3 text-primary-400"></i>

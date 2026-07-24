@@ -67,7 +67,7 @@ component('header', ['categories' => $categories]);
                 <p><?php echo escape($site_info['site_address'] ?? 'Kolkata, India'); ?></p>
                 
                 <h3 class="text-xl font-bold mt-6 mb-2">Email</h3>
-                <p><a href="mailto:<?php echo escape($site_info['site_email'] ?? 'support@alokpat.in'); ?>"><?php echo escape($site_info['site_email'] ?? 'support@alokpat.in'); ?></a></p>
+                <p><a href="mailto:support@alokpat.in">support@alokpat.in</a></p>
                 
                 <h3 class="text-xl font-bold mt-6 mb-2">Phone</h3>
                 <p><?php echo escape($site_info['site_phone'] ?? '+91 00000 00000'); ?></p>
