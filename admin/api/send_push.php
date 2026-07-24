@@ -87,7 +87,8 @@ function sendFirebasePushNotification($post_id) {
     }
     
     $post_url = SITE_URL . '/post/' . $post['slug'];
-    $image_url = !empty($post['image']) ? UPLOAD_URL . '/' . $post['image'] : '';
+    // featured_image already contains the full URL in the database
+    $image_url = !empty($post['image']) ? $post['image'] : '';
     
     // Send notifications using curl_multi for parallel requests
     $mh = curl_multi_init();
