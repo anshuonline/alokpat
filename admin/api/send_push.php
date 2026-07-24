@@ -61,12 +61,12 @@ function sendFirebasePushNotification($post_id) {
     
     // Get post details
     try {
-        $stmt = $db->prepare("SELECT title, excerpt, slug, image FROM posts WHERE id = ?");
+        $stmt = $db->prepare("SELECT title, excerpt, slug, featured_image as image FROM posts WHERE id = ?");
         $stmt->execute([$post_id]);
         $post = $stmt->fetch();
         if (!$post) return ['success' => false, 'error' => 'Post not found'];
     } catch(PDOException $e) {
-        return ['success' => false, 'error' => 'Database error'];
+        return ['success' => false, 'error' => 'Database error: ' . $e->getMessage()];
     }
     
     // Get subscribers
