@@ -100,7 +100,7 @@ ob_start();
         </div>
     </div>
 
-    <?php displayFlashMessage(); ?>
+    <?php displayFlash(); ?>
 
     <!-- Tabs Component from uiverse inspiration (sleek modern design) -->
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden" x-data="{ tab: 'send' }">
