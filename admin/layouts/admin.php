@@ -151,6 +151,14 @@
                 </a>
                 <?php endif; ?>
                 
+                <?php if(hasAnyRole(['super_admin', 'admin', 'editor'])): ?>
+                <a href="<?php echo ADMIN_URL; ?>/rss-feeds.php" 
+                   class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'rss-feeds.php' ? 'active' : 'text-gray-700'; ?>">
+                    <i class="fas fa-rss text-orange-500 w-6 transition-colors"></i>
+                    <span class="font-medium">RSS Feeds</span>
+                </a>
+                <?php endif; ?>
+                
                 <?php if(hasPermission('manage_contacts')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/contacts.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'contacts.php' ? 'active' : 'text-gray-700'; ?>">
