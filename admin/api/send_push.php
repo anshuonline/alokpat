@@ -112,6 +112,7 @@ function sendFirebasePushNotification($post_id) {
         ];
         
         if ($image_url) {
+            $payload['message']['notification']['image'] = $image_url;
             $payload['message']['webpush']['notification'] = [
                 'image' => $image_url
             ];
