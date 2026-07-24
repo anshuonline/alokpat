@@ -43,7 +43,16 @@ $theme_palettes = [
     'emerald' => '#059669', // green
     'amber'   => '#d97706', // amber
     'violet'  => '#7c3aed', // violet
+    'teal'    => '#0d9488', // teal
     'rose'    => '#e11d48', // rose
+    'fuchsia' => '#c026d3', // fuchsia
+    'indigo'  => '#4f46e5', // indigo
+    'sky'     => '#0284c7', // sky
+    'cyan'    => '#0891b2', // cyan
+    'lime'    => '#65a30d', // lime
+    'yellow'  => '#ca8a04', // yellow
+    'orange'  => '#ea580c', // orange
+    'stone'   => '#57534e', // stone
 ];
 $primary_color = $theme_palettes[$theme_color] ?? '#2563eb';
 
