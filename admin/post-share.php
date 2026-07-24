@@ -157,68 +157,61 @@ $share_text = escape($post['title']) . "\n\n" . $excerpt . ($short_code ? "\n\n�
         <div class="w-full md:w-2/3 flex justify-center bg-gray-100 rounded-xl p-4 overflow-hidden relative border border-gray-200" style="min-height: 400px;">
             <div id="card-wrapper" style="width: 1080px; height: 1080px; transform-origin: top center; transform: scale(0.45); margin-bottom: -590px;" class="shadow-2xl flex-shrink-0 transition-transform">
                 
-                <!-- Actual Capture Node (Modern Gen-Z Dark Overlay Style) -->
-                <div id="social-card" class="relative w-full h-full flex flex-col overflow-hidden" style="font-family: <?php echo SITE_FONT_CSS; ?>;">
+                <!-- Actual Capture Node (Minimal & Elegant) -->
+                <?php
+                // Convert primary hex to rgba for glassmorphism
+                $hex = str_replace('#', '', $primary_color);
+                $r = hexdec(substr($hex,0,2));
+                $g = hexdec(substr($hex,2,2));
+                $b = hexdec(substr($hex,4,2));
+                $glass_bg = "rgba($r, $g, $b, 0.85)";
+                ?>
+                <div id="social-card" class="relative w-full h-full bg-white flex flex-col" style="font-family: <?php echo SITE_FONT_CSS; ?>;">
                     
-                    <!-- Full Bleed Background Image -->
-                    <div class="absolute inset-0 w-full h-full">
+                    <!-- Top Image Area -->
+                    <div class="relative w-full h-[55%]">
                         <img src="<?php echo escape($image_url); ?>" id="card-bg-image" class="absolute inset-0 w-full h-full object-cover" crossorigin="anonymous">
-                        <!-- Dark gradient overlay from bottom -->
-                        <div class="absolute inset-0" style="background: linear-gradient(0deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.75) 35%, rgba(0,0,0,0.15) 65%, rgba(0,0,0,0.05) 100%);"></div>
-                    </div>
-
-                    <!-- Top Bar: Tag + Category -->
-                    <div class="relative z-10 flex items-center justify-between p-10">
-                        <!-- Category Badge -->
-                        <?php if(!empty($post['category_name'])): ?>
-                        <div class="px-5 py-2 rounded-full text-white text-[20px] font-bold tracking-wide" style="background-color: <?php echo $primary_color; ?>;">
-                            <?php echo escape($post['category_name']); ?>
-                        </div>
-                        <?php else: ?>
-                        <div></div>
-                        <?php endif; ?>
-
-                        <!-- CTA Tag -->
-                        <div class="flex items-center gap-3 bg-white/15 backdrop-blur-sm text-white px-6 py-2.5 rounded-full text-[20px] font-semibold border border-white/20">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7z"/></svg>
+                        
+                        <!-- CTA Tag (Theme Color + Blur) -->
+                        <div class="absolute top-10 right-10 z-10 text-white px-7 py-3 rounded-full flex items-center justify-center text-[22px] font-bold shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-white/20" 
+                             style="background-color: <?php echo $glass_bg; ?>; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);">
+                            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path></svg>
                             বিস্তারিত কমেন্টে
                         </div>
-                    </div>
 
-                    <!-- Spacer to push content down -->
-                    <div class="flex-1"></div>
-
-                    <!-- Bottom Content Area -->
-                    <div class="relative z-10 px-12 pb-0">
-                        
-                        <!-- Breaking Badge -->
+                        <!-- Breaking Ribbon (Bottom Left of Image) -->
                         <?php if($post['is_breaking']): ?>
-                        <div class="flex items-center gap-3 mb-6">
-                            <div class="flex items-center text-white px-5 py-2 rounded-full text-[20px] font-bold tracking-widest uppercase" style="background: <?php echo $primary_color; ?>;">
-                                <span class="w-3 h-3 bg-white rounded-full mr-3" style="animation: pulse 1.5s infinite;"></span>
-                                ব্রেকিং নিউজ
-                            </div>
+                        <div class="absolute bottom-6 left-8 text-white px-6 py-2.5 rounded shadow-lg flex items-center text-[22px] font-bold uppercase tracking-widest z-10" style="background-color: <?php echo $primary_color; ?>;">
+                            <span class="w-3 h-3 bg-white rounded-full animate-pulse mr-3"></span> ব্রেকিং
                         </div>
                         <?php endif; ?>
-                        
-                        <!-- Title -->
-                        <h1 class="text-white font-extrabold leading-[1.3] tracking-tight" style="font-size: 56px; text-shadow: 0 2px 20px rgba(0,0,0,0.5);">
-                            <?php echo escape($post['title']); ?>
-                        </h1>
                     </div>
 
-                    <!-- Brand Footer Strip -->
-                    <div class="relative z-10 mt-8 flex items-center justify-between px-12 py-6" style="background: <?php echo $primary_color; ?>;">
-                        <div class="flex items-center">
-                            <?php if($site_logo): ?>
-                                <img src="<?php echo escape($site_logo); ?>" alt="Alokpat" class="h-12 object-contain brightness-0 invert" crossorigin="anonymous">
-                            <?php else: ?>
-                                <h2 class="text-white text-4xl font-black tracking-tight">আলোকপাত</h2>
-                            <?php endif; ?>
-                        </div>
-                        <div class="flex items-center gap-3 text-white/90">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M3.6 9h16.8M3.6 15h16.8"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 3a15.3 15.3 0 014 9 15.3 15.3 0 01-4 9 15.3 15.3 0 01-4-9 15.3 15.3 0 014-9z"/></svg>
-                            <span class="text-[26px] font-bold tracking-wider uppercase">alokpat.in</span>
+                    <!-- Theme Divider -->
+                    <div class="w-full h-3" style="background-color: <?php echo $primary_color; ?>;"></div>
+
+                    <!-- Bottom Content Area -->
+                    <div class="flex-1 w-full bg-white p-12 flex flex-col justify-between">
+                        
+                        <!-- Title -->
+                        <h1 class="text-gray-900 font-extrabold leading-[1.35] tracking-tight border-l-[8px] pl-6" style="font-size: 54px; border-color: <?php echo $primary_color; ?>;">
+                            <?php echo escape($post['title']); ?>
+                        </h1>
+                        
+                        <!-- Footer bar -->
+                        <div class="flex items-center justify-between mt-6 pt-6 border-t-[2px] border-gray-100">
+                            <div class="flex items-center">
+                                <!-- Logo -->
+                                <?php if($site_logo): ?>
+                                    <img src="<?php echo escape($site_logo); ?>" alt="Alokpat" class="h-14 object-contain" crossorigin="anonymous">
+                                <?php else: ?>
+                                    <h2 class="text-black text-4xl font-black tracking-tight" style="color: <?php echo $primary_color; ?>;">আলোকপাত</h2>
+                                <?php endif; ?>
+                            </div>
+                            <div class="flex items-center space-x-3 text-gray-500">
+                                <svg class="w-7 h-7 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                                <span class="text-[28px] font-bold tracking-widest uppercase text-gray-700">alokpat.in</span>
+                            </div>
                         </div>
                     </div>
                 </div>
