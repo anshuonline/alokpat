@@ -367,7 +367,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
         const firebaseConfig = {
             apiKey: "<?php echo escape($fcm_api_key); ?>",
             projectId: "<?php echo escape($fcm_project_id); ?>",
@@ -413,13 +413,14 @@
             firebase.initializeApp(firebaseConfig);
             const messaging = firebase.messaging();
             
-            // Wait for service worker registration to ensure it works properly
+            // Wait for service worker registration and store it for later use
+            let swRegistration = null;
             if ('serviceWorker' in navigator) {
-                navigator.serviceWorker.register('<?php echo SITE_URL; ?>/firebase-messaging-sw.js').then((registration) => {
-                    // console.log('Service Worker registered with scope:', registration.scope);
-                }).catch((err) => {
+                try {
+                    swRegistration = await navigator.serviceWorker.register('<?php echo SITE_URL; ?>/firebase-messaging-sw.js');
+                } catch (err) {
                     console.log('Service Worker registration failed:', err);
-                });
+                }
             }
 
             const popup = document.getElementById('fcm-popup');
@@ -483,8 +484,18 @@
                         // Dismiss popup after 2 seconds
                         setTimeout(dismissPopup, 2000);
                         
-                        // Fetch token and save to DB in the BACKGROUND
-                        messaging.getToken({ vapidKey: "<?php echo escape($fcm_vapid_key); ?>" })
+                        // Ensure SW is ready before fetching token
+                        if (!swRegistration) {
+                            swRegistration = await navigator.serviceWorker.register('<?php echo SITE_URL; ?>/firebase-messaging-sw.js');
+                        }
+                        await navigator.serviceWorker.ready;
+                        
+                        // Fetch token with SW registration and save to DB
+                        const tokenOptions = { 
+                            vapidKey: "<?php echo escape($fcm_vapid_key); ?>",
+                            serviceWorkerRegistration: swRegistration
+                        };
+                        messaging.getToken(tokenOptions)
                             .then(token => {
                                 if (token) {
                                     fetch('<?php echo SITE_URL; ?>/api/fcm_subscribe.php', {
