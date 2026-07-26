@@ -129,6 +129,14 @@
                 </a>
                 <?php endif; ?>
                 
+                <?php if(hasPermission('manage_users')): ?>
+                <a href="<?php echo ADMIN_URL; ?>/id-cards.php" 
+                   class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'id-cards.php' ? 'active' : 'text-gray-700'; ?>">
+                    <i class="fas fa-id-card w-6 transition-colors"></i>
+                    <span class="font-medium">আইডি কার্ড</span>
+                </a>
+                <?php endif; ?>
+                
                 <?php if(hasPermission('manage_roles')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/roles.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'roles.php' ? 'active' : 'text-gray-700'; ?>">

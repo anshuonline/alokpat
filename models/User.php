@@ -323,4 +323,97 @@ class User {
             return [];
         }
     }
+
+    /**
+     * Get users with generated ID cards
+     * 
+     * @return array
+     */
+    public function getIdCardUsers() {
+        try {
+            $sql = "SELECT * FROM " . $this->table . " WHERE id_card_generated = 1 ORDER BY employee_number ASC";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch(PDOException $e) {
+            error_log("Get ID Card Users Error: " . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Generate next employee number (ALP-0001 format)
+     * 
+     * @return string
+     */
+    public function generateEmployeeNumber() {
+        try {
+            $sql = "SELECT employee_number FROM " . $this->table . " 
+                    WHERE employee_number IS NOT NULL 
+                    ORDER BY employee_number DESC LIMIT 1";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute();
+            $last = $stmt->fetch();
+            
+            if ($last && !empty($last['employee_number'])) {
+                $num = (int) substr($last['employee_number'], 4);
+                $next = $num + 1;
+            } else {
+                $next = 1;
+            }
+            
+            return 'ALP-' . str_pad($next, 4, '0', STR_PAD_LEFT);
+        } catch(PDOException $e) {
+            error_log("Generate Employee Number Error: " . $e->getMessage());
+            return 'ALP-0001';
+        }
+    }
+
+    /**
+     * Set ID card for a user
+     * 
+     * @param int $userId
+     * @param string $role
+     * @param string $employeeNumber
+     * @return bool
+     */
+    public function setIdCard($userId, $role, $employeeNumber) {
+        try {
+            $sql = "UPDATE " . $this->table . " 
+                    SET id_card_role = :role, 
+                        employee_number = :emp_no, 
+                        id_card_generated = 1 
+                    WHERE id = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':role', $role);
+            $stmt->bindParam(':emp_no', $employeeNumber);
+            $stmt->bindParam(':id', $userId);
+            return $stmt->execute();
+        } catch(PDOException $e) {
+            error_log("Set ID Card Error: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Revoke ID card for a user
+     * 
+     * @param int $userId
+     * @return bool
+     */
+    public function revokeIdCard($userId) {
+        try {
+            $sql = "UPDATE " . $this->table . " 
+                    SET id_card_role = NULL, 
+                        employee_number = NULL, 
+                        id_card_generated = 0 
+                    WHERE id = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->bindParam(':id', $userId);
+            return $stmt->execute();
+        } catch(PDOException $e) {
+            error_log("Revoke ID Card Error: " . $e->getMessage());
+            return false;
+        }
+    }
 }
