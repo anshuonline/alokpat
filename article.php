@@ -239,22 +239,38 @@ component('header', ['categories' => $categories]);
             </div>
         <?php endif; ?>
         
-        <!-- Meta Row (Utilities on Left, Socials & Prefer on Right) -->
-        <div class="flex flex-col md:flex-row items-center justify-between border-y border-gray-100 py-4 mb-8 gap-4 md:gap-0">
+        <!-- Meta Row (Utilities, Share, Prefer) -->
+        <div class="flex flex-wrap items-center justify-between border-y border-gray-100 py-3 md:py-4 mb-6 md:mb-8 gap-y-4 gap-x-2">
             <!-- Utility Buttons -->
-            <div class="flex items-center gap-2 no-print w-full md:w-auto justify-center md:justify-start">
-                <a href="<?php echo SITE_URL; ?>/print.php?slug=<?php echo escape($article['slug']); ?>" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-lg border-2 border-gray-200 text-gray-600 hover:border-blue-500 hover:text-blue-600 transition shadow-sm bg-white" title="Print Article">
+            <div class="flex items-center gap-1.5 sm:gap-2 no-print order-1">
+                <a href="<?php echo SITE_URL; ?>/print.php?slug=<?php echo escape($article['slug']); ?>" target="_blank" class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg border-2 border-gray-200 text-gray-600 hover:border-blue-500 hover:text-blue-600 transition shadow-sm bg-white" title="Print Article">
                     <i class="fas fa-print"></i>
                 </a>
                 <div class="flex border-2 border-gray-200 rounded-lg overflow-hidden shadow-sm bg-white">
-                    <button onclick="setFontSize('small')" class="w-10 h-10 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition font-bold text-sm border-r-2 border-gray-200" title="Small Font">A-</button>
-                    <button onclick="setFontSize('medium')" class="w-10 h-10 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition font-bold text-base border-r-2 border-gray-200" title="Medium Font">A</button>
-                    <button onclick="setFontSize('large')" class="w-10 h-10 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition font-bold text-lg" title="Large Font">A+</button>
+                    <button onclick="setFontSize('small')" class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition font-bold text-xs sm:text-sm border-r-2 border-gray-200" title="Small Font">A-</button>
+                    <button onclick="setFontSize('medium')" class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition font-bold text-sm sm:text-base border-r-2 border-gray-200" title="Medium Font">A</button>
+                    <button onclick="setFontSize('large')" class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition font-bold text-base sm:text-lg" title="Large Font">A+</button>
                 </div>
             </div>
 
-            <div class="flex flex-wrap items-center gap-3 w-full justify-center md:w-auto md:justify-end no-print">
-                <!-- Google Prefer Button -->
+            <!-- Share Button with Dropdown -->
+            <div class="relative group/share no-print order-2 md:order-3 ml-auto md:ml-0" tabindex="0">
+                <button class="w-[38px] h-[38px] sm:w-[46px] sm:h-[46px] rounded-full border-2 border-gray-200 text-gray-600 flex items-center justify-center group-hover/share:border-blue-500 group-hover/share:text-blue-600 transition shadow-sm bg-white focus:outline-none">
+                    <i class="fas fa-share-nodes text-lg sm:text-xl"></i>
+                </button>
+                <!-- Dropdown Menu -->
+                <div class="absolute right-0 top-full pt-2 hidden group-hover/share:block focus-within:block z-30">
+                    <div class="flex flex-col gap-2 bg-white p-2.5 rounded-2xl shadow-[0_5px_25px_-5px_rgba(0,0,0,0.15)] border border-gray-100 animate-fade-in-up">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(url_for_post($article)); ?>" target="_blank" class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition" title="Facebook"><i class="fab fa-facebook-f text-lg"></i></a>
+                        <a href="https://wa.me/?text=<?php echo urlencode($article['title'] . ' ' . url_for_post($article)); ?>" target="_blank" class="w-10 h-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center hover:bg-green-500 hover:text-white transition" title="WhatsApp"><i class="fab fa-whatsapp text-xl"></i></a>
+                        <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode(url_for_post($article)); ?>&text=<?php echo urlencode($article['title']); ?>" target="_blank" class="w-10 h-10 rounded-full bg-gray-50 text-gray-900 flex items-center justify-center hover:bg-gray-900 hover:text-white transition" title="X"><i class="fa-brands fa-x-twitter text-lg"></i></a>
+                        <button onclick="navigator.clipboard.writeText('<?php echo url_for_post($article); ?>'); alert('Link copied!');" class="w-10 h-10 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center hover:bg-gray-600 hover:text-white transition" title="Copy Link"><i class="fas fa-link text-lg"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Google Prefer Button -->
+            <div class="flex items-center justify-center w-full md:w-auto order-3 md:order-2 md:ml-auto no-print">
                 <a href="https://google.com/preferences/source?q=<?php echo urlencode(parse_url(SITE_URL, PHP_URL_HOST)); ?>" target="_blank" class="relative inline-flex rounded-full p-[2.5px] overflow-hidden group hover:scale-105 transition-transform shadow-sm hover:shadow-md" style="min-width: 170px; height: 46px;">
                     <span class="absolute block z-0 google-border-bg"></span>
                     <span class="relative z-10 flex items-center gap-2.5 bg-white rounded-full px-3 w-full h-full">
@@ -277,22 +293,6 @@ component('header', ['categories' => $categories]);
                         </span>
                     </span>
                 </a>
-
-                <!-- Share Button with Dropdown -->
-                <div class="relative group/share" tabindex="0">
-                    <button class="w-[46px] h-[46px] rounded-full border-2 border-gray-200 text-gray-600 flex items-center justify-center group-hover/share:border-blue-500 group-hover/share:text-blue-600 transition shadow-sm bg-white focus:outline-none">
-                        <i class="fas fa-share-nodes text-xl"></i>
-                    </button>
-                    <!-- Dropdown Menu -->
-                    <div class="absolute right-0 top-full pt-2 hidden group-hover/share:block focus-within:block z-30">
-                        <div class="flex flex-col gap-2 bg-white p-2.5 rounded-2xl shadow-[0_5px_25px_-5px_rgba(0,0,0,0.15)] border border-gray-100 animate-fade-in-up">
-                            <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(url_for_post($article)); ?>" target="_blank" class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition" title="Facebook"><i class="fab fa-facebook-f text-lg"></i></a>
-                            <a href="https://wa.me/?text=<?php echo urlencode($article['title'] . ' ' . url_for_post($article)); ?>" target="_blank" class="w-10 h-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center hover:bg-green-500 hover:text-white transition" title="WhatsApp"><i class="fab fa-whatsapp text-xl"></i></a>
-                            <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode(url_for_post($article)); ?>&text=<?php echo urlencode($article['title']); ?>" target="_blank" class="w-10 h-10 rounded-full bg-gray-50 text-gray-900 flex items-center justify-center hover:bg-gray-900 hover:text-white transition" title="X"><i class="fa-brands fa-x-twitter text-lg"></i></a>
-                            <button onclick="navigator.clipboard.writeText('<?php echo url_for_post($article); ?>'); alert('Link copied!');" class="w-10 h-10 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center hover:bg-gray-600 hover:text-white transition" title="Copy Link"><i class="fas fa-link text-lg"></i></button>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
         
