@@ -43,6 +43,10 @@
                         <span class="text-gray-500 block text-xs font-semibold uppercase">ফাইলের নাম</span>
                         <div id="mediaSidebarFilename" class="text-gray-800 break-all font-medium"></div>
                     </div>
+                    <div class="mt-2">
+                        <span class="text-gray-500 block text-xs font-semibold uppercase">ফাইল সাইজ</span>
+                        <div id="mediaSidebarFilesize" class="text-gray-800 font-medium"></div>
+                    </div>
                     <div class="pt-4 border-t border-gray-100 space-y-2">
                         <a href="#" id="mediaSidebarFullLink" target="_blank" class="w-full text-center block px-4 py-2 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition font-medium text-sm">
                             <i class="fas fa-external-link-alt mr-2"></i> ফুল সাইজ দেখুন
@@ -168,15 +172,21 @@ function switchMediaTab(tab) {
     }
 }
 
-function loadMediaLibrary() {
+let mediaModalPage = 1;
+
+function loadMediaLibrary(page = 1) {
     const container = document.getElementById('mediaItemsContainer');
     const loader = document.getElementById('mediaLibraryLoader');
+    const loadMoreBtn = document.getElementById('mediaLibraryLoadMore');
     
-    container.innerHTML = '';
-    container.classList.add('hidden');
+    if (page === 1) {
+        container.innerHTML = '';
+        container.classList.add('hidden');
+    }
+    if (loadMoreBtn) loadMoreBtn.remove();
     loader.classList.remove('hidden');
     
-    fetch('<?php echo ADMIN_URL; ?>/ajax/get-media.php')
+    fetch(`<?php echo ADMIN_URL; ?>/ajax/get-media.php?page=${page}`)
         .then(response => response.json())
         .then(res => {
             loader.classList.add('hidden');
@@ -186,7 +196,7 @@ function loadMediaLibrary() {
                 res.data.forEach(item => {
                     const div = document.createElement('div');
                     div.className = 'media-item relative aspect-square bg-gray-200 rounded-lg overflow-hidden border-2 border-gray-300 cursor-pointer hover:shadow-lg transition group';
-                    div.onclick = () => selectMediaItem(div, item.file_url, item.original_filename || item.alt_text || item.filename, item.id);
+                    div.onclick = () => selectMediaItem(div, item.file_url, item.original_filename || item.alt_text || item.filename, item.id, item.file_size);
                     
                     const img = document.createElement('img');
                     img.src = item.file_url;
@@ -200,7 +210,16 @@ function loadMediaLibrary() {
                     div.appendChild(overlay);
                     container.appendChild(div);
                 });
-            } else {
+                
+                mediaModalPage = res.pagination.page;
+                if (res.pagination.page < res.pagination.pages) {
+                    const btnWrap = document.createElement('div');
+                    btnWrap.className = 'col-span-full flex justify-center mt-6 mb-4';
+                    btnWrap.id = 'mediaLibraryLoadMore';
+                    btnWrap.innerHTML = `<button type="button" onclick="loadMediaLibrary(mediaModalPage + 1)" class="px-6 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition shadow-sm font-medium"><i class="fas fa-sync-alt mr-2 text-blue-500"></i> আরও লোড করুন</button>`;
+                    container.appendChild(btnWrap);
+                }
+            } else if (page === 1) {
                 container.innerHTML = '<div class="col-span-full text-center py-10 text-gray-500">কোনো মিডিয়া পাওয়া যায়নি। দয়া করে "আপলোড করুন" ট্যাবে গিয়ে ছবি আপলোড করুন।</div>';
             }
         })
@@ -212,7 +231,16 @@ function loadMediaLibrary() {
         });
 }
 
-function selectMediaItem(element, url, filename, id) {
+function formatBytes(bytes, decimals = 1) {
+    if (!+bytes) return '0 Bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+}
+
+function selectMediaItem(element, url, filename, id, filesize) {
     document.querySelectorAll('.media-item').forEach(el => el.classList.remove('ring-4', 'ring-blue-500', 'border-transparent'));
     
     element.classList.add('ring-4', 'ring-blue-500', 'border-transparent');
@@ -226,6 +254,8 @@ function selectMediaItem(element, url, filename, id) {
         sidebar.classList.add('flex');
         document.getElementById('mediaSidebarImg').src = url;
         document.getElementById('mediaSidebarFilename').innerText = filename;
+        const sizeEl = document.getElementById('mediaSidebarFilesize');
+        if(sizeEl) sizeEl.innerText = filesize ? formatBytes(filesize) : 'Unknown';
         document.getElementById('mediaSidebarFullLink').href = url;
     }
     

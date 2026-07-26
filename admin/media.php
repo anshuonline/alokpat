@@ -47,16 +47,13 @@ ob_start();
                     <div class="media-card group relative bg-gray-100 rounded-lg overflow-hidden border border-gray-200 hover:shadow-lg transition flex flex-col" id="media-card-<?php echo $item['id']; ?>">
                         
                         <!-- Image thumbnail -->
-                        <div class="aspect-square relative overflow-hidden bg-gray-200">
+                        <div class="aspect-square relative overflow-hidden bg-gray-200 cursor-pointer" onclick="previewMediaFullscreen('<?php echo escape($item['file_url']); ?>')">
                             <img src="<?php echo escape($item['file_url']); ?>" alt="<?php echo escape($item['alt_text'] ?? $item['filename']); ?>" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
                         </div>
                         
                         <!-- Actions Overlay -->
-                        <div class="absolute inset-x-0 top-0 p-2 flex justify-between opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-b from-black/50 to-transparent">
-                            <button onclick="previewMediaFullscreen('<?php echo escape($item['file_url']); ?>')" class="text-white hover:text-blue-300 p-1" title="ফুলস্ক্রিন প্রিভিউ">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button onclick="deleteMedia(<?php echo $item['id']; ?>)" class="text-white hover:text-red-400 p-1" title="মুছে ফেলুন">
+                        <div class="absolute inset-x-0 top-0 p-2 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-b from-black/50 to-transparent pointer-events-none">
+                            <button onclick="deleteMedia(<?php echo $item['id']; ?>)" class="text-white hover:text-red-400 p-1 pointer-events-auto" title="মুছে ফেলুন">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </div>
@@ -65,6 +62,12 @@ ob_start();
                         <div class="p-3 bg-white flex-1 flex flex-col justify-between">
                             <div class="truncate text-xs font-semibold text-gray-700 mb-1" title="<?php echo escape($item['alt_text'] ?? $item['original_filename'] ?? $item['filename']); ?>" id="media-name-<?php echo $item['id']; ?>">
                                 <?php echo escape($item['alt_text'] ?? $item['original_filename'] ?? $item['filename']); ?>
+                            </div>
+                            <div class="text-[10px] text-gray-500 font-medium">
+                                <?php 
+                                $size = $item['file_size'] ?? 0;
+                                echo $size > 1048576 ? round($size / 1048576, 2) . ' MB' : round($size / 1024, 1) . ' KB';
+                                ?>
                             </div>
                             
                             <div class="flex items-center justify-between mt-2 pt-2 border-t border-gray-100">
