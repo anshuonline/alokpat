@@ -65,14 +65,14 @@ $stmt->execute();
 $cards = $stmt->fetchAll();
 
 $roles = [
-    'writer' => '✍️ Writer (লেখক)',
-    'ground_reporter' => '📹 Ground Reporter (মাঠ প্রতিবেদক)',
-    'correspondent' => '📰 Correspondent (সংবাদদাতা)',
-    'editor' => '✏️ Editor (সম্পাদক)',
-    'photojournalist' => '📷 Photo সাংবাদিক (Photojournalist)',
-    'digital_creator' => '💻 Digital Content Creator (ডিজিটাল কন্টেন্ট ক্রিয়েটর)',
-    'sub_editor' => '📝 Sub Editor (উপ-সম্পাদক)',
-    'bureau_chief' => '🏢 Bureau Chief (ব্যুরো চীফ)'
+    'writer' => 'Writer (লেখক)',
+    'ground_reporter' => 'Ground Reporter (মাঠ প্রতিবেদক)',
+    'correspondent' => 'Correspondent (সংবাদদাতা)',
+    'editor' => 'Editor (সম্পাদক)',
+    'photojournalist' => 'Photojournalist (ফটো সাংবাদিক)',
+    'digital_creator' => 'Digital Content Creator (ডিজিটাল কন্টেন্ট ক্রিয়েটর)',
+    'sub_editor' => 'Sub Editor (উপ-সম্পাদক)',
+    'bureau_chief' => 'Bureau Chief (ব্যুরো চীফ)'
 ];
 
 $page_title = 'আইডি কার্ড (ID Cards)';
@@ -458,57 +458,75 @@ ob_start();
             <div class="p-6 flex justify-center">
                 
                 <!-- Printable ID Card Area -->
-                <div id="printable-card" class="print-area">
-                    <div class="id-card-wrapper">
-                        <div class="id-card-header">
-                            <div class="id-card-logo-area">
-                                <?php 
-                                $real_logo = $site_logo ?: SITE_URL.'/assets/images/logo.png';
-                                if (strpos($real_logo, 'http') !== 0 && strpos($real_logo, SITE_URL) === false) {
-                                    $real_logo = SITE_URL . '/' . ltrim($real_logo, '/');
-                                }
-                                ?>
-                                <img src="<?= escape($real_logo) ?>" alt="Logo">
-                                <h2>DIGITAL MEDIA</h2>
-                            </div>
-                            <p><?= escape($site_name) ?></p>
-                        </div>
+                <div id="printable-card" class="print-area w-full flex justify-center pb-4">
+                    <div class="id-card-wrapper bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-300 relative w-[340px] font-sans">
+                        <!-- Top Red Bar -->
+                        <div class="h-2 bg-red-600 w-full"></div>
                         
-                        <div class="id-card-body">
-                            <div class="id-photo-container">
-                                <img src="" id="card-photo" class="id-photo" alt="Employee Photo">
-                            </div>
-                            
-                            <h3 class="id-name" id="card-name">John Doe</h3>
-                            <div class="id-role" id="card-role">Editor (সম্পাদক)</div>
-                            
-                            <div class="id-details">
-                                <div class="id-detail-row">
-                                    <span class="id-detail-label">EMP NO:</span>
-                                    <span class="id-detail-value" id="card-empno">ALP-0000</span>
+                        <!-- Card Header -->
+                        <div class="bg-gray-50 border-b border-gray-200 p-5 pb-12 flex justify-between items-start relative overflow-hidden">
+                            <div class="flex items-center gap-3 relative z-10">
+                                <div class="bg-white p-1.5 rounded shadow-sm border border-gray-100">
+                                    <?php 
+                                    $real_logo = $site_logo ?: SITE_URL.'/assets/images/logo.png';
+                                    if (strpos($real_logo, 'http') !== 0 && strpos($real_logo, SITE_URL) === false) {
+                                        $real_logo = SITE_URL . '/' . ltrim($real_logo, '/');
+                                    }
+                                    ?>
+                                    <img src="<?= escape($real_logo) ?>" alt="Logo" class="h-9 object-contain">
                                 </div>
-                                <div class="id-detail-row">
-                                    <span class="id-detail-label">PHONE:</span>
-                                    <span class="id-detail-value" id="card-phone">N/A</span>
+                                <div>
+                                    <div class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] leading-none mb-1">Alokpat.in</div>
+                                    <div class="text-xl font-black text-gray-900 uppercase tracking-tight leading-none">DIGITAL MEDIA</div>
                                 </div>
                             </div>
                             
-                            <div class="id-qr-section">
-                                <div id="card-qr" class="id-qr-code"></div>
+                            <!-- PRESS Badge -->
+                            <div class="absolute right-0 top-5 bg-red-600 text-white text-[11px] font-black px-4 py-1.5 shadow-sm rounded-l uppercase tracking-widest z-10">
+                                PRESS
+                            </div>
+                            
+                            <!-- Subtle background pattern -->
+                            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-gray-200 rounded-full opacity-20 z-0"></div>
+                        </div>
+                        
+                        <!-- Card Body -->
+                        <div class="px-6 pb-6 pt-0 flex flex-col items-center relative z-20">
+                            <!-- Avatar -->
+                            <div class="w-[110px] h-[110px] rounded-xl border-4 border-white shadow-lg overflow-hidden -mt-[55px] mb-5 bg-gray-100 flex items-center justify-center relative z-20">
+                                <img src="" id="card-photo" class="w-full h-full object-cover" alt="Employee Photo">
+                            </div>
+                            
+                            <h3 class="text-[22px] font-black text-gray-900 mb-2 flex items-center justify-center text-center leading-tight uppercase tracking-wide" id="card-name">JOHN DOE</h3>
+                            <div class="bg-red-600 text-white px-5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-[0.1em] shadow-sm mb-6 text-center inline-block" id="card-role">EDITOR (সম্পাদক)</div>
+                            
+                            <div class="w-full border-t-2 border-dashed border-gray-200 mb-5"></div>
+                            
+                            <div class="w-full flex justify-between items-end gap-2">
+                                <div class="text-sm space-y-3 flex-1 pb-1">
+                                    <div>
+                                        <span class="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Emp ID</span>
+                                        <span class="font-bold text-gray-800 text-[15px]" id="card-empno">ALP-0000</span>
+                                    </div>
+                                    <div>
+                                        <span class="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Contact</span>
+                                        <span class="font-bold text-gray-800 text-[15px]" id="card-phone">N/A</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="p-1.5 bg-white border border-gray-200 rounded-lg shadow-sm shrink-0">
+                                    <div id="card-qr"></div>
+                                </div>
                             </div>
                         </div>
                         
-                        <div class="id-footer">
-                            <p class="id-disclaimer mb-1">
-                                এই আইডি কার্ডটি শুধুমাত্র সাংগঠনিক ব্যবহারের জন্য। এটি কোনো সরকারি বা আইনি নথি নয়।
-                            </p>
-                            <p class="id-disclaimer" style="margin-top: 4px;">
-                                This ID card is for organizational use only. It is not a legally registered credential.
-                            </p>
+                        <!-- Card Footer -->
+                        <div class="bg-gray-100 border-t border-gray-200 px-5 py-3.5 text-center">
+                            <p class="text-[10px] font-bold text-gray-600 leading-tight mb-1.5">এই আইডি কার্ডটি শুধুমাত্র সাংগঠনিক ব্যবহারের জন্য। এটি কোনো সরকারি বা আইনি নথি নয়।</p>
+                            <p class="text-[9px] font-semibold text-gray-500 leading-tight">This ID card is for organizational use only. It is not a legally registered credential.</p>
                         </div>
                     </div>
                 </div>
-
             </div>
             <!-- Modal footer -->
             <div class="flex items-center justify-between p-4 bg-white border-t border-gray-200 rounded-b-2xl">
@@ -578,8 +596,8 @@ ob_start();
             
             qrcode = new QRCode(qrContainer, {
                 text: qrUrl,
-                width: 80,
-                height: 80,
+                width: 72,
+                height: 72,
                 colorDark : "#111827",
                 colorLight : "#ffffff",
                 correctLevel : QRCode.CorrectLevel.H

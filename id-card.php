@@ -68,24 +68,41 @@ ob_start();
     <div class="w-full max-w-sm">
         <!-- Print Button -->
         <div class="mb-6 text-center no-print">
-            <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded shadow cursor-pointer">
+            <button onclick="window.print()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg shadow-md cursor-pointer transition-colors flex items-center justify-center mx-auto">
                 <i class="fas fa-print mr-2"></i> Print ID Card
             </button>
         </div>
 
         <!-- ID Card -->
-        <div id="id-card-container" class="bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-200">
+        <div id="id-card-container" class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-300 relative w-full max-w-[340px] mx-auto font-sans">
+            <!-- Top Red Bar -->
+            <div class="h-2 bg-red-600 w-full"></div>
+            
             <!-- Card Header -->
-            <div class="bg-gradient-to-r from-navy-900 to-indigo-900 text-white text-center py-4" style="background: linear-gradient(to right, #0f172a, #312e81);">
-                <img src="<?php echo escape($site_logo); ?>" alt="Logo" class="h-12 mx-auto mb-2 bg-white rounded p-1 object-contain">
-                <div class="text-yellow-400 font-bold tracking-widest text-sm">DIGITAL MEDIA</div>
-                <div class="text-xs font-semibold mt-1 uppercase">Alokpat.in</div>
+            <div class="bg-gray-50 border-b border-gray-200 p-5 pb-12 flex justify-between items-start relative overflow-hidden">
+                <div class="flex items-center gap-3 relative z-10">
+                    <div class="bg-white p-1.5 rounded shadow-sm border border-gray-100">
+                        <img src="<?php echo escape($site_logo); ?>" alt="Logo" class="h-9 object-contain">
+                    </div>
+                    <div>
+                        <div class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] leading-none mb-1">Alokpat.in</div>
+                        <div class="text-xl font-black text-gray-900 uppercase tracking-tight leading-none">DIGITAL MEDIA</div>
+                    </div>
+                </div>
+                
+                <!-- PRESS Badge -->
+                <div class="absolute right-0 top-5 bg-red-600 text-white text-[11px] font-black px-4 py-1.5 shadow-sm rounded-l uppercase tracking-widest z-10">
+                    PRESS
+                </div>
+                
+                <!-- Subtle background pattern -->
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-gray-200 rounded-full opacity-20 z-0"></div>
             </div>
 
             <!-- Card Body -->
-            <div class="p-6 flex flex-col items-center relative">
+            <div class="px-6 pb-6 pt-0 flex flex-col items-center relative z-20">
                 <!-- Avatar -->
-                <div class="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden -mt-12 mb-4 bg-gray-100 flex items-center justify-center">
+                <div class="w-[110px] h-[110px] rounded-xl border-4 border-white shadow-lg overflow-hidden -mt-[55px] mb-5 bg-gray-100 flex items-center justify-center relative z-20">
                     <?php if (!empty($user['avatar'])): ?>
                         <?php
                         $avatar_url = $user['avatar'];
@@ -95,56 +112,66 @@ ob_start();
                         ?>
                         <img src="<?php echo escape($avatar_url); ?>" alt="<?php echo escape($user['full_name']); ?>" class="w-full h-full object-cover">
                     <?php else: ?>
-                        <i class="fas fa-user text-gray-400 text-4xl"></i>
+                        <i class="fas fa-user text-gray-400 text-5xl"></i>
                     <?php endif; ?>
                 </div>
 
                 <!-- Details -->
-                <h2 class="text-2xl font-bold text-gray-900 mb-1 text-center"><?php echo escape($user['full_name']); ?></h2>
-                <div class="text-indigo-600 font-semibold mb-3 text-center"><?php echo escape($role_display); ?></div>
+                <h2 class="text-[22px] font-black text-gray-900 mb-2 flex items-center justify-center text-center leading-tight uppercase tracking-wide">
+                    <?php echo escape($user['full_name']); ?>
+                </h2>
                 
-                <div class="w-full border-t border-gray-200 my-3"></div>
-                
-                <div class="w-full text-sm text-gray-700 space-y-2 mb-4">
-                    <div class="flex justify-between">
-                        <span class="text-gray-500 font-medium">ID No:</span>
-                        <span class="font-bold">ALP-<?php echo str_pad($user['id'], 4, '0', STR_PAD_LEFT); ?></span>
-                    </div>
-                    <?php if (!empty($user['phone'])): ?>
-                    <div class="flex justify-between">
-                        <span class="text-gray-500 font-medium">Phone:</span>
-                        <span class="font-bold"><?php echo escape($user['phone']); ?></span>
-                    </div>
-                    <?php endif; ?>
-                    <div class="flex justify-between">
-                        <span class="text-gray-500 font-medium">Joined:</span>
-                        <span class="font-bold"><?php echo date('M Y', strtotime($user['created_at'])); ?></span>
-                    </div>
+                <div class="bg-red-600 text-white px-5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-[0.1em] shadow-sm mb-6 text-center inline-block">
+                    <?php echo escape($role_display); ?>
                 </div>
-
-                <!-- QR Code -->
-                <div id="qrcode" class="mt-2 mb-4 p-2 bg-white border border-gray-200 rounded shadow-sm"></div>
-
-                <!-- Disclaimer -->
-                <div class="text-center mt-2">
-                    <p class="text-[10px] text-gray-500 leading-tight mb-1">
-                        ⚠️ এই আইডি কার্ডটি শুধুমাত্র সাংগঠনিক ব্যবহারের জন্য। এটি কোনো সরকারি বা আইনি নথি নয়।
-                    </p>
-                    <p class="text-[9px] text-gray-400 leading-tight">
-                        This ID card is for organizational use only. Not a legally registered credential.
-                    </p>
+                
+                <div class="w-full border-t-2 border-dashed border-gray-200 mb-5"></div>
+                
+                <!-- Info & QR -->
+                <div class="w-full flex justify-between items-end gap-2">
+                    <div class="text-sm space-y-3 flex-1 pb-1">
+                        <div>
+                            <span class="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Emp ID</span>
+                            <span class="font-bold text-gray-800 text-[15px]">ALP-<?php echo str_pad($user['id'], 4, '0', STR_PAD_LEFT); ?></span>
+                        </div>
+                        <?php if (!empty($user['phone'])): ?>
+                        <div>
+                            <span class="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Contact</span>
+                            <span class="font-bold text-gray-800 text-[15px]"><?php echo escape($user['phone']); ?></span>
+                        </div>
+                        <?php endif; ?>
+                    </div>
+                    
+                    <div class="p-1.5 bg-white border border-gray-200 rounded-lg shadow-sm shrink-0">
+                        <div id="qrcode"></div>
+                    </div>
                 </div>
             </div>
-            
+
             <!-- Card Footer -->
-            <div class="bg-gray-100 py-2 text-center border-t border-gray-200">
-                <a href="<?php echo SITE_URL; ?>" class="text-xs text-gray-600 font-medium">www.alokpat.in</a>
+            <div class="bg-gray-100 border-t border-gray-200 px-5 py-3.5 text-center">
+                <p class="text-[10px] font-bold text-gray-600 leading-tight mb-1.5">এই আইডি কার্ডটি শুধুমাত্র সাংগঠনিক ব্যবহারের জন্য। এটি কোনো সরকারি বা আইনি নথি নয়।</p>
+                <p class="text-[9px] font-semibold text-gray-500 leading-tight">This ID card is for organizational use only. It is not a legally registered credential.</p>
             </div>
         </div>
     </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+    const qrContainer = document.getElementById('qrcode');
+    const authorUrl = '<?php echo SITE_URL; ?>/author.php?id=<?php echo $user['id']; ?>&name=<?php echo urlencode($user['full_name']); ?>';
+    
+    new QRCode(qrContainer, {
+        text: authorUrl,
+        width: 72,
+        height: 72,
+        colorDark : "#111827",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+</script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var qrData = "<?php echo SITE_URL; ?>/author.php?id=<?php echo $user['id']; ?>&name=<?php echo urlencode($user['full_name']); ?>";
@@ -157,9 +184,3 @@ ob_start();
             correctLevel : QRCode.CorrectLevel.L
         });
     });
-</script>
-
-<?php
-$content = ob_get_clean();
-include 'layouts/main.php';
-?>
