@@ -329,8 +329,9 @@ component('header', ['categories' => $categories]);
             .article-content h1, .article-content h2, .article-content h3 { font-weight: 700; margin: 1.4em 0 0.6em; }
             .article-content h2 { font-size: 1.5em; }
             .article-content h3 { font-size: 1.25em; }
-            .article-content ul, .article-content ol { padding-left: 1.5em; margin: 0.8em 0; }
-            .article-content li { margin-bottom: 0.3em; }
+            .article-content ul { list-style-type: disc; padding-left: 1.5em; margin: 1em 0; }
+            .article-content ol { list-style-type: decimal; padding-left: 1.5em; margin: 1em 0; }
+            .article-content li { margin-bottom: 0.4em; }
             .article-content .custom-cta-btn { display: inline-block; padding: 10px 24px; background-color: var(--btn-primary); color: #ffffff !important; text-decoration: none !important; border-radius: 6px; font-weight: 600; text-align: center; transition: all 0.3s ease; margin: 10px 0; }
             .article-content .custom-cta-btn:hover { background-color: var(--btn-primary-hover); transform: translateY(-2px); }
             
