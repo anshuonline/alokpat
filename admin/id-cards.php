@@ -649,14 +649,7 @@ ob_start();
     const modal = document.getElementById('idCardModal');
     
     
-     else {
-            front.classList.remove("opacity-0", "pointer-events-none");
-            back.classList.add("opacity-0", "pointer-events-none");
-        }
-    } else {
-            flipper.classList.remove('flip-active');
-        }
-    }
+
 
     function closeModal() {
         modal.classList.remove('flex');
