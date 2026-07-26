@@ -74,35 +74,18 @@ ob_start();
         </div>
 
         <!-- ID Card -->
-        <div id="id-card-container" class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-300 relative w-full max-w-[340px] mx-auto font-sans">
-            <!-- Top Red Bar -->
-            <div class="h-2 bg-red-600 w-full"></div>
+        <div id="id-card-container" class="bg-white rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] overflow-hidden border border-gray-200 relative w-full max-w-[320px] mx-auto font-sans">
             
             <!-- Card Header -->
-            <div class="bg-gray-50 border-b border-gray-200 p-5 pb-12 flex justify-between items-start relative overflow-hidden">
-                <div class="flex items-center gap-3 relative z-10">
-                    <div class="bg-white p-1.5 rounded shadow-sm border border-gray-100">
-                        <img src="<?php echo escape($site_logo); ?>" alt="Logo" class="h-9 object-contain">
-                    </div>
-                    <div>
-                        <div class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] leading-none mb-1">Alokpat.in</div>
-                        <div class="text-xl font-black text-gray-900 uppercase tracking-tight leading-none">DIGITAL MEDIA</div>
-                    </div>
-                </div>
-                
-                <!-- PRESS Badge -->
-                <div class="absolute right-0 top-5 bg-red-600 text-white text-[11px] font-black px-4 py-1.5 shadow-sm rounded-l uppercase tracking-widest z-10">
-                    PRESS
-                </div>
-                
-                <!-- Subtle background pattern -->
-                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-gray-200 rounded-full opacity-20 z-0"></div>
+            <div class="bg-white px-4 pt-6 pb-4 flex flex-col items-center border-b-[4px] border-indigo-700">
+                <img src="<?php echo escape($site_logo); ?>" alt="Logo" class="h-10 object-contain mb-2">
+                <div class="text-[11px] font-black tracking-[0.25em] text-indigo-800 uppercase">Digital Media</div>
             </div>
 
             <!-- Card Body -->
-            <div class="px-6 pb-6 pt-0 flex flex-col items-center relative z-20">
+            <div class="px-6 py-6 flex flex-col items-center bg-gradient-to-b from-white to-gray-50">
                 <!-- Avatar -->
-                <div class="w-[110px] h-[110px] rounded-xl border-4 border-white shadow-lg overflow-hidden -mt-[55px] mb-5 bg-gray-100 flex items-center justify-center relative z-20">
+                <div class="w-28 h-28 rounded-full border-4 border-indigo-50 shadow-md p-1 mb-4 bg-white flex items-center justify-center overflow-hidden shrink-0">
                     <?php if (!empty($user['avatar'])): ?>
                         <?php
                         $avatar_url = $user['avatar'];
@@ -110,34 +93,34 @@ ob_start();
                             $avatar_url = SITE_URL . '/' . ltrim($avatar_url, '/');
                         }
                         ?>
-                        <img src="<?php echo escape($avatar_url); ?>" alt="<?php echo escape($user['full_name']); ?>" class="w-full h-full object-cover">
+                        <img src="<?php echo escape($avatar_url); ?>" alt="<?php echo escape($user['full_name']); ?>" class="w-full h-full object-cover rounded-full">
                     <?php else: ?>
-                        <i class="fas fa-user text-gray-400 text-5xl"></i>
+                        <i class="fas fa-user text-gray-300 text-5xl"></i>
                     <?php endif; ?>
                 </div>
 
                 <!-- Details -->
-                <h2 class="text-[22px] font-black text-gray-900 mb-2 flex items-center justify-center text-center leading-tight uppercase tracking-wide">
+                <h2 class="text-xl font-bold text-gray-900 uppercase tracking-wide mb-2 text-center leading-tight">
                     <?php echo escape($user['full_name']); ?>
                 </h2>
                 
-                <div class="bg-red-600 text-white px-5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-[0.1em] shadow-sm mb-6 text-center inline-block">
+                <div class="bg-indigo-50 text-indigo-700 border border-indigo-100 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider mb-6 text-center inline-block">
                     <?php echo escape($role_display); ?>
                 </div>
                 
-                <div class="w-full border-t-2 border-dashed border-gray-200 mb-5"></div>
+                <div class="w-full h-px bg-gray-200 mb-5"></div>
                 
                 <!-- Info & QR -->
-                <div class="w-full flex justify-between items-end gap-2">
-                    <div class="text-sm space-y-3 flex-1 pb-1">
+                <div class="w-full flex justify-between items-center gap-2">
+                    <div class="space-y-3 flex-1">
                         <div>
-                            <span class="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Emp ID</span>
-                            <span class="font-bold text-gray-800 text-[15px]">ALP-<?php echo str_pad($user['id'], 4, '0', STR_PAD_LEFT); ?></span>
+                            <span class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Emp ID</span>
+                            <span class="font-bold text-gray-800 text-sm">ALP-<?php echo str_pad($user['id'], 4, '0', STR_PAD_LEFT); ?></span>
                         </div>
                         <?php if (!empty($user['phone'])): ?>
                         <div>
-                            <span class="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Contact</span>
-                            <span class="font-bold text-gray-800 text-[15px]"><?php echo escape($user['phone']); ?></span>
+                            <span class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Contact</span>
+                            <span class="font-bold text-gray-800 text-sm"><?php echo escape($user['phone']); ?></span>
                         </div>
                         <?php endif; ?>
                     </div>
@@ -149,9 +132,9 @@ ob_start();
             </div>
 
             <!-- Card Footer -->
-            <div class="bg-gray-100 border-t border-gray-200 px-5 py-3.5 text-center">
-                <p class="text-[10px] font-bold text-gray-600 leading-tight mb-1.5">এই আইডি কার্ডটি শুধুমাত্র সাংগঠনিক ব্যবহারের জন্য। এটি কোনো সরকারি বা আইনি নথি নয়।</p>
-                <p class="text-[9px] font-semibold text-gray-500 leading-tight">This ID card is for organizational use only. It is not a legally registered credential.</p>
+            <div class="bg-indigo-900 px-4 py-3 text-center">
+                <p class="text-[9px] font-medium text-indigo-100 leading-tight mb-1">এই আইডি কার্ডটি শুধুমাত্র সাংগঠনিক ব্যবহারের জন্য।</p>
+                <p class="text-[8px] font-medium text-indigo-300 leading-tight tracking-wider uppercase">Organizational Use Only</p>
             </div>
         </div>
     </div>
@@ -164,23 +147,23 @@ ob_start();
     
     new QRCode(qrContainer, {
         text: authorUrl,
+        width: 68,
+        height: 68,
+        colorDark : "#111827",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.M
+    });
+</script>
+
+<script>
+    const qrContainer = document.getElementById('qrcode');
+    const authorUrl = '<?php echo SITE_URL; ?>/author.php?id=<?php echo $user['id']; ?>&name=<?php echo urlencode($user['full_name']); ?>';
+    
+    new QRCode(qrContainer, {
+        text: authorUrl,
         width: 72,
         height: 72,
         colorDark : "#111827",
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H
-    });
-</script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var qrData = "<?php echo SITE_URL; ?>/author.php?id=<?php echo $user['id']; ?>&name=<?php echo urlencode($user['full_name']); ?>";
-        new QRCode(document.getElementById("qrcode"), {
-            text: qrData,
-            width: 80,
-            height: 80,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.L
-        });
     });

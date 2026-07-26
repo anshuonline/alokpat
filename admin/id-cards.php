@@ -459,58 +459,42 @@ ob_start();
                 
                 <!-- Printable ID Card Area -->
                 <div id="printable-card" class="print-area w-full flex justify-center pb-4">
-                    <div class="id-card-wrapper bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-300 relative w-[340px] font-sans">
-                        <!-- Top Red Bar -->
-                        <div class="h-2 bg-red-600 w-full"></div>
+                    <div class="id-card-wrapper bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 relative w-[320px] font-sans">
                         
                         <!-- Card Header -->
-                        <div class="bg-gray-50 border-b border-gray-200 p-5 pb-12 flex justify-between items-start relative overflow-hidden">
-                            <div class="flex items-center gap-3 relative z-10">
-                                <div class="bg-white p-1.5 rounded shadow-sm border border-gray-100">
-                                    <?php 
-                                    $real_logo = $site_logo ?: SITE_URL.'/assets/images/logo.png';
-                                    if (strpos($real_logo, 'http') !== 0 && strpos($real_logo, SITE_URL) === false) {
-                                        $real_logo = SITE_URL . '/' . ltrim($real_logo, '/');
-                                    }
-                                    ?>
-                                    <img src="<?= escape($real_logo) ?>" alt="Logo" class="h-9 object-contain">
-                                </div>
-                                <div>
-                                    <div class="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] leading-none mb-1">Alokpat.in</div>
-                                    <div class="text-xl font-black text-gray-900 uppercase tracking-tight leading-none">DIGITAL MEDIA</div>
-                                </div>
-                            </div>
-                            
-                            <!-- PRESS Badge -->
-                            <div class="absolute right-0 top-5 bg-red-600 text-white text-[11px] font-black px-4 py-1.5 shadow-sm rounded-l uppercase tracking-widest z-10">
-                                PRESS
-                            </div>
-                            
-                            <!-- Subtle background pattern -->
-                            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-gray-200 rounded-full opacity-20 z-0"></div>
+                        <div class="bg-white px-4 pt-6 pb-4 flex flex-col items-center border-b-[4px] border-indigo-700">
+                            <?php 
+                            $real_logo = $site_logo ?: SITE_URL.'/assets/images/logo.png';
+                            if (strpos($real_logo, 'http') !== 0 && strpos($real_logo, SITE_URL) === false) {
+                                $real_logo = SITE_URL . '/' . ltrim($real_logo, '/');
+                            }
+                            ?>
+                            <img src="<?= escape($real_logo) ?>" alt="Logo" class="h-10 object-contain mb-2">
+                            <div class="text-[11px] font-black tracking-[0.25em] text-indigo-800 uppercase">Digital Media</div>
                         </div>
-                        
+
                         <!-- Card Body -->
-                        <div class="px-6 pb-6 pt-0 flex flex-col items-center relative z-20">
+                        <div class="px-6 py-6 flex flex-col items-center bg-gradient-to-b from-white to-gray-50">
                             <!-- Avatar -->
-                            <div class="w-[110px] h-[110px] rounded-xl border-4 border-white shadow-lg overflow-hidden -mt-[55px] mb-5 bg-gray-100 flex items-center justify-center relative z-20">
-                                <img src="" id="card-photo" class="w-full h-full object-cover" alt="Employee Photo">
+                            <div class="w-28 h-28 rounded-full border-4 border-indigo-50 shadow-md p-1 mb-4 bg-white flex items-center justify-center overflow-hidden shrink-0">
+                                <img src="" id="card-photo" class="w-full h-full object-cover rounded-full" alt="Employee Photo">
                             </div>
                             
-                            <h3 class="text-[22px] font-black text-gray-900 mb-2 flex items-center justify-center text-center leading-tight uppercase tracking-wide" id="card-name">JOHN DOE</h3>
-                            <div class="bg-red-600 text-white px-5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-[0.1em] shadow-sm mb-6 text-center inline-block" id="card-role">EDITOR (সম্পাদক)</div>
+                            <h3 class="text-xl font-bold text-gray-900 uppercase tracking-wide mb-2 text-center leading-tight" id="card-name">JOHN DOE</h3>
+                            <div class="bg-indigo-50 text-indigo-700 border border-indigo-100 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider mb-6 text-center inline-block" id="card-role">EDITOR (সম্পাদক)</div>
                             
-                            <div class="w-full border-t-2 border-dashed border-gray-200 mb-5"></div>
+                            <div class="w-full h-px bg-gray-200 mb-5"></div>
                             
-                            <div class="w-full flex justify-between items-end gap-2">
-                                <div class="text-sm space-y-3 flex-1 pb-1">
+                            <!-- Info & QR -->
+                            <div class="w-full flex justify-between items-center gap-2">
+                                <div class="space-y-3 flex-1">
                                     <div>
-                                        <span class="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Emp ID</span>
-                                        <span class="font-bold text-gray-800 text-[15px]" id="card-empno">ALP-0000</span>
+                                        <span class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Emp ID</span>
+                                        <span class="font-bold text-gray-800 text-sm" id="card-empno">ALP-0000</span>
                                     </div>
                                     <div>
-                                        <span class="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-0.5">Contact</span>
-                                        <span class="font-bold text-gray-800 text-[15px]" id="card-phone">N/A</span>
+                                        <span class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Contact</span>
+                                        <span class="font-bold text-gray-800 text-sm" id="card-phone">N/A</span>
                                     </div>
                                 </div>
                                 
@@ -521,9 +505,9 @@ ob_start();
                         </div>
                         
                         <!-- Card Footer -->
-                        <div class="bg-gray-100 border-t border-gray-200 px-5 py-3.5 text-center">
-                            <p class="text-[10px] font-bold text-gray-600 leading-tight mb-1.5">এই আইডি কার্ডটি শুধুমাত্র সাংগঠনিক ব্যবহারের জন্য। এটি কোনো সরকারি বা আইনি নথি নয়।</p>
-                            <p class="text-[9px] font-semibold text-gray-500 leading-tight">This ID card is for organizational use only. It is not a legally registered credential.</p>
+                        <div class="bg-indigo-900 px-4 py-3 text-center">
+                            <p class="text-[9px] font-medium text-indigo-100 leading-tight mb-1">এই আইডি কার্ডটি শুধুমাত্র সাংগঠনিক ব্যবহারের জন্য।</p>
+                            <p class="text-[8px] font-medium text-indigo-300 leading-tight tracking-wider uppercase">Organizational Use Only</p>
                         </div>
                     </div>
                 </div>
@@ -596,8 +580,8 @@ ob_start();
             
             qrcode = new QRCode(qrContainer, {
                 text: qrUrl,
-                width: 72,
-                height: 72,
+                width: 68,
+                height: 68,
                 colorDark : "#111827",
                 colorLight : "#ffffff",
                 correctLevel : QRCode.CorrectLevel.H
