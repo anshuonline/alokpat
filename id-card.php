@@ -71,15 +71,15 @@ if (!empty($user['avatar'])) {
             <div id="card-front" class="absolute inset-0 transition-opacity duration-300" style="width:302px; height:480px;">
                 <div style="width:302px; height:480px; border:1px solid #c7d2e0; border-radius:14px; overflow:hidden; background:#fff; font-family:'Segoe UI',Arial,sans-serif; box-shadow:0 4px 20px rgba(0,0,0,0.08); display:flex; flex-direction:column;">
                     <!-- Blue Header -->
-                    <div style="background:linear-gradient(135deg,#1e3a5f 0%,#2563eb 100%); padding:20px 20px 16px; text-align:center;">
+                    <div style="background:linear-gradient(135deg,#1e3a5f 0%,#2563eb 100%); padding:20px 20px 45px; text-align:center;">
                         <img src="<?php echo escape($site_logo); ?>" alt="Logo" style="display:block; margin:0 auto 6px; height:36px; object-fit:contain; filter:brightness(0) invert(1);">
                         <div style="color:#93c5fd; font-size:10px; font-weight:800; letter-spacing:4px; text-transform:uppercase; margin-right:-4px;">Digital Media</div>
                     </div>
 
                     <!-- White Body -->
-                    <div style="padding:18px 22px 16px; text-align:center;">
+                    <div style="padding:0 22px 16px; text-align:center;">
                         <!-- Photo -->
-                        <div style="width:96px; height:128px; border-radius:12px; border:3px solid #2563eb; margin:-64px auto 12px; overflow:hidden; background:#f1f5f9; position:relative; z-index:10;">
+                        <div style="width:96px; height:128px; border-radius:12px; border:3px solid #2563eb; margin:-50px auto 12px; overflow:hidden; background:#f1f5f9; position:relative; z-index:10;">
                             <?php if ($avatar_url): ?>
                                 <img src="<?php echo escape($avatar_url); ?>" alt="<?php echo escape($user['full_name']); ?>" style="width:100%; height:100%; object-fit:cover;">
                             <?php else: ?>
