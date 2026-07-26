@@ -194,6 +194,10 @@ ob_start();
                             <input type="checkbox" id="loc_mobile" class="rounded text-blue-600 focus:ring-blue-500" <?php echo in_array('mobile', $menuLocations) ? 'checked' : ''; ?>>
                             <span class="text-gray-700">Mobile Menu (মোবাইলে দেখাবে)</span>
                         </label>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" id="loc_mobile_horizontal" class="rounded text-blue-600 focus:ring-blue-500" <?php echo in_array('mobile_horizontal', $menuLocations) ? 'checked' : ''; ?>>
+                            <span class="text-gray-700">হরাইজন্টাল ক্যাটাগরি মেনু (mobile only)</span>
+                        </label>
                     </div>
                 </div>
 
@@ -306,6 +310,7 @@ ob_start();
         const locations = [];
         if(document.getElementById('loc_primary').checked) locations.push('primary');
         if(document.getElementById('loc_mobile').checked) locations.push('mobile');
+        if(document.getElementById('loc_mobile_horizontal').checked) locations.push('mobile_horizontal');
 
         const items = [];
         let orderCount = 0;

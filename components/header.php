@@ -13,6 +13,13 @@ $menuModel = new Menu();
 // Fetch Dynamic Menus
 $primaryMenuItems = $menuModel->getMenuByLocation('primary');
 $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
+$mobileHorizontalMenuItems = $menuModel->getMenuByLocation('mobile_horizontal');
+
+$current_full_url = rtrim(SITE_URL, '/') . $_SERVER['REQUEST_URI'];
+$current_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$site_path = parse_url(SITE_URL, PHP_URL_PATH) ?? '';
+// Determine if we are on the home page
+$is_home = ($current_path === $site_path || $current_path === rtrim($site_path, '/') . '/' || $current_path === rtrim($site_path, '/') . '/index.php');
 
 ?>
 
@@ -41,12 +48,19 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
 </div>
 
 <!-- Mobile Horizontal Categories (Sticky) -->
+<?php
+$mobile_hor_menu = !empty($mobileHorizontalMenuItems) ? $mobileHorizontalMenuItems : $primaryMenuItems;
+$hor_home_class = $is_home ? "text-primary-700 font-bold" : "text-gray-700 font-medium hover:text-primary-600";
+?>
 <div class="lg:hidden sticky top-0 z-50 bg-[#f9f8f4] border-b border-gray-200 shadow-sm overflow-x-auto hide-scrollbar">
     <div class="flex items-center px-4 py-2.5 space-x-5 min-w-max">
-        <a href="<?php echo SITE_URL; ?>" class="text-primary-700 font-bold text-[15px] whitespace-nowrap">হোম</a>
-        <?php if (!empty($primaryMenuItems)): ?>
-            <?php foreach ($primaryMenuItems as $item): ?>
-                <a href="<?php echo escape($item['url']); ?>" class="text-gray-700 font-medium text-[15px] hover:text-primary-600 transition-colors whitespace-nowrap">
+        <a href="<?php echo SITE_URL; ?>" class="<?php echo $hor_home_class; ?> text-[15px] whitespace-nowrap transition-colors">হোম</a>
+        <?php if (!empty($mobile_hor_menu)): ?>
+            <?php foreach ($mobile_hor_menu as $item): 
+                $is_item_active = ($item['url'] === $current_full_url || rtrim($item['url'], '/') === rtrim($current_full_url, '/'));
+                $item_class = $is_item_active ? "text-primary-700 font-bold" : "text-gray-700 font-medium hover:text-primary-600";
+            ?>
+                <a href="<?php echo escape($item['url']); ?>" class="<?php echo $item_class; ?> text-[15px] transition-colors whitespace-nowrap">
                     <?php echo escape($item['title']); ?>
                 </a>
             <?php endforeach; ?>
@@ -230,12 +244,6 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
 <div id="mobileMenu" class="hidden lg:hidden bg-white border-b shadow-2xl fixed top-[60px] left-0 w-full z-[100] max-h-[75vh] overflow-y-auto">
         <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col space-y-1">
             <?php
-            $current_full_url = rtrim(SITE_URL, '/') . $_SERVER['REQUEST_URI'];
-            $current_path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-            $site_path = parse_url(SITE_URL, PHP_URL_PATH) ?? '';
-            // Determine if we are on the home page
-            $is_home = ($current_path === $site_path || $current_path === rtrim($site_path, '/') . '/' || $current_path === rtrim($site_path, '/') . '/index.php');
-            
             $home_class = $is_home 
                 ? "px-4 py-3 bg-gray-50 text-primary-800 font-bold border-l-4 border-primary-600 block" 
                 : "px-4 py-3 text-gray-800 font-bold hover:bg-gray-50 transition border-b border-gray-100 block";
