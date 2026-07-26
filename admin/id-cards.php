@@ -509,7 +509,7 @@ ob_start();
                                 <!-- White Body -->
                                 <div style="padding:18px 22px 16px; text-align:center;">
                                     <!-- Photo -->
-                                    <div style="width:100px; height:100px; border-radius:12px; border:3px solid #2563eb; margin:-58px auto 12px; overflow:hidden; background:#f1f5f9;">
+                                    <div style="width:96px; height:128px; border-radius:12px; border:3px solid #2563eb; margin:-64px auto 12px; overflow:hidden; background:#f1f5f9; position:relative; z-index:10;">
                                         <img src="" id="card-photo" style="width:100%; height:100%; object-fit:cover;" alt="">
                                     </div>
 
