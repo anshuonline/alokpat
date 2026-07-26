@@ -441,20 +441,9 @@ component('header', ['categories' => $categories]);
                 if (isset($related_posts) && is_array($related_posts) && count($related_posts) >= 2) {
                     $in_article_html = '<style>
                         .in-article-related .group:hover .hover-title { color: var(--color-primary) !important; }
-                        .stripe-border {
-                            background: repeating-linear-gradient(
-                                -45deg,
-                                var(--color-primary),
-                                var(--color-primary) 10px,
-                                transparent 10px,
-                                transparent 20px
-                            );
-                        }
                     </style>';
-                    $in_article_html .= '<div class="in-article-related my-10 relative bg-[#f8fafc] rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border border-gray-100 overflow-hidden flex flex-col">';
-                    
-                    // Top Striped Border Accent
-                    $in_article_html .= '<div class="h-1.5 w-full stripe-border opacity-80"></div>';
+                    // Removed top stripe. Added border-[2px], border-dashed, and border-gray-300
+                    $in_article_html .= '<div class="in-article-related my-10 relative bg-[#f8fafc] rounded-xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] border-[2px] border-dashed border-gray-300 overflow-hidden flex flex-col">';
                     
                     $in_article_html .= '<div class="p-4 md:p-5">';
                     

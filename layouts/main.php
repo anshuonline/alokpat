@@ -36,6 +36,9 @@
     <?php if (isset($meta_keywords) && !empty($meta_keywords)): ?>
         <meta name="keywords" content="<?php echo escape($meta_keywords); ?>">
     <?php endif; ?>
+    <link rel="manifest" href="<?php echo SITE_URL; ?>/manifest.php">
+    <meta name="theme-color" content="<?php echo escape($setting->get('theme_color_primary') ?: '#2563eb'); ?>">
+
 
 <?php
 // Robots meta
