@@ -467,218 +467,189 @@ ob_start();
 </div>
 
 <!-- ID Card Preview Modal (Tailwind Base) -->
-<div id="idCardModal" class="fixed inset-0 z-[100] hidden items-center justify-center overflow-y-auto overflow-x-hidden bg-black bg-opacity-75 transition-opacity backdrop-blur-sm p-4">
-    <div class="relative w-full max-w-lg flex flex-col items-center justify-center">
-        <!-- Modal control -->
-        <div class="mb-4 flex justify-between w-full max-w-[340px]">
-            <button type="button" onclick="closeModal()" class="text-white bg-gray-600 hover:bg-gray-500 rounded-lg px-4 py-2 shadow-sm font-bold transition-colors">
-                <i class="fas fa-times mr-2"></i> Close
-            </button>
-            <button type="button" onclick="flipCard()" class="text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg px-4 py-2 shadow-sm font-bold transition-colors">
-                <i class="fas fa-sync-alt mr-2"></i> Flip Card
-            </button>
-        </div>
+<div id="idCardModal" class="fixed inset-0 z-[100] hidden bg-gray-900/90 backdrop-blur-sm overflow-y-auto">
+    <div class="min-h-screen px-4 text-center">
+        <!-- Center trick -->
+        <span class="inline-block h-screen align-middle" aria-hidden="true">&#8203;</span>
         
-        <!-- Modal content (Flip Container) -->
-        <div class="flip-container  w-[320px] h-[480px]">
-            <div id="printable-card" class="flipper print-area w-full h-full relative transition-opacity duration-300">
-                
-                <!-- FRONT SIDE -->
-                <div class="id-card-wrapper front-side bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 relative w-full h-full font-sans absolute top-0 left-0 w-full h-full transition-opacity duration-300">
-                    <!-- Card Header -->
-                    <div class="bg-white px-4 pt-6 pb-4 flex flex-col items-center border-b-[4px] border-indigo-700">
-                        <?php 
-                        $real_logo = $site_logo ?: SITE_URL.'/assets/images/logo.png';
-                        if (strpos($real_logo, 'http') !== 0 && strpos($real_logo, SITE_URL) === false) {
-                            $real_logo = SITE_URL . '/' . ltrim($real_logo, '/');
-                        }
-                        ?>
-                        <img src="<?= escape($real_logo) ?>" alt="Logo" class="h-10 object-contain mb-2">
-                        <div class="text-[11px] font-black tracking-[0.25em] text-indigo-800 uppercase">Digital Media</div>
-                    </div>
-
-                    <!-- Card Body -->
-                    <div class="px-6 py-6 flex flex-col items-center bg-gradient-to-b from-white to-gray-50 flex-1">
-                        <!-- Avatar -->
-                        <div class="w-28 h-28 rounded-xl shadow-md border border-gray-200 p-1 mb-4 bg-white flex items-center justify-center overflow-hidden shrink-0 z-10">
-                            <img src="" id="card-photo" class="w-full h-full object-cover rounded-xl" alt="Employee Photo">
-                        </div>
-                        
-                        <h3 class="text-[22px] font-black text-gray-900 mb-1 flex items-center justify-center text-center leading-tight uppercase tracking-wide" id="card-name">JOHN DOE</h3>
-                        <div class="text-[13px] font-extrabold text-gray-800 uppercase tracking-widest mb-4 text-center" id="card-role">EDITOR</div>
-                        
-                        <div class="w-full h-px bg-gray-200 mb-4"></div>
-                        
-                        <!-- Info & QR -->
-                        <div class="w-full flex justify-between items-center gap-2">
-                            <div class="space-y-2 flex-1">
-                                <div>
-                                    <span class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-0.5">Emp ID</span>
-                                    <span class="font-bold text-gray-800 text-sm leading-none" id="card-empno">ALP-0000</span>
-                                </div>
-                                <div>
-                                    <span class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-0.5">Blood Group</span>
-                                    <span class="font-bold text-red-600 text-sm leading-none" id="card-bg">O+</span>
-                                </div>
-                                <div>
-                                    <span class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-0.5">Contact</span>
-                                    <span class="font-bold text-gray-800 text-[13px] leading-none" id="card-phone">N/A</span>
-                                </div>
-                            </div>
-                            
-                            <div class="p-1 bg-white border border-gray-200 rounded-lg shadow-sm shrink-0">
-                                <div id="card-qr"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- BACK SIDE -->
-                <div class="id-card-wrapper back-side bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 relative w-full h-full font-sans absolute top-0 left-0 w-full h-full transition-opacity duration-300 rotate-y-180 flex flex-col">
-                    <div class="h-2 bg-indigo-700 w-full"></div>
-                    
-                    <div class="flex-1 flex flex-col items-center justify-center p-6 relative">
-                        <!-- Watermark -->
-                        <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
-                            <img src="<?= escape($real_logo) ?>" class="w-48 object-contain filter grayscale">
-                        </div>
-                        
-                        <div class="z-10 w-full text-center space-y-6">
-                            <div>
-                                <h4 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-1">Terms & Conditions</h4>
-                                <p class="text-[9px] text-gray-600 leading-relaxed font-medium">
-                                    This card is the property of Alokpat Digital Media. It is for organizational identification only and is not a legally registered credential.
-                                    <br><br>
-                                    If found, please drop it in the nearest mailbox or return to the address below.
-                                </p>
-                            </div>
-                            
-                            <div class="w-12 h-px bg-indigo-200 mx-auto"></div>
-                            
-                            <div>
-                                <h4 class="text-[10px] font-black text-gray-900 uppercase tracking-widest mb-1">Return Address</h4>
-                                <p class="text-[9px] text-gray-600 leading-relaxed font-medium">
-                                    Alokpat Digital Media Office<br>
-                                    Kolkata, West Bengal<br>
-                                    Email: contact@alokpat.in<br>
-                                    Web: www.alokpat.in
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Card Footer -->
-                    <div class="bg-indigo-900 px-4 py-4 text-center">
-                        <p class="text-[9px] font-medium text-indigo-100 leading-tight mb-1">এই আইডি কার্ডটি শুধুমাত্র সাংগঠনিক ব্যবহারের জন্য।</p>
-                        <p class="text-[8px] font-black text-indigo-300 leading-tight tracking-[0.2em] uppercase">Organizational Use Only</p>
-                    </div>
-                </div>
-
+        <div class="inline-block w-full max-w-[380px] p-6 my-8 text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl relative">
+            
+            <!-- Controls -->
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-lg font-bold text-gray-900">ID Card Preview</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-500">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
             </div>
-        </div>
-        
-        <div class="mt-6 flex justify-center w-full">
-            <button type="button" onclick="printCard()" class="text-white bg-indigo-600 hover:bg-indigo-500 font-bold rounded-xl text-base px-8 py-3 shadow-lg transition-colors flex items-center">
-                <i class="fas fa-print mr-2"></i> Print Dual-Sided
-            </button>
+            
+            <div class="flex justify-center mb-4">
+                <button type="button" onclick="flipCard()" class="text-white bg-indigo-600 hover:bg-indigo-700 rounded-lg px-5 py-2 shadow-sm font-bold transition-colors w-full flex items-center justify-center">
+                    <i class="fas fa-sync-alt mr-2"></i> Flip to Back Side
+                </button>
+            </div>
+
+            <!-- Card Container -->
+            <div class="flex justify-center mb-6">
+                <div class="print-area w-[320px] h-[505px] relative">
+                    
+                    <!-- FRONT SIDE -->
+                    <div id="card-front" class="absolute inset-0 bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200 flex flex-col transition-opacity duration-300">
+                        <div class="bg-white px-4 pt-6 pb-4 flex flex-col items-center border-b-[4px] border-indigo-700">
+                            <?php 
+                            $real_logo = $site_logo ?: SITE_URL.'/assets/images/logo.png';
+                            if (strpos($real_logo, 'http') !== 0 && strpos($real_logo, SITE_URL) === false) {
+                                $real_logo = SITE_URL . '/' . ltrim($real_logo, '/');
+                            }
+                            ?>
+                            <img src="<?= escape($real_logo) ?>" alt="Logo" class="h-10 object-contain mb-2">
+                            <div class="text-[11px] font-black tracking-[0.25em] text-indigo-800 uppercase">Digital Media</div>
+                        </div>
+
+                        <div class="px-6 py-6 flex flex-col items-center bg-gradient-to-b from-white to-gray-50 flex-1">
+                            <div class="w-28 h-28 rounded-xl shadow-md border border-gray-200 p-1 mb-4 bg-white flex items-center justify-center overflow-hidden shrink-0 z-10">
+                                <img src="" id="card-photo" class="w-full h-full object-cover rounded-xl" alt="Photo">
+                            </div>
+                            
+                            <h3 class="text-[22px] font-black text-gray-900 mb-1 text-center leading-tight uppercase tracking-wide" id="card-name">JOHN DOE</h3>
+                            <div class="text-[13px] font-extrabold text-gray-800 uppercase tracking-widest mb-4 text-center" id="card-role">EDITOR</div>
+                            
+                            <div class="w-full h-px bg-gray-200 mb-4"></div>
+                            
+                            <div class="w-full flex justify-between items-center gap-2">
+                                <div class="space-y-2 flex-1">
+                                    <div>
+                                        <span class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-0.5">Emp ID</span>
+                                        <span class="font-bold text-gray-800 text-sm leading-none" id="card-empno">ALP-0000</span>
+                                    </div>
+                                    <div>
+                                        <span class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-0.5">Blood Group</span>
+                                        <span class="font-bold text-red-600 text-sm leading-none" id="card-bg">O+</span>
+                                    </div>
+                                    <div>
+                                        <span class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-0.5">Contact</span>
+                                        <span class="font-bold text-gray-800 text-[13px] leading-none" id="card-phone">N/A</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="p-1 bg-white border border-gray-200 rounded-lg shadow-sm shrink-0">
+                                    <div id="card-qr"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BACK SIDE -->
+                    <div id="card-back" class="absolute inset-0 bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200 flex flex-col transition-opacity duration-300 opacity-0 pointer-events-none">
+                        <div class="h-2 bg-indigo-700 w-full shrink-0"></div>
+                        
+                        <div class="flex-1 flex flex-col items-center justify-center p-6 relative">
+                            <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
+                                <img src="<?= escape($real_logo) ?>" class="w-48 object-contain filter grayscale">
+                            </div>
+                            
+                            <div class="z-10 w-full text-center space-y-6">
+                                <div>
+                                    <h4 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-1">Terms & Conditions</h4>
+                                    <p class="text-[10px] text-gray-600 leading-relaxed font-medium">
+                                        This card is the property of Alokpat Digital Media. It is for organizational identification only and is not a legally registered credential.
+                                        <br><br>
+                                        If found, please drop it in the nearest mailbox or return to the address below.
+                                    </p>
+                                </div>
+                                
+                                <div class="w-12 h-px bg-indigo-200 mx-auto"></div>
+                                
+                                <div>
+                                    <h4 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-1">Return Address</h4>
+                                    <p class="text-[10px] text-gray-600 leading-relaxed font-medium">
+                                        Alokpat Digital Media Office<br>
+                                        Kolkata, West Bengal<br>
+                                        Email: contact@alokpat.in<br>
+                                        Web: www.alokpat.in
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-indigo-900 px-4 py-4 text-center shrink-0">
+                            <p class="text-[9px] font-medium text-indigo-100 leading-tight mb-1">এই আইডি কার্ডটি শুধুমাত্র সাংগঠনিক ব্যবহারের জন্য।</p>
+                            <p class="text-[8px] font-black text-indigo-300 leading-tight tracking-[0.2em] uppercase">Organizational Use Only</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-center mt-6 pt-4 border-t border-gray-100">
+                <button type="button" onclick="printCard()" class="text-indigo-600 bg-indigo-50 hover:bg-indigo-100 font-bold rounded-lg px-6 py-2.5 transition-colors flex items-center w-full justify-center">
+                    <i class="fas fa-print mr-2"></i> Print Dual-Sided
+                </button>
+            </div>
+            
         </div>
     </div>
 </div>
 
 <style>
-    . { perspective: 1000px; }
-    .preserve-3d { transform-style: preserve-3d; }
-    .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-    
-    
     /* Print Styles */
     @media print {
         body * { visibility: hidden; }
-        .print-area, .print-area * { visibility: visible; }
         
-        /* Layout front and back side-by-side for printing */
         .print-area {
-            position: absolute;
-            left: 0;
-            top: 0;
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
             transform: none !important;
             width: 100% !important;
-            display: flex;
-            gap: 20px;
-            justify-content: center;
+            display: flex !important;
+            gap: 20px !important;
+            justify-content: center !important;
+            visibility: visible !important;
         }
         
-        .front-side, .back-side {
+        #card-front, #card-back {
             position: relative !important;
-            transform: none !important;
             width: 320px !important;
-            height: 480px !important;
+            height: 505px !important;
             page-break-inside: avoid;
             box-shadow: none !important;
             border: 1px solid #ccc !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+        
+        #card-front *, #card-back * {
+            visibility: visible !important;
         }
 
-        /* Ensure background colors print */
         * {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
         }
     }
 </style>
-<!-- Modal footer -->
-            <div class="flex items-center justify-between p-4 bg-white border-t border-gray-200 rounded-b-2xl">
-                <button type="button" onclick="closeModal()" class="text-gray-600 bg-gray-100 hover:bg-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors">Close</button>
-                <button type="button" onclick="printCard()" class="text-white bg-indigo-600 hover:bg-indigo-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center shadow-sm transition-colors flex items-center">
-                    <i class="fas fa-print mr-2"></i> Print Card
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
-    /* Print Styles */
-    @media print {
-        body * {
-            visibility: hidden;
-        }
-        #printable-card, #printable-card * {
-            visibility: visible;
-        }
-        #printable-card {
-            position: absolute;
-            left: 50%;
-            top: 20px;
-            transform: translateX(-50%);
-            width: 320px !important;
-        }
-        .id-card-wrapper {
-            box-shadow: none !important;
-            border: 1px solid #ddd;
-        }
-        /* Ensure background colors print */
-        * {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-        }
-    }
-</style>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
-    const SITE_URL = '<?= SITE_URL ?>';
-    let qrcode = null;
-    const modal = document.getElementById('idCardModal');
     let isFlipped = false;
     
     function flipCard() {
-        const front = document.querySelector(".front-side");
-        const back = document.querySelector(".back-side");
+        const front = document.getElementById("card-front");
+        const back = document.getElementById("card-back");
         isFlipped = !isFlipped;
         if(isFlipped) {
             front.classList.add("opacity-0", "pointer-events-none");
             back.classList.remove("opacity-0", "pointer-events-none");
         } else {
+            front.classList.remove("opacity-0", "pointer-events-none");
+            back.classList.add("opacity-0", "pointer-events-none");
+        }
+    }
+    const SITE_URL = '<?= SITE_URL ?>';
+    let qrcode = null;
+    const modal = document.getElementById('idCardModal');
+    
+    
+     else {
             front.classList.remove("opacity-0", "pointer-events-none");
             back.classList.add("opacity-0", "pointer-events-none");
         }
