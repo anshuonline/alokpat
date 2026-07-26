@@ -697,7 +697,7 @@ component('header', ['categories' => $categories]);
         <?php if (!empty($related_posts)): ?>
             <div class="mt-12 bg-gray-50 rounded-2xl p-8">
                 <h3 class="text-2xl font-bold mb-6 text-gray-800 text-center">
-                    সম্পর্কিত সংবাদ
+                    আরও পড়ুন
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <?php foreach (array_slice($related_posts, 0, 3) as $related): ?>
