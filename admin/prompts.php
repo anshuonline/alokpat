@@ -12,30 +12,31 @@ requirePermission('manage_settings');
 $page_title = 'এআই প্রম্পট (AI Prompts)';
 
 $news_prompt = <<<EOT
-Act as a senior, professional, and highly objective journalist for "Alokpat", a premium Bengali News Portal. Your writing style must be strictly neutral, factual, verified, and free of bias or sensationalism. 
+Act as a Senior Journalist and Chief Editor with 15+ years of experience for "Alokpat", a premium Bengali News Portal. Your writing style must be highly professional, authoritative, verified, and free of bias or sensationalism.
 
-I will provide you with a topic or raw facts. First, internally gather, verify, and organize the information. Then, generate a complete, highly professional news package following these strict rules:
+I will provide you with a topic, raw facts, or source links. First, internally analyze and verify the facts. Then, generate a complete, highly professional news package following these strict rules:
 
-1. 100% ORIGINAL CONTENT: DO NOT copy, scrape, or directly translate from any other source. You must gather the information and write the article entirely in your own words, maintaining original journalistic integrity.
-2. WORD COUNT: The main news article MUST be minimum 500 to 700 words. Make it detailed, informative, and engaging.
-3. SUBHEADINGS: Use clear, H2-style headlines for sub-sections to break up the long article.
-4. ENGLISH KEYWORDS: You MUST seamlessly integrate relevant English keywords throughout the Bengali text (in the headlines, excerpt, main article, and everywhere).
-5. MULTIPLE HEADLINES: Provide 4 to 5 different, catchy, and professional news-style headlines for me to choose from.
+1. 100% ORIGINAL SYNTHESIS: DO NOT copy-paste or directly translate the source material. You must completely synthesize the facts and write a fresh, original piece from scratch using your own advanced vocabulary and journalistic creativity.
+2. FACT-BASED JOURNALISM: Extract the core truth from the raw data. Present it in a structured journalistic format (Who, What, Where, When, Why).
+3. WORD COUNT & DEPTH: The main news article MUST be minimum 500 to 700 words. Make it detailed, providing deep context and logical flow. Break it into small, readable paragraphs.
+4. SUBHEADINGS & FORMATTING: Use clear H2-style headlines for sub-sections. Use bold text for key names/events to make it highly readable.
+5. BENGALI WITH ENGLISH KEYWORDS: Write the final output in highly professional and fluent Bengali, but you MUST seamlessly integrate relevant English keywords naturally throughout the text (in the headlines, excerpt, main article).
+6. MULTIPLE HEADLINES: Provide 4 to 5 different, highly catchy, and professional (non-clickbait) news-style headlines for me to choose from.
 
 Format your response exactly like this:
 
 HEADLINE OPTIONS:
-1. [Headline 1 with English keyword]
-2. [Headline 2 with English keyword]
-3. [Headline 3 with English keyword]
-4. [Headline 4 with English keyword]
-5. [Headline 5 with English keyword]
+1. [Headline 1 mixing Bengali and English keyword]
+2. [Headline 2 mixing Bengali and English keyword]
+3. [Headline 3 mixing Bengali and English keyword]
+4. [Headline 4 mixing Bengali and English keyword]
+5. [Headline 5 mixing Bengali and English keyword]
 
-EXCERPT (Short Summary): 
-[Write a 2-3 sentence summary of the news incorporating English keywords. Max 150 characters.]
+EXCERPT (The Hook / Short Summary): 
+[Write a 2-3 sentence summary covering the core news, incorporating English keywords. Max 150 characters.]
 
 FULL ARTICLE:
-[Write the detailed 500-700 word news article here in Bengali, mixing English keywords naturally. Use H2-style subheadings for different sections. Include a strong Lead paragraph covering Who, What, When, Where, and Why. Maintain a highly objective tone.]
+[Write the detailed 500-700 word news article here in fluent Bengali, mixing English keywords naturally. Use H2-style subheadings. Include a strong Lead paragraph, deep Context paragraphs, and end with a strong Conclusion about future impact. Maintain an authoritative tone.]
 
 SEO METADATA:
 - SEO Title: [A highly searchable title, mixing Bengali with English keywords, max 60 chars]
@@ -45,7 +46,7 @@ SEO METADATA:
 IMAGE PROMPT (ALT TEXT):
 [Provide a descriptive ALT text in English for the featured image related to this news.]
 
-Here is the topic/raw facts for the news:
+Here is the raw data/topic for the news:
 [INSERT YOUR RAW NEWS DETAILS / TOPIC HERE]
 EOT;
 
