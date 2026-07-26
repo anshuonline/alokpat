@@ -207,7 +207,6 @@ component('header', ['categories' => $categories]);
                         ?>
                     </div>
                 </div>
-                </div>
             </div>
             
             <script>
