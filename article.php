@@ -203,15 +203,6 @@ component('header', ['categories' => $categories]);
                         ?>
                     </div>
                 </div>
-                <div class="flex items-center gap-2 no-print">
-                    <a href="<?php echo SITE_URL; ?>/print.php?slug=<?php echo escape($article['slug']); ?>" target="_blank" class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition" title="Print Article">
-                        <i class="fas fa-print"></i>
-                    </a>
-                    <div class="flex border border-gray-300 rounded overflow-hidden shadow-sm">
-                        <button onclick="setFontSize('small')" class="w-8 h-8 flex items-center justify-center bg-white text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition font-bold text-xs border-r border-gray-300" title="Small Font">A-</button>
-                        <button onclick="setFontSize('medium')" class="w-8 h-8 flex items-center justify-center bg-white text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition font-bold text-sm border-r border-gray-300" title="Medium Font">A</button>
-                        <button onclick="setFontSize('large')" class="w-8 h-8 flex items-center justify-center bg-white text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition font-bold text-base" title="Large Font">A+</button>
-                    </div>
                 </div>
             </div>
             
@@ -280,18 +271,33 @@ component('header', ['categories' => $categories]);
             </div>
         <?php endif; ?>
         
-        <!-- Meta Row (Socials & Prefer on Right) -->
-        <div class="flex items-center justify-center md:justify-end border-y border-gray-100 py-4 mb-8">
+        <!-- Meta Row (Utilities on Left, Socials & Prefer on Right) -->
+        <div class="flex flex-col md:flex-row items-center justify-between border-y border-gray-100 py-4 mb-8 gap-4 md:gap-0">
+            <!-- Utility Buttons -->
+            <div class="flex items-center gap-2 no-print w-full md:w-auto justify-center md:justify-start">
+                <a href="<?php echo SITE_URL; ?>/print.php?slug=<?php echo escape($article['slug']); ?>" target="_blank" class="w-10 h-10 flex items-center justify-center rounded-lg border-2 border-gray-200 text-gray-600 hover:border-blue-500 hover:text-blue-600 transition shadow-sm bg-white" title="Print Article">
+                    <i class="fas fa-print"></i>
+                </a>
+                <div class="flex border-2 border-gray-200 rounded-lg overflow-hidden shadow-sm bg-white">
+                    <button onclick="setFontSize('small')" class="w-10 h-10 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition font-bold text-sm border-r-2 border-gray-200" title="Small Font">A-</button>
+                    <button onclick="setFontSize('medium')" class="w-10 h-10 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition font-bold text-base border-r-2 border-gray-200" title="Medium Font">A</button>
+                    <button onclick="setFontSize('large')" class="w-10 h-10 flex items-center justify-center text-gray-600 hover:bg-gray-50 hover:text-blue-600 transition font-bold text-lg" title="Large Font">A+</button>
+                </div>
+            </div>
+
             <div class="flex flex-wrap items-center gap-3 w-full justify-center md:w-auto md:justify-end no-print">
                 <!-- Google Prefer Button -->
                 <a href="https://google.com/preferences/source?q=<?php echo urlencode(parse_url(SITE_URL, PHP_URL_HOST)); ?>" target="_blank" class="relative inline-flex rounded-full p-[2.5px] overflow-hidden group hover:scale-105 transition-transform shadow-sm hover:shadow-md" style="min-width: 170px; height: 46px;">
                     <span class="absolute block z-0 google-border-bg"></span>
                     <span class="relative z-10 flex items-center gap-2.5 bg-white rounded-full px-3 w-full h-full">
-                        <span class="w-7 h-7 rounded-full flex items-center justify-center overflow-hidden">
+                        <span class="w-7 h-7 rounded-full flex items-center justify-center overflow-hidden relative">
+                            <!-- Google Logo (G) -->
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" class="absolute inset-0 w-full h-full object-contain p-1 animate-logo-flip-1 bg-white">
+                            <!-- Site Logo (A) -->
                             <?php if (!empty($site_info['site_logo'])): ?>
-                                <img src="<?php echo escape($site_info['site_logo']); ?>" class="max-w-[90%] max-h-[90%] object-contain">
+                                <img src="<?php echo escape($site_info['site_logo']); ?>" class="absolute inset-0 w-full h-full object-contain p-[3px] animate-logo-flip-2 bg-white">
                             <?php else: ?>
-                                <span class="text-primary-600 font-bold text-xs bg-gray-100 w-full h-full flex items-center justify-center rounded-full"><?php echo mb_substr($site_info['site_name'] ?? 'A', 0, 1); ?></span>
+                                <span class="absolute inset-0 text-primary-600 font-bold text-xs bg-gray-100 flex items-center justify-center rounded-full animate-logo-flip-2"><?php echo mb_substr($site_info['site_name'] ?? 'A', 0, 1); ?></span>
                             <?php endif; ?>
                         </span>
                         <span class="text-[12.5px] font-bold text-gray-800 leading-[1.15]">
@@ -333,6 +339,18 @@ component('header', ['categories' => $categories]);
                 to { opacity: 1; transform: translateY(0); }
             }
             .animate-fade-in-up { animation: fade-in-up 0.2s ease-out forwards; }
+            @keyframes logo-flip-1 {
+                0%, 45% { opacity: 1; transform: scale(1); }
+                50%, 95% { opacity: 0; transform: scale(0.8); }
+                100% { opacity: 1; transform: scale(1); }
+            }
+            @keyframes logo-flip-2 {
+                0%, 45% { opacity: 0; transform: scale(0.8); }
+                50%, 95% { opacity: 1; transform: scale(1); }
+                100% { opacity: 0; transform: scale(0.8); }
+            }
+            .animate-logo-flip-1 { animation: logo-flip-1 4s ease-in-out infinite; }
+            .animate-logo-flip-2 { animation: logo-flip-2 4s ease-in-out infinite; }
             :root { --btn-primary: #2563eb; --btn-primary-hover: #1d4ed8; }
             .article-content p { margin: 0 0 1.2em 0; font-size: 1.25rem; line-height: 1.9; }
             .article-content p:empty { display: none; }
