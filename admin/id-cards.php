@@ -312,29 +312,29 @@ ob_start();
     }
 </style>
 
-<div class="container-fluid py-4">
-    <div class="row">
+<div class="container mx-auto px-4 py-6">
+    <div class="flex flex-col lg:flex-row gap-6">
         <!-- Generate Form -->
-        <div class="col-lg-4 mb-4">
-            <div class="premium-card p-4">
-                <h4 class="mb-4 text-gray-800 font-weight-bold">
+        <div class="w-full lg:w-1/3">
+            <div class="premium-card p-6">
+                <h4 class="mb-4 text-xl text-gray-800 font-bold flex items-center">
                     <i class="fas fa-id-card-alt text-indigo-500 mr-2"></i>Generate ID Card
                 </h4>
                 
                 <?php if ($success_msg): ?>
-                    <div class="alert alert-success border-0 bg-green-100 text-green-800 rounded-lg"><i class="fas fa-check-circle mr-2"></i><?= escape($success_msg) ?></div>
+                    <div class="mb-4 p-4 bg-green-100 text-green-800 border-l-4 border-green-500 rounded-r-lg"><i class="fas fa-check-circle mr-2"></i><?= escape($success_msg) ?></div>
                 <?php endif; ?>
                 <?php if ($error_msg): ?>
-                    <div class="alert alert-danger border-0 bg-red-100 text-red-800 rounded-lg"><i class="fas fa-exclamation-circle mr-2"></i><?= escape($error_msg) ?></div>
+                    <div class="mb-4 p-4 bg-red-100 text-red-800 border-l-4 border-red-500 rounded-r-lg"><i class="fas fa-exclamation-circle mr-2"></i><?= escape($error_msg) ?></div>
                 <?php endif; ?>
 
                 <form method="POST" action="">
                     <input type="hidden" name="csrf_token" value="<?= generateCSRFToken() ?>">
                     <input type="hidden" name="action" value="generate">
                     
-                    <div class="form-group mb-4">
-                        <label class="text-sm font-weight-bold text-gray-600 mb-2">Select Staff</label>
-                        <select name="user_id" class="premium-input" required>
+                    <div class="mb-4">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Select Staff</label>
+                        <select name="user_id" class="premium-input w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200" required>
                             <option value="">-- Choose User --</option>
                             <?php foreach ($users_without_card as $u): ?>
                                 <option value="<?= $u['id'] ?>"><?= escape($u['full_name']) ?> (<?= escape($u['email']) ?>)</option>
@@ -342,9 +342,9 @@ ob_start();
                         </select>
                     </div>
                     
-                    <div class="form-group mb-4">
-                        <label class="text-sm font-weight-bold text-gray-600 mb-2">ID Card Role</label>
-                        <select name="id_card_role" class="premium-input" required>
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">ID Card Role</label>
+                        <select name="id_card_role" class="premium-input w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200" required>
                             <option value="">-- Choose Role --</option>
                             <?php foreach ($roles as $key => $label): ?>
                                 <option value="<?= $key ?>"><?= escape($label) ?></option>
@@ -352,7 +352,7 @@ ob_start();
                         </select>
                     </div>
                     
-                    <button type="submit" class="btn-generate w-100 mt-2">
+                    <button type="submit" class="btn-generate w-full flex items-center justify-center py-3 rounded-lg text-white font-bold transition-all">
                         <i class="fas fa-magic mr-2"></i> Generate ID Card
                     </button>
                 </form>
@@ -360,73 +360,73 @@ ob_start();
         </div>
 
         <!-- Generated Cards List -->
-        <div class="col-lg-8">
-            <div class="premium-card p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4 class="m-0 text-gray-800 font-weight-bold">
+        <div class="w-full lg:w-2/3">
+            <div class="premium-card p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h4 class="m-0 text-xl text-gray-800 font-bold flex items-center">
                         <i class="fas fa-users text-indigo-500 mr-2"></i>Generated Cards
                     </h4>
-                    <span class="badge bg-indigo-100 text-indigo-800 px-3 py-2 rounded-pill">Total: <?= count($cards) ?></span>
+                    <span class="inline-flex px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm font-bold shadow-sm">Total: <?= count($cards) ?></span>
                 </div>
                 
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="bg-gray-50 text-gray-600 text-xs text-uppercase font-weight-bold">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-gray-50 text-gray-500 text-xs uppercase font-bold border-b border-gray-200">
                             <tr>
-                                <th class="py-3 px-4 border-0 rounded-tl-lg">Employee</th>
-                                <th class="py-3 px-4 border-0">Emp No.</th>
-                                <th class="py-3 px-4 border-0">Role</th>
-                                <th class="py-3 px-4 border-0 rounded-tr-lg text-right">Actions</th>
+                                <th class="py-3 px-4 font-bold text-gray-600">Employee</th>
+                                <th class="py-3 px-4 font-bold text-gray-600">Emp No.</th>
+                                <th class="py-3 px-4 font-bold text-gray-600">Role</th>
+                                <th class="py-3 px-4 font-bold text-gray-600 text-right">Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="text-sm">
+                        <tbody class="text-sm divide-y divide-gray-100">
                             <?php if (empty($cards)): ?>
                             <tr>
-                                <td colspan="4" class="text-center py-5 text-gray-500">
+                                <td colspan="4" class="text-center py-8 text-gray-400">
                                     <i class="fas fa-id-card fa-3x mb-3 opacity-25"></i>
                                     <p class="mb-0">No ID cards generated yet.</p>
                                 </td>
                             </tr>
                             <?php else: ?>
                                 <?php foreach ($cards as $card): ?>
-                                <tr class="border-b border-gray-100">
+                                <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="py-3 px-4">
-                                        <div class="d-flex align-items-center">
+                                        <div class="flex items-center">
                                             <?php 
                                             $img = !empty($card['avatar']) ? SITE_URL . '/' . $card['avatar'] : 'https://ui-avatars.com/api/?name='.urlencode($card['full_name']).'&background=random';
                                             ?>
-                                            <img src="<?= escape($img) ?>" class="rounded-circle mr-3 object-cover" width="40" height="40" alt="">
+                                            <img src="<?= escape($img) ?>" class="w-10 h-10 rounded-full mr-3 object-cover shadow-sm" alt="">
                                             <div>
-                                                <div class="font-weight-bold text-gray-800"><?= escape($card['full_name']) ?></div>
+                                                <div class="font-bold text-gray-800"><?= escape($card['full_name']) ?></div>
                                                 <div class="text-xs text-gray-500"><?= escape($card['email']) ?></div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="py-3 px-4 font-weight-semibold text-indigo-600">
+                                    <td class="py-3 px-4 font-bold text-indigo-600">
                                         <?= escape($card['employee_number']) ?>
                                     </td>
                                     <td class="py-3 px-4 text-gray-600">
-                                        <span class="badge bg-blue-50 text-blue-700 border border-blue-100 p-2">
+                                        <span class="inline-flex px-2 py-1 bg-blue-50 text-blue-700 border border-blue-100 rounded text-xs font-semibold">
                                             <?= escape(isset($roles[$card['id_card_role']]) ? explode(' (', $roles[$card['id_card_role']])[0] : $card['id_card_role']) ?>
                                         </span>
                                     </td>
-                                    <td class="py-3 px-4 text-right">
+                                    <td class="py-3 px-4 text-right space-x-1">
                                         <button type="button" 
-                                                class="btn btn-sm btn-info text-white mr-1 shadow-sm rounded-lg view-card-btn"
+                                                class="px-3 py-1.5 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg shadow-sm text-sm transition-colors view-card-btn inline-flex items-center"
                                                 data-id="<?= $card['id'] ?>"
                                                 data-name="<?= escape($card['full_name']) ?>"
                                                 data-role="<?= escape(isset($roles[$card['id_card_role']]) ? $roles[$card['id_card_role']] : $card['id_card_role']) ?>"
                                                 data-empno="<?= escape($card['employee_number']) ?>"
                                                 data-phone="<?= escape($card['phone'] ?? 'N/A') ?>"
                                                 data-img="<?= escape($img) ?>">
-                                            <i class="fas fa-eye"></i> View
+                                            <i class="fas fa-eye mr-1.5"></i> View
                                         </button>
                                         
-                                        <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to revoke this ID card?');">
+                                        <form method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to revoke this ID card?');">
                                             <input type="hidden" name="csrf_token" value="<?= generateCSRFToken() ?>">
                                             <input type="hidden" name="action" value="revoke">
                                             <input type="hidden" name="user_id" value="<?= $card['id'] ?>">
-                                            <button type="submit" class="btn btn-sm btn-danger shadow-sm rounded-lg">
+                                            <button type="submit" class="px-3 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg shadow-sm text-sm transition-colors inline-flex items-center">
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
@@ -442,22 +442,26 @@ ob_start();
     </div>
 </div>
 
-<!-- ID Card Preview Modal -->
-<div class="modal fade" id="idCardModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content border-0 rounded-2xl shadow-xl overflow-hidden bg-transparent">
-            <div class="modal-body p-0 d-flex justify-content-center bg-gray-100 py-5">
+<!-- ID Card Preview Modal (Tailwind Base) -->
+<div id="idCardModal" class="fixed inset-0 z-[100] hidden items-center justify-center overflow-y-auto overflow-x-hidden bg-black bg-opacity-50 transition-opacity backdrop-blur-sm">
+    <div class="relative w-full max-w-md p-4 flex items-center justify-center">
+        <!-- Modal content -->
+        <div class="relative bg-gray-100 rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
+            <!-- Modal body -->
+            <div class="p-6 flex justify-center">
                 
                 <!-- Printable ID Card Area -->
                 <div id="printable-card" class="print-area">
                     <div class="id-card-wrapper">
                         <div class="id-card-header">
                             <div class="id-card-logo-area">
-                                <?php if ($site_logo): ?>
-                                    <img src="<?= SITE_URL . '/' . $site_logo ?>" alt="Logo">
-                                <?php else: ?>
-                                    <i class="fas fa-newspaper fa-lg"></i>
-                                <?php endif; ?>
+                                <?php 
+                                $real_logo = $site_logo ?: SITE_URL.'/assets/images/logo.png';
+                                if (strpos($real_logo, 'http') !== 0 && strpos($real_logo, SITE_URL) === false) {
+                                    $real_logo = SITE_URL . '/' . ltrim($real_logo, '/');
+                                }
+                                ?>
+                                <img src="<?= escape($real_logo) ?>" alt="Logo">
                                 <h2>DIGITAL MEDIA</h2>
                             </div>
                             <p><?= escape($site_name) ?></p>
@@ -491,7 +495,7 @@ ob_start();
                             <p class="id-disclaimer mb-1">
                                 এই আইডি কার্ডটি শুধুমাত্র সাংগঠনিক ব্যবহারের জন্য। এটি কোনো সরকারি বা আইনি নথি নয়।
                             </p>
-                            <p class="id-disclaimer">
+                            <p class="id-disclaimer" style="margin-top: 4px;">
                                 This ID card is for organizational use only. It is not a legally registered credential.
                             </p>
                         </div>
@@ -499,27 +503,61 @@ ob_start();
                 </div>
 
             </div>
-            <div class="modal-footer bg-white border-top-0 d-flex justify-content-between p-4">
-                <button type="button" class="btn btn-light rounded-lg px-4" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary rounded-lg px-4 shadow-sm" onclick="printCard()">
-                    <i class="fas fa-print mr-2"></i>Print Card
+            <!-- Modal footer -->
+            <div class="flex items-center justify-between p-4 bg-white border-t border-gray-200 rounded-b-2xl">
+                <button type="button" onclick="closeModal()" class="text-gray-600 bg-gray-100 hover:bg-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors">Close</button>
+                <button type="button" onclick="printCard()" class="text-white bg-indigo-600 hover:bg-indigo-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center shadow-sm transition-colors flex items-center">
+                    <i class="fas fa-print mr-2"></i> Print Card
                 </button>
             </div>
         </div>
     </div>
 </div>
 
+<style>
+    /* Print Styles */
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        #printable-card, #printable-card * {
+            visibility: visible;
+        }
+        #printable-card {
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            transform: translateX(-50%);
+            width: 320px !important;
+        }
+        .id-card-wrapper {
+            box-shadow: none !important;
+            border: 1px solid #ddd;
+        }
+        /* Ensure background colors print */
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+    }
+</style>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
     const SITE_URL = '<?= SITE_URL ?>';
     let qrcode = null;
+    const modal = document.getElementById('idCardModal');
+
+    function closeModal() {
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+    }
 
     document.querySelectorAll('.view-card-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const data = this.dataset;
             
             document.getElementById('card-name').textContent = data.name;
-            document.getElementById('card-role').textContent = data.role.replace(/^[^\s]+\s/, ''); // Remove emoji for cleaner look or keep it. We'll keep full text
             document.getElementById('card-role').textContent = data.role;
             document.getElementById('card-empno').textContent = data.empno;
             document.getElementById('card-phone').textContent = data.phone;
@@ -541,8 +579,16 @@ ob_start();
             });
 
             // Show Modal
-            $('#idCardModal').modal('show');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         });
+    });
+
+    // Close modal when clicking outside
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal || e.target.closest('.w-full.max-w-md') === modal.firstElementChild && !e.target.closest('.bg-gray-100')) {
+            closeModal();
+        }
     });
 
     function printCard() {
