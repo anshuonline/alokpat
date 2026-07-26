@@ -5,5 +5,7 @@ Disallow: /helpers/
 Disallow: /models/
 Disallow: /components/
 Disallow: /layouts/
+Disallow: /api/
+Disallow: /search.php
 
-Sitemap: https://alokpat.in/sitemap.php
+Sitemap: https://alokpat.in/sitemap.xml

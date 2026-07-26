@@ -30,6 +30,25 @@ if ($type === 'index') {
 else if ($type === 'posts') {
     echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
     
+    // Homepage
+    echo '  <url>' . "\n";
+    echo '      <loc>' . SITE_URL . '/</loc>' . "\n";
+    echo '      <lastmod>' . date('Y-m-d\TH:i:sP') . '</lastmod>' . "\n";
+    echo '      <changefreq>daily</changefreq>' . "\n";
+    echo '      <priority>1.0</priority>' . "\n";
+    echo '  </url>' . "\n";
+    
+    // Static Pages
+    $static_pages = ['about.php', 'contact.php', 'privacy.php', 'terms.php', 'disclaimer.php'];
+    foreach ($static_pages as $page) {
+        echo '  <url>' . "\n";
+        echo '      <loc>' . SITE_URL . '/' . $page . '</loc>' . "\n";
+        echo '      <lastmod>' . date('Y-m-d\TH:i:sP') . '</lastmod>' . "\n";
+        echo '      <changefreq>monthly</changefreq>' . "\n";
+        echo '      <priority>0.5</priority>' . "\n";
+        echo '  </url>' . "\n";
+    }
+    
     try {
         $sql = "SELECT p.slug, p.updated_at, c.slug as category_slug 
                 FROM posts p 

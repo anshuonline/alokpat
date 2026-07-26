@@ -54,41 +54,74 @@ if (($article['post_type'] ?? 'standard') === 'live_blog') {
 $category = new Category();
 $categories = $category->getActive();
 
-ob_start();
-?>
+// Set SEO variables for main.php <head>
+$meta_description = $article['seo_description'] ?? $article['excerpt'] ?? '';
+$meta_keywords = $article['seo_keywords'] ?? '';
+$meta_robots = ($article['status'] === 'unlisted') ? 'noindex,nofollow' : ($article['robots_meta'] ?? 'index,follow');
+$canonical_url = !empty($article['canonical_url']) ? $article['canonical_url'] : url_for_post($article);
 
-<!-- SEO Meta Tags -->
-<?php if ($article['status'] === 'unlisted'): ?>
-<meta name="robots" content="noindex,nofollow">
-<?php else: ?>
-<meta name="robots" content="<?php echo escape($article['robots_meta'] ?? 'index,follow'); ?>">
-<?php endif; ?>
-<meta name="description" content="<?php echo escape($article['seo_description'] ?? $article['excerpt'] ?? ''); ?>">
-<meta name="keywords" content="<?php echo escape($article['seo_keywords'] ?? ''); ?>">
-<link rel="canonical" href="<?php echo url_for_post($article); ?>">
-
-<!-- Open Graph -->
-<meta property="og:title" content="<?php echo escape($article['meta_og_title'] ?? $article['title']); ?>">
-<meta property="og:description" content="<?php echo escape($article['meta_og_description'] ?? $article['excerpt'] ?? ''); ?>">
-<?php 
+// OG tags
+$og_title = $article['meta_og_title'] ?? $article['title'];
+$og_description = $article['meta_og_description'] ?? $article['excerpt'] ?? '';
 $og_image = !empty($article['meta_og_image']) ? $article['meta_og_image'] : (!empty($article['featured_image']) ? $article['featured_image'] : '');
 if (!empty($og_image) && !preg_match('~^(?:f|ht)tps?://~i', $og_image)) {
     $og_image = rtrim(SITE_URL, '/') . '/' . ltrim($og_image, '/');
 }
-if (!empty($og_image)): 
-?>
-<meta property="og:image" content="<?php echo escape($og_image); ?>">
-<?php endif; ?>
-<meta property="og:type" content="article">
-<meta property="og:url" content="<?php echo url_for_post($article); ?>">
+$og_type = 'article';
+$og_url = url_for_post($article);
+$twitter_card = $article['meta_twitter_card'] ?? 'summary_large_image';
 
-<!-- Twitter Card -->
-<meta name="twitter:card" content="<?php echo escape($article['meta_twitter_card'] ?? 'summary_large_image'); ?>">
-<meta name="twitter:title" content="<?php echo escape($article['meta_og_title'] ?? $article['title']); ?>">
-<meta name="twitter:description" content="<?php echo escape($article['meta_og_description'] ?? $article['excerpt'] ?? ''); ?>">
-<?php if (!empty($og_image)): ?>
-<meta name="twitter:image" content="<?php echo escape($og_image); ?>">
-<?php endif; ?>
+$setting_obj = new Setting();
+$json_ld = [
+    '@context' => 'https://schema.org',
+    '@type' => 'NewsArticle',
+    'headline' => $article['title'],
+    'description' => $meta_description,
+    'image' => !empty($og_image) ? [$og_image] : [],
+    'datePublished' => date('c', strtotime($article['published_at'] ?? $article['created_at'])),
+    'dateModified' => date('c', strtotime($article['updated_at'] ?? $article['published_at'] ?? $article['created_at'])),
+    'author' => [
+        '@type' => 'Person',
+        'name' => $article['author_name'] ?? 'আলোকপাত'
+    ],
+    'publisher' => [
+        '@type' => 'Organization',
+        'name' => $setting_obj->get('site_name') ?: 'আলোকপাত',
+        'logo' => [
+            '@type' => 'ImageObject',
+            'url' => SITE_URL . '/assets/images/logo.png'
+        ]
+    ],
+    'mainEntityOfPage' => [
+        '@type' => 'WebPage',
+        '@id' => url_for_post($article)
+    ]
+];
+
+$breadcrumb_ld = [
+    '@context' => 'https://schema.org',
+    '@type' => 'BreadcrumbList',
+    'itemListElement' => [
+        ['@type' => 'ListItem', 'position' => 1, 'name' => 'প্রচ্ছদ', 'item' => SITE_URL],
+    ]
+];
+if (!empty($article['category_name'])) {
+    $breadcrumb_ld['itemListElement'][] = [
+        '@type' => 'ListItem', 'position' => 2, 
+        'name' => $article['category_name'], 
+        'item' => SITE_URL . '/category.php?slug=' . ($article['category_slug'] ?? '')
+    ];
+    $breadcrumb_ld['itemListElement'][] = [
+        '@type' => 'ListItem', 'position' => 3, 'name' => $article['title']
+    ];
+} else {
+    $breadcrumb_ld['itemListElement'][] = [
+        '@type' => 'ListItem', 'position' => 2, 'name' => $article['title']
+    ];
+}
+
+ob_start();
+?>
 
 <?php
 component('header', ['categories' => $categories]);

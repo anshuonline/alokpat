@@ -36,6 +36,65 @@
     <?php if (isset($meta_keywords) && !empty($meta_keywords)): ?>
         <meta name="keywords" content="<?php echo escape($meta_keywords); ?>">
     <?php endif; ?>
+
+<?php
+// Robots meta
+if (isset($meta_robots) && !empty($meta_robots)): ?>
+    <meta name="robots" content="<?php echo escape($meta_robots); ?>">
+<?php endif; ?>
+
+<?php
+// Canonical URL
+if (isset($canonical_url) && !empty($canonical_url)): ?>
+    <link rel="canonical" href="<?php echo escape($canonical_url); ?>">
+<?php endif; ?>
+
+<!-- Open Graph -->
+<meta property="og:site_name" content="<?php echo escape($site_name); ?>">
+<meta property="og:locale" content="bn_BD">
+<?php if (isset($og_title) && !empty($og_title)): ?>
+    <meta property="og:title" content="<?php echo escape($og_title); ?>">
+<?php else: ?>
+    <meta property="og:title" content="<?php echo escape(trim($title_to_print)); ?>">
+<?php endif; ?>
+<?php if (isset($og_description) && !empty($og_description)): ?>
+    <meta property="og:description" content="<?php echo escape($og_description); ?>">
+<?php elseif (isset($meta_description) && !empty($meta_description)): ?>
+    <meta property="og:description" content="<?php echo escape($meta_description); ?>">
+<?php endif; ?>
+<?php if (isset($og_image) && !empty($og_image)): ?>
+    <meta property="og:image" content="<?php echo escape($og_image); ?>">
+<?php endif; ?>
+<meta property="og:type" content="<?php echo isset($og_type) ? escape($og_type) : 'website'; ?>">
+<meta property="og:url" content="<?php echo isset($og_url) ? escape($og_url) : escape(SITE_URL . $_SERVER['REQUEST_URI']); ?>">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="<?php echo isset($twitter_card) ? escape($twitter_card) : 'summary_large_image'; ?>">
+<?php if (isset($og_title) && !empty($og_title)): ?>
+    <meta name="twitter:title" content="<?php echo escape($og_title); ?>">
+<?php else: ?>
+    <meta name="twitter:title" content="<?php echo escape(trim($title_to_print)); ?>">
+<?php endif; ?>
+<?php if (isset($og_description) && !empty($og_description)): ?>
+    <meta name="twitter:description" content="<?php echo escape($og_description); ?>">
+<?php elseif (isset($meta_description) && !empty($meta_description)): ?>
+    <meta name="twitter:description" content="<?php echo escape($meta_description); ?>">
+<?php endif; ?>
+<?php if (isset($og_image) && !empty($og_image)): ?>
+    <meta name="twitter:image" content="<?php echo escape($og_image); ?>">
+<?php endif; ?>
+
+<!-- RSS Feed -->
+<link rel="alternate" type="application/rss+xml" title="<?php echo escape($site_name); ?> RSS Feed" href="<?php echo SITE_URL; ?>/feed.php">
+
+<?php
+// JSON-LD Structured Data
+if (isset($json_ld)): ?>
+    <script type="application/ld+json"><?php echo json_encode($json_ld, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT); ?></script>
+<?php endif; ?>
+<?php if (isset($breadcrumb_ld)): ?>
+    <script type="application/ld+json"><?php echo json_encode($breadcrumb_ld, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT); ?></script>
+<?php endif; ?>
     <?php
     $google_search_console = $setting->get('google_search_console');
     if ($google_search_console) {

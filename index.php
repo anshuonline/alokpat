@@ -62,6 +62,27 @@ $page_title = $home_seo_title ?: 'প্রচ্ছদ';
 $meta_description = $setting->get('home_seo_description') ?: '';
 $meta_keywords = $setting->get('home_seo_keywords') ?: '';
 
+$canonical_url = SITE_URL . '/';
+$og_type = 'website';
+$og_url = SITE_URL . '/';
+
+// Get logo URL for schema
+$_setting = new Setting();
+$_site_name = $_setting->get('site_name') ?: 'আলোকপাত';
+$_site_logo = $_setting->get('site_logo') ?: (SITE_URL . '/assets/images/logo.png');
+
+$json_ld = [
+    '@context' => 'https://schema.org',
+    '@type' => 'WebSite',
+    'name' => $_site_name,
+    'url' => SITE_URL,
+    'potentialAction' => [
+        '@type' => 'SearchAction',
+        'target' => SITE_URL . '/search.php?q={search_term_string}',
+        'query-input' => 'required name=search_term_string'
+    ]
+];
+
 ob_start();
 
 // Include Header Component
