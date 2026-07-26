@@ -315,9 +315,16 @@ component('header', ['categories' => $categories]);
             .article-content img { max-width: 100%; height: auto; }
             .article-content iframe { max-width: 100%; border-radius: 8px; }
             .article-content iframe[src*="youtube.com"], .article-content iframe[src*="youtu.be"] { width: 100%; aspect-ratio: 16 / 9; height: auto; }
-            .article-content table { border-collapse: collapse; width: 100%; margin: 1.2em 0; overflow-x: auto; display: block; }
-            .article-content table td, .article-content table th { border: 1px solid #d1d5db; padding: 8px 14px; }
-            .article-content table th { background: #f3f4f6; font-weight: 700; }
+            .article-content table { border-collapse: separate; border-spacing: 0; width: max-content; min-width: 100%; margin: 1.5em 0; font-size: 0.95rem; border-radius: 10px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; }
+            .article-content table thead { background: linear-gradient(135deg, var(--color-primary-600, #2563eb), var(--color-primary-700, #1d4ed8)); }
+            .article-content table th { padding: 12px 18px; font-weight: 700; color: #ffffff; text-align: left; font-size: 0.9rem; letter-spacing: 0.02em; border: none; border-bottom: 2px solid var(--color-primary-800, #1e40af); white-space: nowrap; }
+            .article-content table td { padding: 11px 18px; color: #374151; border-bottom: 1px solid #f0f0f0; border-right: none; border-left: none; transition: background 0.15s; }
+            .article-content table tbody tr:nth-child(even) { background: #f9fafb; }
+            .article-content table tbody tr:nth-child(odd) { background: #ffffff; }
+            .article-content table tbody tr:hover { background: #eef2ff; }
+            .article-content table tbody tr:last-child td { border-bottom: none; }
+            .article-content table caption { padding: 10px 0; font-weight: 600; font-size: 1rem; color: #4b5563; text-align: left; }
+            @media (max-width: 768px) { .article-content table { font-size: 0.85rem; } .article-content table th, .article-content table td { padding: 8px 12px; } }
             .article-content blockquote { border-left: 4px solid #2563eb; padding: 12px 20px; margin: 1.2em 0; background: #eff6ff; color: #1e40af; border-radius: 0 6px 6px 0; }
             .article-content h1, .article-content h2, .article-content h3 { font-weight: 700; margin: 1.4em 0 0.6em; }
             .article-content h2 { font-size: 1.5em; }
@@ -399,6 +406,34 @@ component('header', ['categories' => $categories]);
                     }
                     
                     return '<img' . $attrs . '>';
+                }, $processed_content);
+                
+                // Wrap tables in a responsive scroll container and fix missing thead
+                $processed_content = preg_replace_callback('/<table(.*?)>(.*?)<\/table>/is', function($matches) {
+                    $table_attrs = $matches[1];
+                    $table_inner = $matches[2];
+                    
+                    // If table has no <thead>, convert first <tr> to thead with <th> cells
+                    if (stripos($table_inner, '<thead') === false) {
+                        $table_inner = preg_replace_callback('/<tr(.*?)>(.*?)<\/tr>/is', function($row) {
+                            static $first = true;
+                            if ($first) {
+                                $first = false;
+                                $cells = preg_replace('/<td(.*?)>(.*?)<\/td>/is', '<th$1>$2</th>', $row[2]);
+                                return '<thead><tr' . $row[1] . '>' . $cells . '</tr></thead><tbody>';
+                            }
+                            return '<tr' . $row[1] . '>' . $row[2] . '</tr>';
+                        }, $table_inner);
+                        // Close tbody if we opened it
+                        if (stripos($table_inner, '<tbody>') !== false && stripos($table_inner, '</tbody>') === false) {
+                            $table_inner .= '</tbody>';
+                        }
+                    }
+                    
+                    // Remove any inline styles from td/th that break our design
+                    $table_inner = preg_replace('/(<t[dh][^>]*)\s+style="[^"]*"/i', '$1', $table_inner);
+                    
+                    return '<div class="overflow-x-auto rounded-xl mb-4 -mx-1" style="scrollbar-width: thin;"><table' . $table_attrs . '>' . $table_inner . '</table></div>';
                 }, $processed_content);
                 
                 echo $processed_content;
