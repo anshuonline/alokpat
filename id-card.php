@@ -79,7 +79,7 @@ if (!empty($user['avatar'])) {
                     <!-- White Body -->
                     <div style="padding:0 22px 12px; text-align:center; flex:1; display:flex; flex-direction:column;">
                         <!-- Photo -->
-                        <div style="width:96px; height:128px; border-radius:12px; border:none; margin:-40px auto 12px; overflow:hidden; background:#f1f5f9; position:relative; z-index:10; box-shadow:0 8px 16px rgba(0,0,0,0.15);">
+                        <div style="width:96px; height:128px; border-radius:12px; border:none; margin:-40px auto 12px; overflow:hidden; background:#f1f5f9; position:relative; z-index:10;">
                             <?php if ($avatar_url): ?>
                                 <img src="<?php echo escape($avatar_url); ?>" alt="<?php echo escape($user['full_name']); ?>" style="width:100%; height:100%; object-fit:cover;">
                             <?php else: ?>
@@ -102,17 +102,17 @@ if (!empty($user['avatar'])) {
                         <div style="display:flex; justify-content:space-between; align-items:flex-end;">
                             <div style="text-align:left;">
                                 <div style="margin-bottom:8px;">
-                                    <div style="font-size:8px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:2px; margin-bottom:1px;">Emp ID</div>
-                                    <div style="font-size:14px; font-weight:800; color:#1e3a5f;">ALP-<?php echo str_pad($user['id'], 4, '0', STR_PAD_LEFT); ?></div>
+                                    <div style="font-size:9px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:1px; margin-bottom:2px;">Emp ID</div>
+                                    <div style="font-size:15px; font-weight:900; color:#111827;">ALP-<?php echo str_pad($user['id'], 4, '0', STR_PAD_LEFT); ?></div>
                                 </div>
                                 <div style="margin-bottom:8px;">
-                                    <div style="font-size:8px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:2px; margin-bottom:1px;">Blood Group</div>
-                                    <div style="font-size:14px; font-weight:800; color:#dc2626;"><?php echo escape($user['blood_group'] ?? 'N/A'); ?></div>
+                                    <div style="font-size:9px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:1px; margin-bottom:2px;">Blood Group</div>
+                                    <div style="font-size:15px; font-weight:900; color:#dc2626;"><?php echo escape($user['blood_group'] ?? 'N/A'); ?></div>
                                 </div>
                                 <?php if (!empty($user['phone'])): ?>
                                 <div>
-                                    <div style="font-size:8px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:2px; margin-bottom:1px;">Contact</div>
-                                    <div style="font-size:13px; font-weight:800; color:#1e3a5f;"><?php echo escape($user['phone']); ?></div>
+                                    <div style="font-size:9px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:1px; margin-bottom:2px;">Contact</div>
+                                    <div style="font-size:15px; font-weight:900; color:#111827;"><?php echo escape($user['phone']); ?></div>
                                 </div>
                                 <?php endif; ?>
                             </div>

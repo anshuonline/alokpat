@@ -509,7 +509,7 @@ ob_start();
                                 <!-- White Body -->
                                 <div style="padding:0 22px 12px; text-align:center; flex:1; display:flex; flex-direction:column;">
                                     <!-- Photo -->
-                                    <div style="width:96px; height:128px; border-radius:12px; border:none; margin:-40px auto 12px; overflow:hidden; background:#f1f5f9; position:relative; z-index:10; box-shadow:0 8px 16px rgba(0,0,0,0.15);">
+                                    <div style="width:96px; height:128px; border-radius:12px; border:none; margin:-40px auto 12px; overflow:hidden; background:#f1f5f9; position:relative; z-index:10;">
                                         <img src="" id="card-photo" style="width:100%; height:100%; object-fit:cover;" alt="">
                                     </div>
 
@@ -526,16 +526,16 @@ ob_start();
                                     <div style="display:flex; justify-content:space-between; align-items:flex-end;">
                                         <div style="text-align:left;">
                                             <div style="margin-bottom:8px;">
-                                                <div style="font-size:8px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:2px; margin-bottom:1px;">Emp ID</div>
-                                                <div id="card-empno" style="font-size:14px; font-weight:800; color:#1e3a5f;">ALP-0001</div>
+                                                <div style="font-size:9px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:1px; margin-bottom:2px;">Emp ID</div>
+                                                <div id="card-empno" style="font-size:15px; font-weight:900; color:#111827;">ALP-0001</div>
                                             </div>
                                             <div style="margin-bottom:8px;">
-                                                <div style="font-size:8px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:2px; margin-bottom:1px;">Blood Group</div>
-                                                <div id="card-bg" style="font-size:14px; font-weight:800; color:#dc2626;">O+</div>
+                                                <div style="font-size:9px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:1px; margin-bottom:2px;">Blood Group</div>
+                                                <div id="card-bg" style="font-size:15px; font-weight:900; color:#dc2626;">O+</div>
                                             </div>
                                             <div>
-                                                <div style="font-size:8px; font-weight:700; color:#9ca3af; text-transform:uppercase; letter-spacing:2px; margin-bottom:1px;">Contact</div>
-                                                <div id="card-phone" style="font-size:13px; font-weight:800; color:#1e3a5f;">N/A</div>
+                                                <div style="font-size:9px; font-weight:800; color:#6b7280; text-transform:uppercase; letter-spacing:1px; margin-bottom:2px;">Contact</div>
+                                                <div id="card-phone" style="font-size:15px; font-weight:900; color:#111827;">N/A</div>
                                             </div>
                                         </div>
                                         <div style="padding:3px; border:1px solid #e5e7eb; border-radius:8px; background:#fff;">
