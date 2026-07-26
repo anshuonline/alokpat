@@ -224,9 +224,10 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
             </div>
         </div>
     </div>
+</nav>
     
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="hidden lg:hidden bg-white border-b shadow-2xl absolute top-full left-0 w-full z-40 max-h-[75vh] overflow-y-auto">
+<!-- Mobile Menu -->
+<div id="mobileMenu" class="hidden lg:hidden bg-white border-b shadow-2xl fixed top-[60px] left-0 w-full z-[100] max-h-[75vh] overflow-y-auto">
         <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col space-y-1">
             <?php
             $current_full_url = rtrim(SITE_URL, '/') . $_SERVER['REQUEST_URI'];
@@ -290,7 +291,6 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
             <?php endif; ?>
         </div>
     </div>
-</nav>
 
 <!-- Secondary Bar Removed -->
 
