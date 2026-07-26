@@ -393,7 +393,14 @@ ob_start();
                                     <td class="py-3 px-4">
                                         <div class="flex items-center">
                                             <?php 
-                                            $img = !empty($card['avatar']) ? SITE_URL . '/' . $card['avatar'] : 'https://ui-avatars.com/api/?name='.urlencode($card['full_name']).'&background=random';
+                                            $img = 'https://ui-avatars.com/api/?name='.urlencode($card['full_name']).'&background=random';
+                                            if (!empty($card['avatar'])) {
+                                                if (strpos($card['avatar'], 'http') === 0) {
+                                                    $img = $card['avatar'];
+                                                } else {
+                                                    $img = SITE_URL . '/' . ltrim($card['avatar'], '/');
+                                                }
+                                            }
                                             ?>
                                             <img src="<?= escape($img) ?>" class="w-10 h-10 rounded-full mr-3 object-cover shadow-sm" alt="">
                                             <div>

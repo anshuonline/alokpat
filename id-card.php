@@ -87,7 +87,13 @@ ob_start();
                 <!-- Avatar -->
                 <div class="w-24 h-24 rounded-full border-4 border-white shadow-lg overflow-hidden -mt-12 mb-4 bg-gray-100 flex items-center justify-center">
                     <?php if (!empty($user['avatar'])): ?>
-                        <img src="<?php echo SITE_URL . '/' . escape($user['avatar']); ?>" alt="<?php echo escape($user['full_name']); ?>" class="w-full h-full object-cover">
+                        <?php
+                        $avatar_url = $user['avatar'];
+                        if (strpos($avatar_url, 'http') !== 0) {
+                            $avatar_url = SITE_URL . '/' . ltrim($avatar_url, '/');
+                        }
+                        ?>
+                        <img src="<?php echo escape($avatar_url); ?>" alt="<?php echo escape($user['full_name']); ?>" class="w-full h-full object-cover">
                     <?php else: ?>
                         <i class="fas fa-user text-gray-400 text-4xl"></i>
                     <?php endif; ?>
