@@ -257,9 +257,9 @@ component('header', ['categories' => $categories]);
             </div>
         <?php endif; ?>
         
-        <!-- Meta Row (Date on Left, Socials on Right) -->
-        <div class="flex flex-col md:flex-row items-center justify-between border-y border-gray-100 py-4 mb-8 gap-4 md:gap-0">
-            <div class="text-gray-500 text-sm font-medium flex flex-col sm:flex-row items-center gap-2 md:gap-4 w-full md:w-auto">
+        <!-- Meta Row (Date on Left, Socials & Prefer on Right) -->
+        <div class="flex flex-col xl:flex-row items-center justify-between border-y border-gray-100 py-4 mb-8 gap-5 xl:gap-0">
+            <div class="text-gray-500 text-sm font-medium flex flex-col sm:flex-row items-center gap-2 md:gap-3 w-full xl:w-auto">
                 <span class="flex items-center justify-center bg-gray-50 px-3 py-1.5 rounded-md border border-gray-100 w-full sm:w-auto"><i class="far fa-clock mr-1.5"></i> <?php echo formatDateBengali($article['published_at'] ?? $article['created_at']); ?></span>
                 <?php 
                 if (!empty($article['updated_at'])) {
@@ -282,30 +282,57 @@ component('header', ['categories' => $categories]);
                 ?>
             </div>
             
-            <div class="flex items-center space-x-2 md:space-x-3 w-full md:w-auto justify-center md:justify-end no-print">
-                <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(url_for_post($article)); ?>" 
-                   target="_blank"
-                   class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 transition shadow-sm hover:shadow-md" title="Share on Facebook">
-                    <i class="fab fa-facebook-f text-lg"></i>
+            <div class="flex flex-wrap items-center justify-center xl:justify-end gap-3 w-full xl:w-auto no-print">
+                <!-- Google Prefer Button -->
+                <a href="https://google.com/preferences/source?q=<?php echo urlencode(parse_url(SITE_URL, PHP_URL_HOST)); ?>" target="_blank" class="relative inline-flex rounded-full p-[2.5px] overflow-hidden group hover:scale-105 transition-transform shadow-sm hover:shadow-md" style="min-width: 170px; height: 46px;">
+                    <span class="absolute block z-0 google-border-bg"></span>
+                    <span class="relative z-10 flex items-center gap-2.5 bg-white rounded-full px-3 w-full h-full">
+                        <span class="w-7 h-7 rounded-full flex items-center justify-center overflow-hidden">
+                            <?php if (!empty($site_info['site_logo'])): ?>
+                                <img src="<?php echo escape($site_info['site_logo']); ?>" class="max-w-[90%] max-h-[90%] object-contain">
+                            <?php else: ?>
+                                <span class="text-primary-600 font-bold text-xs bg-gray-100 w-full h-full flex items-center justify-center rounded-full"><?php echo mb_substr($site_info['site_name'] ?? 'A', 0, 1); ?></span>
+                            <?php endif; ?>
+                        </span>
+                        <span class="text-[12.5px] font-bold text-gray-800 leading-[1.15]">
+                            Prefer <span class="text-primary-600"><?php echo escape($site_info['site_name'] ?? 'Alokpat'); ?></span><br>on Google
+                        </span>
+                    </span>
                 </a>
-                <a href="https://wa.me/?text=<?php echo urlencode($article['title'] . ' ' . url_for_post($article)); ?>" 
-                   target="_blank"
-                   class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 transition shadow-sm hover:shadow-md" title="Share on WhatsApp">
-                    <i class="fab fa-whatsapp text-xl"></i>
-                </a>
-                <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode(url_for_post($article)); ?>&text=<?php echo urlencode($article['title']); ?>" 
-                   target="_blank"
-                   class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-900 text-white flex items-center justify-center hover:bg-black transition shadow-sm hover:shadow-md" title="Share on X">
-                    <i class="fa-brands fa-x-twitter text-lg"></i>
-                </a>
-                <button onclick="navigator.clipboard.writeText('<?php echo url_for_post($article); ?>'); alert('Link copied!');"
-                   class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-gray-600 text-white flex items-center justify-center hover:bg-gray-700 transition shadow-sm hover:shadow-md" title="Copy Link">
-                    <i class="fas fa-link text-lg"></i>
-                </button>
+
+                <!-- Share Button with Dropdown -->
+                <div class="relative group/share" tabindex="0">
+                    <button class="w-[46px] h-[46px] rounded-full border-2 border-gray-200 text-gray-600 flex items-center justify-center group-hover/share:border-blue-500 group-hover/share:text-blue-600 transition shadow-sm bg-white focus:outline-none">
+                        <i class="fas fa-share-nodes text-xl"></i>
+                    </button>
+                    <!-- Dropdown Menu -->
+                    <div class="absolute right-0 top-full pt-2 hidden group-hover/share:block focus-within:block z-30">
+                        <div class="flex flex-col gap-2 bg-white p-2.5 rounded-2xl shadow-[0_5px_25px_-5px_rgba(0,0,0,0.15)] border border-gray-100 animate-fade-in-up">
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo urlencode(url_for_post($article)); ?>" target="_blank" class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-600 hover:text-white transition" title="Facebook"><i class="fab fa-facebook-f text-lg"></i></a>
+                            <a href="https://wa.me/?text=<?php echo urlencode($article['title'] . ' ' . url_for_post($article)); ?>" target="_blank" class="w-10 h-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center hover:bg-green-500 hover:text-white transition" title="WhatsApp"><i class="fab fa-whatsapp text-xl"></i></a>
+                            <a href="https://twitter.com/intent/tweet?url=<?php echo urlencode(url_for_post($article)); ?>&text=<?php echo urlencode($article['title']); ?>" target="_blank" class="w-10 h-10 rounded-full bg-gray-50 text-gray-900 flex items-center justify-center hover:bg-gray-900 hover:text-white transition" title="X"><i class="fa-brands fa-x-twitter text-lg"></i></a>
+                            <button onclick="navigator.clipboard.writeText('<?php echo url_for_post($article); ?>'); alert('Link copied!');" class="w-10 h-10 rounded-full bg-gray-50 text-gray-600 flex items-center justify-center hover:bg-gray-600 hover:text-white transition" title="Copy Link"><i class="fas fa-link text-lg"></i></button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         
         <style>
+            @keyframes google-spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+            .google-border-bg {
+                position: absolute;
+                top: 50%; left: 50%;
+                width: 300%; height: 300%;
+                background: conic-gradient(from 0deg, #4285f4, #ea4335, #fbbc05, #34a853, #4285f4);
+                animation: google-spin 4s linear infinite;
+                z-index: 0;
+            }
+            @keyframes fade-in-up {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+            .animate-fade-in-up { animation: fade-in-up 0.2s ease-out forwards; }
             :root { --btn-primary: #2563eb; --btn-primary-hover: #1d4ed8; }
             .article-content p { margin: 0 0 1.2em 0; font-size: 1.25rem; line-height: 1.9; }
             .article-content p:empty { display: none; }
