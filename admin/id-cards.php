@@ -492,28 +492,28 @@ ob_start();
                     <div id="printable-card" class="relative" style="width:302px; height:480px;">
 
                         <!-- ===== FRONT SIDE ===== -->
-                        <div id="card-front" class="absolute inset-0 transition-opacity duration-300" style="width:302px; height:480px;">
-                            <div style="width:302px; height:480px; border:1px solid #c7d2e0; border-radius:14px; overflow:hidden; background:#fff; font-family:'Segoe UI',Arial,sans-serif; box-shadow:0 4px 20px rgba(0,0,0,0.08); display:flex; flex-direction:column;">
+                        <div id="card-front" class="absolute inset-0 transition-opacity duration-300" style="width:302px; height:478px;">
+                            <div style="width:302px; height:478px; border:1px solid #c7d2e0; border-radius:14px; overflow:hidden; background:#fff; font-family:'Segoe UI',Arial,sans-serif; box-shadow:0 4px 20px rgba(0,0,0,0.08); display:flex; flex-direction:column;">
                                 <!-- Blue Header -->
-                                <div style="background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%); padding:24px 20px 48px; text-align:center; position:relative;">
+                                <div style="background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%); padding:55px 20px 40px; text-align:center; position:relative;">
                                     <?php 
                                     $real_logo = $site_logo ?: SITE_URL.'/assets/images/logo.png';
                                     if (strpos($real_logo, 'http') !== 0 && strpos($real_logo, SITE_URL) === false) {
                                         $real_logo = SITE_URL . '/' . ltrim($real_logo, '/');
                                     }
                                     ?>
-                                    <img src="<?= escape($real_logo) ?>" alt="Logo" style="display:block; margin:0 auto 8px; height:28px; object-fit:contain; filter:brightness(0) invert(1);">
-                                    <div style="color:#bfdbfe; font-size:10px; font-weight:800; letter-spacing:6px; text-transform:uppercase; margin-right:-6px;">Digital Media</div>
+                                    <img src="<?= escape($real_logo) ?>" alt="Logo" style="display:block; margin:0 auto 6px; height:24px; object-fit:contain; filter:brightness(0) invert(1);">
+                                    <div style="color:#bfdbfe; font-size:9px; font-weight:800; letter-spacing:6px; text-transform:uppercase; margin-right:-6px;">Digital Media</div>
                                 </div>
 
                                 <!-- White Body -->
-                                <div style="padding:0 22px 12px; text-align:center; flex:1; display:flex; flex-direction:column;">
+                                <div style="padding:0 22px 10px; text-align:center; flex:1; display:flex; flex-direction:column;">
                                     <!-- Photo -->
-                                    <div style="width:96px; height:128px; border-radius:12px; border:none; margin:-40px auto 12px; overflow:hidden; background:#f1f5f9; position:relative; z-index:10;">
+                                    <div style="width:84px; height:112px; border-radius:12px; border:none; margin:-35px auto 10px; overflow:hidden; background:#f1f5f9; position:relative; z-index:10;">
                                         <img src="" id="card-photo" style="width:100%; height:100%; object-fit:cover;" alt="">
                                     </div>
 
-                                    <div id="card-name" style="font-size:17px; font-weight:900; color:#111827; text-transform:uppercase; letter-spacing:0.5px; line-height:1.2; margin-bottom:4px;">
+                                    <div id="card-name" style="font-size:16px; font-weight:900; color:#111827; text-transform:uppercase; letter-spacing:0.5px; line-height:1.2; margin-bottom:4px;">
                                         NAME
                                     </div>
                                     <div id="card-role" style="font-size:11px; font-weight:800; color:#4b5563; text-transform:uppercase; letter-spacing:2px; margin-bottom:auto;">
@@ -552,10 +552,10 @@ ob_start();
                         </div>
 
                         <!-- ===== BACK SIDE ===== -->
-                        <div id="card-back" class="absolute inset-0 transition-opacity duration-300 opacity-0 pointer-events-none" style="width:302px; height:480px;">
-                            <div style="width:302px; height:480px; border:1px solid #c7d2e0; border-radius:14px; overflow:hidden; background:#fff; font-family:'Segoe UI',Arial,sans-serif; box-shadow:0 4px 20px rgba(0,0,0,0.08); display:flex; flex-direction:column;">
+                        <div id="card-back" class="absolute inset-0 transition-opacity duration-300 opacity-0 pointer-events-none" style="width:302px; height:478px;">
+                            <div style="width:302px; height:478px; border:1px solid #c7d2e0; border-radius:14px; overflow:hidden; background:#fff; font-family:'Segoe UI',Arial,sans-serif; box-shadow:0 4px 20px rgba(0,0,0,0.08); display:flex; flex-direction:column;">
                                 <!-- Blue Top Bar -->
-                                <div style="background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%); padding:20px; text-align:center;">
+                                <div style="background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%); padding:55px 20px 20px; text-align:center;">
                                     <img src="<?= escape($real_logo) ?>" alt="Logo" style="display:block; margin:0 auto 4px; height:24px; object-fit:contain; filter:brightness(0) invert(1);">
                                     <div style="color:#bfdbfe; font-size:9px; font-weight:800; letter-spacing:5px; text-transform:uppercase; margin-right:-5px;">Digital Media</div>
                                 </div>
