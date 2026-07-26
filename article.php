@@ -132,11 +132,15 @@ component('header', ['categories' => $categories]);
         
         <!-- Breadcrumb (Centered) -->
         <nav class="mb-6 text-sm text-center no-print">
-            <ol class="flex items-center justify-center space-x-2 text-primary-600 font-medium">
+            <ol class="flex flex-wrap items-center justify-center gap-2 text-primary-600 font-medium">
                 <li><a href="<?php echo SITE_URL; ?>" class="hover:underline">প্রচ্ছদ</a></li>
                 <?php if (!empty($article['category_name'])): ?>
                     <li class="text-gray-400">/</li>
                     <li><a href="<?php echo SITE_URL; ?>/category.php?slug=<?php echo escape($article['category_slug']); ?>" class="hover:underline"><?php echo escape($article['category_name']); ?></a></li>
+                <?php endif; ?>
+                <?php if (!empty($article['slug'])): ?>
+                    <li class="text-gray-400">/</li>
+                    <li class="text-gray-500 font-normal"><?php echo escape(ucwords(str_replace('-', ' ', $article['slug']))); ?></li>
                 <?php endif; ?>
             </ol>
         </nav>
