@@ -30,8 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && veri
                 $next_num = ($result['max_emp'] ?? 0) + 1;
                 $employee_number = 'ALP-' . str_pad($next_num, 4, '0', STR_PAD_LEFT);
 
-                $updateStmt = $db->prepare("UPDATE users SET employee_number = ?, id_card_role = ?, id_card_generated = 1 WHERE id = ?");
-                if ($updateStmt->execute([$employee_number, $role, $user_id])) {
+                $updateStmt = $db->prepare("UPDATE users SET employee_number = ?, id_card_role = ?, blood_group = ?, id_card_generated = 1 WHERE id = ?");
+                $bg = sanitize($_POST['blood_group'] ?? '');
+                if ($updateStmt->execute([$employee_number, $role, $bg, $user_id])) {
                     $success_msg = "ID Card generated successfully for user ID {$user_id}.";
                 } else {
                     $error_msg = "Failed to generate ID card.";
@@ -60,19 +61,19 @@ $stmt->execute();
 $users_without_card = $stmt->fetchAll();
 
 // Fetch users with ID card
-$stmt = $db->prepare("SELECT id, full_name, email, avatar, phone, employee_number, id_card_role FROM users WHERE id_card_generated = 1");
+$stmt = $db->prepare("SELECT id, full_name, email, avatar, phone, employee_number, id_card_role, blood_group FROM users WHERE id_card_generated = 1");
 $stmt->execute();
 $cards = $stmt->fetchAll();
 
 $roles = [
-    'writer' => 'Writer (লেখক)',
-    'ground_reporter' => 'Ground Reporter (মাঠ প্রতিবেদক)',
-    'correspondent' => 'Correspondent (সংবাদদাতা)',
-    'editor' => 'Editor (সম্পাদক)',
-    'photojournalist' => 'Photojournalist (ফটো সাংবাদিক)',
-    'digital_creator' => 'Digital Content Creator (ডিজিটাল কন্টেন্ট ক্রিয়েটর)',
-    'sub_editor' => 'Sub Editor (উপ-সম্পাদক)',
-    'bureau_chief' => 'Bureau Chief (ব্যুরো চীফ)'
+    'Bureau Chief' => 'Bureau Chief',
+    'Editor' => 'Editor',
+    'Senior Correspondent' => 'Senior Correspondent',
+    'Correspondent' => 'Correspondent',
+    'Ground Reporter' => 'Ground Reporter',
+    'Photojournalist' => 'Photojournalist',
+    'Digital Creator' => 'Digital Creator',
+    'Writer' => 'Writer'
 ];
 
 $page_title = 'আইডি কার্ড (ID Cards)';
@@ -352,6 +353,21 @@ ob_start();
                         </select>
                     </div>
                     
+                                        <div class="mb-6">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Blood Group</label>
+                        <select name="blood_group" class="premium-input w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200">
+                            <option value="">-- Choose Blood Group (Optional) --</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+                    
                     <button type="submit" class="btn-generate w-full flex items-center justify-center py-3 rounded-lg text-white font-bold transition-all">
                         <i class="fas fa-magic mr-2"></i> Generate ID Card
                     </button>
@@ -425,6 +441,7 @@ ob_start();
                                                 data-role="<?= escape(isset($roles[$card['id_card_role']]) ? $roles[$card['id_card_role']] : $card['id_card_role']) ?>"
                                                 data-empno="<?= escape($card['employee_number']) ?>"
                                                 data-phone="<?= escape($card['phone'] ?? 'N/A') ?>"
+                                                data-bg="<?= escape($card['blood_group'] ?? 'N/A') ?>"
                                                 data-img="<?= escape($img) ?>">
                                             <i class="fas fa-eye mr-1.5"></i> View
                                         </button>
@@ -450,69 +467,166 @@ ob_start();
 </div>
 
 <!-- ID Card Preview Modal (Tailwind Base) -->
-<div id="idCardModal" class="fixed inset-0 z-[100] hidden items-center justify-center overflow-y-auto overflow-x-hidden bg-black bg-opacity-50 transition-opacity backdrop-blur-sm">
-    <div class="relative w-full max-w-md p-4 flex items-center justify-center">
-        <!-- Modal content -->
-        <div class="relative bg-gray-100 rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
-            <!-- Modal body -->
-            <div class="p-6 flex justify-center">
+<div id="idCardModal" class="fixed inset-0 z-[100] hidden items-center justify-center overflow-y-auto overflow-x-hidden bg-black bg-opacity-75 transition-opacity backdrop-blur-sm p-4">
+    <div class="relative w-full max-w-lg flex flex-col items-center justify-center">
+        <!-- Modal control -->
+        <div class="mb-4 flex justify-between w-full max-w-[340px]">
+            <button type="button" onclick="closeModal()" class="text-white bg-gray-600 hover:bg-gray-500 rounded-lg px-4 py-2 shadow-sm font-bold transition-colors">
+                <i class="fas fa-times mr-2"></i> Close
+            </button>
+            <button type="button" onclick="flipCard()" class="text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg px-4 py-2 shadow-sm font-bold transition-colors">
+                <i class="fas fa-sync-alt mr-2"></i> Flip Card
+            </button>
+        </div>
+        
+        <!-- Modal content (Flip Container) -->
+        <div class="flip-container perspective-1000 w-[320px] h-[480px]">
+            <div id="printable-card" class="flipper print-area w-full h-full relative preserve-3d transition-transform duration-700">
                 
-                <!-- Printable ID Card Area -->
-                <div id="printable-card" class="print-area w-full flex justify-center pb-4">
-                    <div class="id-card-wrapper bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 relative w-[320px] font-sans">
-                        
-                        <!-- Card Header -->
-                        <div class="bg-white px-4 pt-6 pb-4 flex flex-col items-center border-b-[4px] border-indigo-700">
-                            <?php 
-                            $real_logo = $site_logo ?: SITE_URL.'/assets/images/logo.png';
-                            if (strpos($real_logo, 'http') !== 0 && strpos($real_logo, SITE_URL) === false) {
-                                $real_logo = SITE_URL . '/' . ltrim($real_logo, '/');
-                            }
-                            ?>
-                            <img src="<?= escape($real_logo) ?>" alt="Logo" class="h-10 object-contain mb-2">
-                            <div class="text-[11px] font-black tracking-[0.25em] text-indigo-800 uppercase">Digital Media</div>
-                        </div>
+                <!-- FRONT SIDE -->
+                <div class="id-card-wrapper front-side bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 relative w-full h-full font-sans absolute top-0 left-0 backface-hidden">
+                    <!-- Card Header -->
+                    <div class="bg-white px-4 pt-6 pb-4 flex flex-col items-center border-b-[4px] border-indigo-700">
+                        <?php 
+                        $real_logo = $site_logo ?: SITE_URL.'/assets/images/logo.png';
+                        if (strpos($real_logo, 'http') !== 0 && strpos($real_logo, SITE_URL) === false) {
+                            $real_logo = SITE_URL . '/' . ltrim($real_logo, '/');
+                        }
+                        ?>
+                        <img src="<?= escape($real_logo) ?>" alt="Logo" class="h-10 object-contain mb-2">
+                        <div class="text-[11px] font-black tracking-[0.25em] text-indigo-800 uppercase">Digital Media</div>
+                    </div>
 
-                        <!-- Card Body -->
-                        <div class="px-6 py-6 flex flex-col items-center bg-gradient-to-b from-white to-gray-50">
-                            <!-- Avatar -->
-                            <div class="w-28 h-28 rounded-full border-4 border-indigo-50 shadow-md p-1 mb-4 bg-white flex items-center justify-center overflow-hidden shrink-0">
-                                <img src="" id="card-photo" class="w-full h-full object-cover rounded-full" alt="Employee Photo">
-                            </div>
-                            
-                            <h3 class="text-xl font-bold text-gray-900 uppercase tracking-wide mb-2 text-center leading-tight" id="card-name">JOHN DOE</h3>
-                            <div class="bg-indigo-50 text-indigo-700 border border-indigo-100 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider mb-6 text-center inline-block" id="card-role">EDITOR (সম্পাদক)</div>
-                            
-                            <div class="w-full h-px bg-gray-200 mb-5"></div>
-                            
-                            <!-- Info & QR -->
-                            <div class="w-full flex justify-between items-center gap-2">
-                                <div class="space-y-3 flex-1">
-                                    <div>
-                                        <span class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Emp ID</span>
-                                        <span class="font-bold text-gray-800 text-sm" id="card-empno">ALP-0000</span>
-                                    </div>
-                                    <div>
-                                        <span class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-0.5">Contact</span>
-                                        <span class="font-bold text-gray-800 text-sm" id="card-phone">N/A</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="p-1.5 bg-white border border-gray-200 rounded-lg shadow-sm shrink-0">
-                                    <div id="card-qr"></div>
-                                </div>
-                            </div>
+                    <!-- Card Body -->
+                    <div class="px-6 py-6 flex flex-col items-center bg-gradient-to-b from-white to-gray-50 flex-1">
+                        <!-- Avatar -->
+                        <div class="w-28 h-28 rounded-xl shadow-md border border-gray-200 p-1 mb-4 bg-white flex items-center justify-center overflow-hidden shrink-0 z-10">
+                            <img src="" id="card-photo" class="w-full h-full object-cover rounded-xl" alt="Employee Photo">
                         </div>
                         
-                        <!-- Card Footer -->
-                        <div class="bg-indigo-900 px-4 py-3 text-center">
-                            <p class="text-[9px] font-medium text-indigo-100 leading-tight mb-1">এই আইডি কার্ডটি শুধুমাত্র সাংগঠনিক ব্যবহারের জন্য।</p>
-                            <p class="text-[8px] font-medium text-indigo-300 leading-tight tracking-wider uppercase">Organizational Use Only</p>
+                        <h3 class="text-[22px] font-black text-gray-900 mb-1 flex items-center justify-center text-center leading-tight uppercase tracking-wide" id="card-name">JOHN DOE</h3>
+                        <div class="text-[13px] font-extrabold text-gray-800 uppercase tracking-widest mb-4 text-center" id="card-role">EDITOR</div>
+                        
+                        <div class="w-full h-px bg-gray-200 mb-4"></div>
+                        
+                        <!-- Info & QR -->
+                        <div class="w-full flex justify-between items-center gap-2">
+                            <div class="space-y-2 flex-1">
+                                <div>
+                                    <span class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-0.5">Emp ID</span>
+                                    <span class="font-bold text-gray-800 text-sm leading-none" id="card-empno">ALP-0000</span>
+                                </div>
+                                <div>
+                                    <span class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-0.5">Blood Group</span>
+                                    <span class="font-bold text-red-600 text-sm leading-none" id="card-bg">O+</span>
+                                </div>
+                                <div>
+                                    <span class="block text-[9px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-0.5">Contact</span>
+                                    <span class="font-bold text-gray-800 text-[13px] leading-none" id="card-phone">N/A</span>
+                                </div>
+                            </div>
+                            
+                            <div class="p-1 bg-white border border-gray-200 rounded-lg shadow-sm shrink-0">
+                                <div id="card-qr"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- BACK SIDE -->
+                <div class="id-card-wrapper back-side bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 relative w-full h-full font-sans absolute top-0 left-0 backface-hidden rotate-y-180 flex flex-col">
+                    <div class="h-2 bg-indigo-700 w-full"></div>
+                    
+                    <div class="flex-1 flex flex-col items-center justify-center p-6 relative">
+                        <!-- Watermark -->
+                        <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
+                            <img src="<?= escape($real_logo) ?>" class="w-48 object-contain filter grayscale">
+                        </div>
+                        
+                        <div class="z-10 w-full text-center space-y-6">
+                            <div>
+                                <h4 class="text-[11px] font-black text-gray-900 uppercase tracking-widest mb-1">Terms & Conditions</h4>
+                                <p class="text-[9px] text-gray-600 leading-relaxed font-medium">
+                                    This card is the property of Alokpat Digital Media. It is for organizational identification only and is not a legally registered credential.
+                                    <br><br>
+                                    If found, please drop it in the nearest mailbox or return to the address below.
+                                </p>
+                            </div>
+                            
+                            <div class="w-12 h-px bg-indigo-200 mx-auto"></div>
+                            
+                            <div>
+                                <h4 class="text-[10px] font-black text-gray-900 uppercase tracking-widest mb-1">Return Address</h4>
+                                <p class="text-[9px] text-gray-600 leading-relaxed font-medium">
+                                    Alokpat Digital Media Office<br>
+                                    Kolkata, West Bengal<br>
+                                    Email: contact@alokpat.in<br>
+                                    Web: www.alokpat.in
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Card Footer -->
+                    <div class="bg-indigo-900 px-4 py-4 text-center">
+                        <p class="text-[9px] font-medium text-indigo-100 leading-tight mb-1">এই আইডি কার্ডটি শুধুমাত্র সাংগঠনিক ব্যবহারের জন্য।</p>
+                        <p class="text-[8px] font-black text-indigo-300 leading-tight tracking-[0.2em] uppercase">Organizational Use Only</p>
+                    </div>
+                </div>
+
             </div>
-            <!-- Modal footer -->
+        </div>
+        
+        <div class="mt-6 flex justify-center w-full">
+            <button type="button" onclick="printCard()" class="text-white bg-indigo-600 hover:bg-indigo-500 font-bold rounded-xl text-base px-8 py-3 shadow-lg transition-colors flex items-center">
+                <i class="fas fa-print mr-2"></i> Print Dual-Sided
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .perspective-1000 { perspective: 1000px; }
+    .preserve-3d { transform-style: preserve-3d; }
+    .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+    .flip-active { transform: rotateY(180deg); }
+    
+    /* Print Styles */
+    @media print {
+        body * { visibility: hidden; }
+        .print-area, .print-area * { visibility: visible; }
+        
+        /* Layout front and back side-by-side for printing */
+        .print-area {
+            position: absolute;
+            left: 0;
+            top: 0;
+            transform: none !important;
+            width: 100% !important;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        
+        .front-side, .back-side {
+            position: relative !important;
+            transform: none !important;
+            width: 320px !important;
+            height: 480px !important;
+            page-break-inside: avoid;
+            box-shadow: none !important;
+            border: 1px solid #ccc !important;
+        }
+
+        /* Ensure background colors print */
+        * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+    }
+</style>
+<!-- Modal footer -->
             <div class="flex items-center justify-between p-4 bg-white border-t border-gray-200 rounded-b-2xl">
                 <button type="button" onclick="closeModal()" class="text-gray-600 bg-gray-100 hover:bg-gray-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center transition-colors">Close</button>
                 <button type="button" onclick="printCard()" class="text-white bg-indigo-600 hover:bg-indigo-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center shadow-sm transition-colors flex items-center">
@@ -556,6 +670,17 @@ ob_start();
     const SITE_URL = '<?= SITE_URL ?>';
     let qrcode = null;
     const modal = document.getElementById('idCardModal');
+    let isFlipped = false;
+    
+    function flipCard() {
+        const flipper = document.querySelector('.flipper');
+        isFlipped = !isFlipped;
+        if(isFlipped) {
+            flipper.classList.add('flip-active');
+        } else {
+            flipper.classList.remove('flip-active');
+        }
+    }
 
     function closeModal() {
         modal.classList.remove('flex');
@@ -569,6 +694,7 @@ ob_start();
             document.getElementById('card-name').textContent = data.name;
             document.getElementById('card-role').textContent = data.role;
             document.getElementById('card-empno').textContent = data.empno;
+            document.getElementById('card-bg').textContent = data.bg;
             document.getElementById('card-phone').textContent = data.phone;
             document.getElementById('card-photo').src = data.img;
 
