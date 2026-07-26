@@ -652,8 +652,11 @@ ob_start();
 
 
     function closeModal() {
-        modal.classList.remove('flex');
         modal.classList.add('hidden');
+        // Reset flip state
+        isFlipped = false;
+        document.getElementById('card-front').classList.remove('opacity-0', 'pointer-events-none');
+        document.getElementById('card-back').classList.add('opacity-0', 'pointer-events-none');
     }
 
     document.querySelectorAll('.view-card-btn').forEach(btn => {
@@ -684,7 +687,6 @@ ob_start();
 
             // Show Modal
             modal.classList.remove('hidden');
-            modal.classList.add('flex');
         });
     });
 
