@@ -16,8 +16,46 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
 
 ?>
 
-<!-- Logo & Date Area (Top) -->
-<div class="bg-white py-6">
+<style>
+    .hide-scrollbar::-webkit-scrollbar { display: none; }
+    .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+
+<!-- Mobile Top Bar (Hamburger, Logo, Search) -->
+<div class="lg:hidden bg-white px-4 py-3 flex items-center justify-between border-b border-gray-100">
+    <button type="button" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')" class="text-primary-600 p-1 flex-shrink-0">
+        <i class="fas fa-bars text-2xl"></i>
+    </button>
+    <a href="<?php echo SITE_URL; ?>" class="flex-shrink-0 flex items-center justify-center mx-4">
+        <?php if (!empty($site_info['site_logo'])): ?>
+            <img src="<?php echo escape($site_info['site_logo']); ?>" alt="Logo" class="h-9 object-contain">
+        <?php else: ?>
+            <h1 class="text-2xl font-heading font-black text-gray-900 tracking-tight m-0 leading-none">
+                <?php echo escape($site_info['site_name'] ?? 'আলোকপাত'); ?>
+            </h1>
+        <?php endif; ?>
+    </a>
+    <button onclick="document.getElementById('searchModal').classList.remove('hidden')" class="text-gray-800 p-1 flex-shrink-0">
+        <i class="fas fa-search text-xl"></i>
+    </button>
+</div>
+
+<!-- Mobile Horizontal Categories (Sticky) -->
+<div class="lg:hidden sticky top-0 z-50 bg-[#f9f8f4] border-b border-gray-200 shadow-sm overflow-x-auto hide-scrollbar">
+    <div class="flex items-center px-4 py-2.5 space-x-5 min-w-max">
+        <a href="<?php echo SITE_URL; ?>" class="text-primary-700 font-bold text-[15px] whitespace-nowrap">হোম</a>
+        <?php if (!empty($primaryMenuItems)): ?>
+            <?php foreach ($primaryMenuItems as $item): ?>
+                <a href="<?php echo escape($item['url']); ?>" class="text-gray-700 font-medium text-[15px] hover:text-primary-600 transition-colors whitespace-nowrap">
+                    <?php echo escape($item['title']); ?>
+                </a>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
+</div>
+
+<!-- Logo & Date Area (Desktop Top) -->
+<div class="bg-white py-6 hidden lg:block">
     <div class="max-w-6xl mx-auto px-4 flex flex-col items-center justify-center">
         <a href="<?php echo SITE_URL; ?>" class="mb-3">
             <?php if (!empty($site_info['site_logo'])): ?>
@@ -121,7 +159,7 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
 </style>
 
 
-<nav id="main-nav" class="bg-primary-800 text-white shadow-md sticky z-50 transition-all duration-200 relative" style="position: -webkit-sticky; position: sticky; top: 0;">
+<nav id="main-nav" class="hidden lg:block bg-primary-800 text-white shadow-md sticky z-50 transition-all duration-200 relative" style="position: -webkit-sticky; position: sticky; top: 0;">
     <div class="max-w-6xl mx-auto px-4">
         <div class="flex items-center justify-between">
             
@@ -183,20 +221,7 @@ $mobileMenuItems = $menuModel->getMenuByLocation('mobile');
                 
             </div>
             
-            <!-- Search & Mobile Menu Button -->
-            <div class="flex items-center space-x-4 py-2 lg:hidden w-full justify-between">
-                <span class="font-bold text-lg">মেনু</span>
-                <div class="flex items-center space-x-3">
-                    <button onclick="document.getElementById('searchModal').classList.remove('hidden')" 
-                            class="hover:text-gray-300 transition p-2">
-                        <i class="fas fa-search"></i>
-                    </button>
-                    <button id="mobileMenuBtn" type="button" onclick="document.getElementById('mobileMenu').classList.toggle('hidden')" class="hover:text-gray-300 transition p-2 border border-primary-600 rounded cursor-pointer">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
-                </div>
             </div>
-            
         </div>
     </div>
     
