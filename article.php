@@ -260,7 +260,7 @@ component('header', ['categories' => $categories]);
                     <span class="relative z-10 flex items-center gap-2.5 bg-white rounded-full px-3 w-full h-full">
                         <span class="w-7 h-7 rounded-full flex items-center justify-center overflow-hidden relative">
                             <!-- Google Logo (G) -->
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" class="absolute inset-0 w-full h-full object-contain p-1 animate-logo-flip-1 bg-white">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" class="absolute inset-0 w-full h-full object-contain p-1 animate-logo-flip-1 bg-white">
                             <!-- Site Logo (A) -->
                             <?php 
                             $btn_site_logo = $setting_model->get('site_logo') ?: SITE_URL.'/assets/images/logo.png';
