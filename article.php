@@ -225,42 +225,7 @@ component('header', ['categories' => $categories]);
             </style>
             <?php 
             $setting_model = new Setting();
-            $fb_url = $setting_model->get('facebook_url');
-            $wa_url = $setting_model->get('whatsapp_channel_url');
-            $tw_url = $setting_model->get('twitter_url');
-            $yt_url = $setting_model->get('youtube_url');
-            
-            if (!empty($fb_url) || !empty($wa_url) || !empty($tw_url) || !empty($yt_url)):
             ?>
-            <div class="flex flex-col sm:flex-row items-center sm:justify-between mt-2 mb-6 w-full gap-2 sm:gap-0 no-print">
-                <span class="text-gray-700 font-bold text-sm md:text-base whitespace-nowrap">Follow Us:</span>
-                <div class="flex flex-row items-center justify-center sm:justify-end gap-1 sm:gap-2 w-full sm:w-auto flex-1">
-                <?php if (!empty($wa_url)): ?>
-                <a href="<?php echo escape($wa_url); ?>" target="_blank" class="inline-flex items-center justify-center flex-1 sm:flex-none px-1 sm:px-3 py-1.5 sm:py-1.5 bg-green-500 text-white text-[11px] sm:text-sm rounded-full font-medium hover:bg-green-600 transition shadow-sm" title="WhatsApp">
-                    <i class="fab fa-whatsapp sm:mr-1.5"></i> <span class="ml-1 sm:ml-0 hidden min-[380px]:inline">WhatsApp</span>
-                </a>
-                <?php endif; ?>
-                
-                <?php if (!empty($fb_url)): ?>
-                <a href="<?php echo escape($fb_url); ?>" target="_blank" class="inline-flex items-center justify-center flex-1 sm:flex-none px-1 sm:px-3 py-1.5 sm:py-1.5 bg-blue-600 text-white text-[11px] sm:text-sm rounded-full font-medium hover:bg-blue-700 transition shadow-sm" title="Facebook">
-                    <i class="fab fa-facebook-f sm:mr-1.5"></i> <span class="ml-1 sm:ml-0 hidden min-[380px]:inline">Facebook</span>
-                </a>
-                <?php endif; ?>
-                
-                <?php if (!empty($tw_url)): ?>
-                <a href="<?php echo escape($tw_url); ?>" target="_blank" class="inline-flex items-center justify-center flex-1 sm:flex-none px-1 sm:px-3 py-1.5 sm:py-1.5 bg-gray-900 text-white text-[11px] sm:text-sm rounded-full font-medium hover:bg-black transition shadow-sm" title="X (Twitter)">
-                    <i class="fa-brands fa-x-twitter sm:mr-1.5"></i> <span class="ml-1 sm:ml-0 hidden min-[380px]:inline">X</span>
-                </a>
-                <?php endif; ?>
-                
-                <?php if (!empty($yt_url)): ?>
-                <a href="<?php echo escape($yt_url); ?>" target="_blank" class="inline-flex items-center justify-center flex-1 sm:flex-none px-1 sm:px-3 py-1.5 sm:py-1.5 bg-red-600 text-white text-[11px] sm:text-sm rounded-full font-medium hover:bg-red-700 transition shadow-sm" title="YouTube">
-                    <i class="fab fa-youtube sm:mr-1.5"></i> <span class="ml-1 sm:ml-0 hidden min-[380px]:inline">YouTube</span>
-                </a>
-                <?php endif; ?>
-                </div>
-            </div>
-            <?php endif; ?>
         </div>
         
         <!-- Featured Image -->
@@ -298,14 +263,18 @@ component('header', ['categories' => $categories]);
                             <!-- Google Logo (G) -->
                             <img src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg" class="absolute inset-0 w-full h-full object-contain p-1 animate-logo-flip-1 bg-white">
                             <!-- Site Logo (A) -->
-                            <?php if (!empty($site_info['site_logo'])): ?>
-                                <img src="<?php echo escape($site_info['site_logo']); ?>" class="absolute inset-0 w-full h-full object-contain p-[3px] animate-logo-flip-2 bg-white">
+                            <?php 
+                            $btn_site_logo = $setting_model->get('site_logo') ?: SITE_URL.'/assets/images/logo.png';
+                            $btn_site_name = $setting_model->get('site_name') ?: 'Alokpat';
+                            if (!empty($btn_site_logo)): 
+                            ?>
+                                <img src="<?php echo escape($btn_site_logo); ?>" class="absolute inset-0 w-full h-full object-contain p-[3px] animate-logo-flip-2 bg-white">
                             <?php else: ?>
-                                <span class="absolute inset-0 text-primary-600 font-bold text-xs bg-gray-100 flex items-center justify-center rounded-full animate-logo-flip-2"><?php echo mb_substr($site_info['site_name'] ?? 'A', 0, 1); ?></span>
+                                <span class="absolute inset-0 text-primary-600 font-bold text-xs bg-gray-100 flex items-center justify-center rounded-full animate-logo-flip-2"><?php echo mb_substr($btn_site_name, 0, 1); ?></span>
                             <?php endif; ?>
                         </span>
                         <span class="text-[12.5px] font-bold text-gray-800 leading-[1.15]">
-                            Prefer <span class="text-primary-600"><?php echo escape($site_info['site_name'] ?? 'Alokpat'); ?></span><br>on Google
+                            Prefer <span class="text-primary-600"><?php echo escape($btn_site_name); ?></span><br>on Google
                         </span>
                     </span>
                 </a>
