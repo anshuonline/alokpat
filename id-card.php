@@ -69,11 +69,11 @@ if (!empty($user['avatar'])) {
 
             <!-- FRONT SIDE -->
             <div id="card-front" class="absolute inset-0 transition-opacity duration-300" style="width:302px; height:480px;">
-                <div style="width:302px; height:480px; border:1px solid #c7d2e0; border-radius:14px; overflow:hidden; background:#fff; font-family:'Segoe UI',Arial,sans-serif; box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+                <div style="width:302px; height:480px; border:1px solid #c7d2e0; border-radius:14px; overflow:hidden; background:#fff; font-family:'Segoe UI',Arial,sans-serif; box-shadow:0 4px 20px rgba(0,0,0,0.08); display:flex; flex-direction:column;">
                     <!-- Blue Header -->
                     <div style="background:linear-gradient(135deg,#1e3a5f 0%,#2563eb 100%); padding:20px 20px 16px; text-align:center;">
-                        <img src="<?php echo escape($site_logo); ?>" alt="Logo" style="height:36px; object-fit:contain; margin-bottom:6px; filter:brightness(0) invert(1);">
-                        <div style="color:#93c5fd; font-size:10px; font-weight:800; letter-spacing:4px; text-transform:uppercase;">Digital Media</div>
+                        <img src="<?php echo escape($site_logo); ?>" alt="Logo" style="display:block; margin:0 auto 6px; height:36px; object-fit:contain; filter:brightness(0) invert(1);">
+                        <div style="color:#93c5fd; font-size:10px; font-weight:800; letter-spacing:4px; text-transform:uppercase; margin-right:-4px;">Digital Media</div>
                     </div>
 
                     <!-- White Body -->
@@ -133,8 +133,8 @@ if (!empty($user['avatar'])) {
             <div id="card-back" class="absolute inset-0 transition-opacity duration-300 opacity-0 pointer-events-none" style="width:302px; height:480px;">
                 <div style="width:302px; height:480px; border:1px solid #c7d2e0; border-radius:14px; overflow:hidden; background:#fff; font-family:'Segoe UI',Arial,sans-serif; box-shadow:0 4px 20px rgba(0,0,0,0.08); display:flex; flex-direction:column;">
                     <div style="background:linear-gradient(135deg,#1e3a5f 0%,#2563eb 100%); padding:20px; text-align:center;">
-                        <img src="<?php echo escape($site_logo); ?>" alt="Logo" style="height:32px; object-fit:contain; filter:brightness(0) invert(1); margin-bottom:4px;">
-                        <div style="color:#93c5fd; font-size:10px; font-weight:800; letter-spacing:4px; text-transform:uppercase;">Digital Media</div>
+                        <img src="<?php echo escape($site_logo); ?>" alt="Logo" style="display:block; margin:0 auto 4px; height:32px; object-fit:contain; filter:brightness(0) invert(1);">
+                        <div style="color:#93c5fd; font-size:10px; font-weight:800; letter-spacing:4px; text-transform:uppercase; margin-right:-4px;">Digital Media</div>
                     </div>
 
                     <div style="flex:1; padding:24px 22px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative;">
