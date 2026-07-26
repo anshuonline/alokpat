@@ -173,12 +173,35 @@ component('header', ['categories' => $categories]);
                 </p>
             <?php endif; ?>
             
-            <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
-                <div class="flex flex-col">
-                    <button onclick="document.getElementById('authorModal').classList.remove('hidden')" class="text-sm md:text-base font-bold text-blue-600 hover:text-blue-800 flex items-center transition cursor-pointer">
+            <div class="flex flex-col md:flex-row md:items-start justify-between mb-6 pb-4 border-b border-gray-200 gap-4 md:gap-0">
+                <div class="flex flex-col gap-2">
+                    <button onclick="document.getElementById('authorModal').classList.remove('hidden')" class="text-sm md:text-base font-bold text-blue-600 hover:text-blue-800 flex items-center transition cursor-pointer w-fit">
                         <i class="fas fa-pen-nib mr-2 text-gray-500"></i>
                         <?php echo escape($article['author_name']); ?>
                     </button>
+                    <!-- Date Block Moved Here -->
+                    <div class="text-gray-500 text-[13px] md:text-sm font-medium flex flex-wrap items-center gap-2 md:gap-3">
+                        <span class="flex items-center"><i class="far fa-clock mr-1.5"></i> <?php echo formatDateBengali($article['published_at'] ?? $article['created_at']); ?></span>
+                        <?php 
+                        if (!empty($article['updated_at'])) {
+                            $pub_date = formatDateBengali($article['published_at'] ?? $article['created_at']);
+                            $upd_date = formatDateBengali($article['updated_at']);
+                            if ($upd_date !== $pub_date && strtotime($article['updated_at']) > strtotime($article['published_at'] ?? $article['created_at'])): 
+                        ?>
+                            <span class="hidden md:inline text-gray-300">|</span>
+                            <span class="flex items-center">
+                                <i class="fas fa-history mr-1.5"></i> 
+                                <?php if (!empty($article['updater_name']) && $article['updated_by'] != $article['author_id']): ?>
+                                    আপডেট by- <?php echo escape($article['updater_name']); ?>: <?php echo $upd_date; ?>
+                                <?php else: ?>
+                                    আপডেট: <?php echo $upd_date; ?>
+                                <?php endif; ?>
+                            </span>
+                        <?php 
+                            endif; 
+                        } 
+                        ?>
+                    </div>
                 </div>
                 <div class="flex items-center gap-2 no-print">
                     <a href="<?php echo SITE_URL; ?>/print.php?slug=<?php echo escape($article['slug']); ?>" target="_blank" class="w-8 h-8 flex items-center justify-center rounded border border-gray-300 text-gray-600 hover:bg-gray-100 hover:text-blue-600 transition" title="Print Article">
@@ -257,32 +280,9 @@ component('header', ['categories' => $categories]);
             </div>
         <?php endif; ?>
         
-        <!-- Meta Row (Date on Left, Socials & Prefer on Right) -->
-        <div class="flex flex-col xl:flex-row items-center justify-between border-y border-gray-100 py-4 mb-8 gap-5 xl:gap-0">
-            <div class="text-gray-500 text-sm font-medium flex flex-col sm:flex-row items-center gap-2 md:gap-3 w-full xl:w-auto">
-                <span class="flex items-center justify-center bg-gray-50 px-3 py-1.5 rounded-md border border-gray-100 w-full sm:w-auto"><i class="far fa-clock mr-1.5"></i> <?php echo formatDateBengali($article['published_at'] ?? $article['created_at']); ?></span>
-                <?php 
-                if (!empty($article['updated_at'])) {
-                    $pub_date = formatDateBengali($article['published_at'] ?? $article['created_at']);
-                    $upd_date = formatDateBengali($article['updated_at']);
-                    
-                    if ($upd_date !== $pub_date && strtotime($article['updated_at']) > strtotime($article['published_at'] ?? $article['created_at'])): 
-                ?>
-                    <span class="flex items-center justify-center bg-gray-50 px-3 py-1.5 rounded-md border border-gray-100 text-gray-500 w-full sm:w-auto">
-                        <i class="fas fa-history mr-1.5"></i> 
-                        <?php if (!empty($article['updater_name']) && $article['updated_by'] != $article['author_id']): ?>
-                            আপডেট by- <?php echo escape($article['updater_name']); ?>: <?php echo $upd_date; ?>
-                        <?php else: ?>
-                            আপডেট: <?php echo $upd_date; ?>
-                        <?php endif; ?>
-                    </span>
-                <?php 
-                    endif; 
-                } 
-                ?>
-            </div>
-            
-            <div class="flex flex-wrap items-center justify-center xl:justify-end gap-3 w-full xl:w-auto no-print">
+        <!-- Meta Row (Socials & Prefer on Right) -->
+        <div class="flex items-center justify-center md:justify-end border-y border-gray-100 py-4 mb-8">
+            <div class="flex flex-wrap items-center gap-3 w-full justify-center md:w-auto md:justify-end no-print">
                 <!-- Google Prefer Button -->
                 <a href="https://google.com/preferences/source?q=<?php echo urlencode(parse_url(SITE_URL, PHP_URL_HOST)); ?>" target="_blank" class="relative inline-flex rounded-full p-[2.5px] overflow-hidden group hover:scale-105 transition-transform shadow-sm hover:shadow-md" style="min-width: 170px; height: 46px;">
                     <span class="absolute block z-0 google-border-bg"></span>
