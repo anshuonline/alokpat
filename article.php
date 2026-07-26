@@ -439,15 +439,16 @@ component('header', ['categories' => $categories]);
                 
                 // --- IN-ARTICLE RELATED POSTS INJECTION ---
                 if (isset($related_posts) && is_array($related_posts) && count($related_posts) >= 2) {
-                    $in_article_html = '<div class="in-article-related my-8 border border-gray-200 overflow-hidden flex flex-col md:flex-row bg-gray-50 shadow-sm">';
+                    $in_article_html = '<style>.in-article-related .group:hover .hover-title { color: var(--color-primary) !important; }</style>';
+                    $in_article_html .= '<div class="in-article-related my-8 border border-gray-300 flex flex-col md:flex-row bg-white">';
                     
                     // Left banner (Top on mobile)
-                    $in_article_html .= '<div class="text-white p-3 md:p-4 md:w-48 flex items-center justify-center flex-shrink-0" style="background: var(--color-primary-700, #b91c1c);">';
-                    $in_article_html .= '<h4 class="text-xl md:text-2xl font-bold text-center leading-tight">আরও পড়ুন</h4>';
+                    $in_article_html .= '<div class="text-white p-3 md:p-4 md:w-48 flex items-center justify-center flex-shrink-0" style="background-color: var(--color-primary);">';
+                    $in_article_html .= '<h4 class="text-xl md:text-2xl font-bold text-center leading-tight m-0">আরও পড়ুন</h4>';
                     $in_article_html .= '</div>';
                     
                     // Right content (2 posts)
-                    $in_article_html .= '<div class="flex flex-col md:flex-row flex-1 divide-y md:divide-y-0 md:divide-x divide-gray-200 bg-white">';
+                    $in_article_html .= '<div class="flex flex-col md:flex-row flex-1 divide-y md:divide-y-0 md:divide-x divide-gray-300 bg-white">';
                     
                     for ($i = 0; $i < 2; $i++) {
                         $rp = $related_posts[$i];
@@ -455,9 +456,11 @@ component('header', ['categories' => $categories]);
                         $rp_img = empty($rp['featured_image']) ? SITE_URL . '/assets/images/default-news.jpg' : escape($rp['featured_image']);
                         $rp_title = escape($rp['title']);
                         
-                        $in_article_html .= '<a href="' . $rp_url . '" class="flex items-center p-3 md:p-4 hover:bg-gray-50 transition flex-1 group gap-3 text-decoration-none">';
-                        $in_article_html .= '<img src="' . $rp_img . '" alt="' . $rp_title . '" class="w-24 h-16 md:w-28 md:h-20 object-cover flex-shrink-0 border border-gray-100">';
-                        $in_article_html .= '<h5 class="text-sm md:text-base font-semibold text-gray-800 group-hover:text-blue-700 line-clamp-3 leading-snug">' . $rp_title . '</h5>';
+                        $in_article_html .= '<a href="' . $rp_url . '" class="flex items-center p-3 hover:bg-gray-50 transition flex-1 group gap-3" style="text-decoration:none;">';
+                        $in_article_html .= '<div class="w-24 h-16 md:w-28 md:h-20 flex-shrink-0 overflow-hidden">';
+                        $in_article_html .= '<img src="' . $rp_img . '" alt="' . $rp_title . '" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">';
+                        $in_article_html .= '</div>';
+                        $in_article_html .= '<h5 class="hover-title text-[15px] md:text-base font-medium text-gray-800 line-clamp-2 md:line-clamp-3 leading-snug m-0 transition-colors">' . $rp_title . '</h5>';
                         $in_article_html .= '</a>';
                     }
                     
