@@ -480,11 +480,11 @@ ob_start();
         </div>
         
         <!-- Modal content (Flip Container) -->
-        <div class="flip-container perspective-1000 w-[320px] h-[480px]">
-            <div id="printable-card" class="flipper print-area w-full h-full relative preserve-3d transition-transform duration-700">
+        <div class="flip-container  w-[320px] h-[480px]">
+            <div id="printable-card" class="flipper print-area w-full h-full relative transition-opacity duration-300">
                 
                 <!-- FRONT SIDE -->
-                <div class="id-card-wrapper front-side bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 relative w-full h-full font-sans absolute top-0 left-0 backface-hidden">
+                <div class="id-card-wrapper front-side bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 relative w-full h-full font-sans absolute top-0 left-0 w-full h-full transition-opacity duration-300">
                     <!-- Card Header -->
                     <div class="bg-white px-4 pt-6 pb-4 flex flex-col items-center border-b-[4px] border-indigo-700">
                         <?php 
@@ -534,7 +534,7 @@ ob_start();
                 </div>
 
                 <!-- BACK SIDE -->
-                <div class="id-card-wrapper back-side bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 relative w-full h-full font-sans absolute top-0 left-0 backface-hidden rotate-y-180 flex flex-col">
+                <div class="id-card-wrapper back-side bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200 relative w-full h-full font-sans absolute top-0 left-0 w-full h-full transition-opacity duration-300 rotate-y-180 flex flex-col">
                     <div class="h-2 bg-indigo-700 w-full"></div>
                     
                     <div class="flex-1 flex flex-col items-center justify-center p-6 relative">
@@ -586,11 +586,10 @@ ob_start();
 </div>
 
 <style>
-    .perspective-1000 { perspective: 1000px; }
+    . { perspective: 1000px; }
     .preserve-3d { transform-style: preserve-3d; }
     .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-    .rotate-y-180 { transform: rotateY(180deg); }
-    .flip-active { transform: rotateY(180deg); }
+    
     
     /* Print Styles */
     @media print {
@@ -673,11 +672,17 @@ ob_start();
     let isFlipped = false;
     
     function flipCard() {
-        const flipper = document.querySelector('.flipper');
+        const front = document.querySelector(".front-side");
+        const back = document.querySelector(".back-side");
         isFlipped = !isFlipped;
         if(isFlipped) {
-            flipper.classList.add('flip-active');
+            front.classList.add("opacity-0", "pointer-events-none");
+            back.classList.remove("opacity-0", "pointer-events-none");
         } else {
+            front.classList.remove("opacity-0", "pointer-events-none");
+            back.classList.add("opacity-0", "pointer-events-none");
+        }
+    } else {
             flipper.classList.remove('flip-active');
         }
     }
