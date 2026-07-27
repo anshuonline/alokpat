@@ -684,98 +684,127 @@ ob_start();
         </div>
         
         <!-- SEO Section -->
-        <div class="bg-white rounded-xl shadow-md p-6">
-            <h3 class="text-xl font-bold text-gray-800 mb-4">
-                <i class="fas fa-search text-green-600 mr-2"></i>
-                এসইও (SEO) সেটিংস
-            </h3>
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                <h3 class="text-lg font-bold text-gray-800 flex items-center">
+                    <span class="bg-green-100 text-green-600 p-2 rounded-lg mr-3">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    এসইও (SEO) সেটিংস
+                </h3>
+            </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                <!-- SEO Title -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        SEO Title
-                    </label>
-                    <input type="text" 
-                           name="seo_title"
-                           value="<?php echo isset($_POST['seo_title']) ? escape($_POST['seo_title']) : ''; ?>"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                           placeholder="Search engine title">
-                    <p class="text-xs text-gray-500 mt-1">খালি থাকলে শিরোনাম ব্যবহার হবে</p>
+            <div class="p-6">
+                <!-- Group 1: General SEO -->
+                <div class="mb-8">
+                    <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4 border-b pb-2">General Search</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- SEO Title -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                SEO Title
+                            </label>
+                            <input type="text" name="seo_title" value="<?php echo isset($_POST['seo_title']) ? escape($_POST['seo_title']) : ''; ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors" placeholder="Custom search engine title">
+                            <p class="text-[11px] text-gray-500 mt-1">খালি থাকলে মূল শিরোনাম ব্যবহার হবে</p>
+                        </div>
+                        
+                        <!-- Focus Keywords -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Focus Keywords
+                            </label>
+                            <input type="text" name="seo_keywords" value="<?php echo isset($_POST['seo_keywords']) ? escape($_POST['seo_keywords']) : ''; ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors" placeholder="keyword1, keyword2, keyword3">
+                            <p class="text-[11px] text-gray-500 mt-1">কমা দিয়ে আলাদা করুন</p>
+                        </div>
+
+                        <!-- SEO Description -->
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Meta Description
+                            </label>
+                            <textarea name="seo_description" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors" placeholder="Brief description for search results..."><?php echo isset($_POST['seo_description']) ? escape($_POST['seo_description']) : ''; ?></textarea>
+                        </div>
+                    </div>
                 </div>
-                
-                <!-- SEO Description -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Meta Description
-                    </label>
-                    <textarea name="seo_description" 
-                              rows="2"
-                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                              placeholder="Search engine description"><?php echo isset($_POST['seo_description']) ? escape($_POST['seo_description']) : ''; ?></textarea>
+
+                <!-- Group 2: Social Media (Open Graph) -->
+                <div class="mb-8">
+                    <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4 border-b pb-2">Social Share (Facebook/Twitter)</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- OG Title -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Open Graph Title
+                            </label>
+                            <input type="text" name="meta_og_title" value="<?php echo isset($_POST['meta_og_title']) ? escape($_POST['meta_og_title']) : ''; ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" placeholder="Title for social media">
+                        </div>
+                        
+                        <!-- OG Description -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Open Graph Description
+                            </label>
+                            <textarea name="meta_og_description" rows="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" placeholder="Description for social media"><?php echo isset($_POST['meta_og_description']) ? escape($_POST['meta_og_description']) : ''; ?></textarea>
+                        </div>
+                    </div>
                 </div>
-                
-                <!-- SEO Keywords -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Focus Keywords
-                    </label>
-                    <input type="text" 
-                           name="seo_keywords"
-                           value="<?php echo isset($_POST['seo_keywords']) ? escape($_POST['seo_keywords']) : ''; ?>"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                           placeholder="keyword1, keyword2, keyword3">
+
+                <!-- Group 3: Advanced SEO -->
+                <div class="mb-8">
+                    <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4 border-b pb-2">Advanced Config</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Canonical URL -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Canonical URL
+                            </label>
+                            <input type="text" name="canonical_url" value="<?php echo isset($_POST['canonical_url']) ? escape($_POST['canonical_url']) : ''; ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors" placeholder="https://example.com/original-article">
+                        </div>
+                        
+                        <!-- Robots Meta -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Robots Meta
+                            </label>
+                            <select name="robots_meta" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors bg-white">
+                                <option value="index,follow" <?php echo (!isset($_POST['robots_meta']) || $_POST['robots_meta'] === 'index,follow') ? 'selected' : ''; ?>>Index, Follow</option>
+                                <option value="index,nofollow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'index,nofollow') ? 'selected' : ''; ?>>Index, Nofollow</option>
+                                <option value="noindex,follow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'noindex,follow') ? 'selected' : ''; ?>>Noindex, Follow</option>
+                                <option value="noindex,nofollow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'noindex,nofollow') ? 'selected' : ''; ?>>Noindex, Nofollow</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                
-                <!-- Canonical URL -->
+
+                <!-- Group 4: FAQ Schema -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Canonical URL
-                    </label>
-                    <input type="text" 
-                           name="canonical_url"
-                           value="<?php echo isset($_POST['canonical_url']) ? escape($_POST['canonical_url']) : ''; ?>"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                           placeholder="https://example.com/article">
-                </div>
-                
-                <!-- OG Title -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Open Graph Title
-                    </label>
-                    <input type="text" 
-                           name="meta_og_title"
-                           value="<?php echo isset($_POST['meta_og_title']) ? escape($_POST['meta_og_title']) : ''; ?>"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                           placeholder="Facebook share title">
-                </div>
-                
-                <!-- FAQ Schema -->
-                <div class="col-span-1 md:col-span-2 border-t pt-6 mt-4">
-                    <h4 class="text-lg font-semibold text-gray-800 mb-4"><i class="fas fa-question-circle text-blue-500 mr-2"></i>FAQ Schema (People also ask)</h4>
-                    <p class="text-sm text-gray-500 mb-4">Here you can add frequently asked questions and answers to generate JSON-LD schema for Google.</p>
+                    <div class="flex items-center justify-between mb-4 border-b pb-2">
+                        <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">FAQ Schema (People also ask)</h4>
+                        <button type="button" onclick="addFaqItem()" class="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full hover:bg-blue-100 transition-colors">
+                            <i class="fas fa-plus mr-1"></i> Add Question
+                        </button>
+                    </div>
                     
                     <div id="faq-container" class="space-y-4">
                         <?php 
                         $faqs = [];
                         if (!empty($post['faq_schema'])) { $faqs = json_decode($post['faq_schema'], true); }
-                        
                         if (!empty($faqs)): 
                             foreach ($faqs as $index => $faq):
                         ?>
-                            <div class="faq-item bg-gray-50 p-4 rounded-lg border border-gray-200 relative">
-                                <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-red-500 hover:text-red-700 bg-white rounded-full p-1 shadow-sm">
-                                    <i class="fas fa-times"></i>
+                            <div class="faq-item bg-gray-50/50 p-4 rounded-lg border border-gray-200 relative group transition-all hover:shadow-sm hover:border-blue-200">
+                                <button type="button" onclick="this.parentElement.remove()" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all bg-white rounded-md p-1.5 shadow-sm border border-gray-100">
+                                    <i class="fas fa-trash-alt text-xs"></i>
                                 </button>
-                                <div class="mb-3">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Question</label>
-                                    <input type="text" name="faq_q[]" value="<?php echo escape($faq['q']); ?>" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" placeholder="e.g. What is the price?">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Answer</label>
-                                    <textarea name="faq_a[]" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" placeholder="e.g. The price starts from..."><?php echo escape($faq['a']); ?></textarea>
+                                <div class="grid gap-3 md:grid-cols-2 pr-8">
+                                    <div>
+                                        <label class="block text-[11px] font-medium text-gray-500 mb-1">Question</label>
+                                        <input type="text" name="faq_q[]" value="<?php echo escape($faq['q']); ?>" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-1 focus:ring-blue-500 text-sm bg-white" placeholder="e.g. What is the price?">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-medium text-gray-500 mb-1">Answer</label>
+                                        <textarea name="faq_a[]" rows="1" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-1 focus:ring-blue-500 text-sm bg-white" placeholder="e.g. The price starts from..."><?php echo escape($faq['a']); ?></textarea>
+                                    </div>
                                 </div>
                             </div>
                         <?php 
@@ -783,46 +812,7 @@ ob_start();
                         endif; 
                         ?>
                     </div>
-                    
-                    <button type="button" onclick="addFaqItem()" class="mt-4 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium transition-colors shadow-sm">
-                        <i class="fas fa-plus mr-1"></i> Add New Question
-                    </button>
                 </div>
-                
-                <!-- OG Description -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Open Graph Description
-                    </label>
-                    <textarea name="meta_og_description" 
-                              rows="2"
-                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                              placeholder="Facebook share description"><?php echo isset($_POST['meta_og_description']) ? escape($_POST['meta_og_description']) : ''; ?></textarea>
-                </div>
-                
-
-                <!-- Robots Meta -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Robots Meta
-                    </label>
-                    <select name="robots_meta" 
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                        <option value="index,follow" <?php echo (!isset($_POST['robots_meta']) || $_POST['robots_meta'] === 'index,follow') ? 'selected' : ''; ?>>
-                            Index, Follow
-                        </option>
-                        <option value="index,nofollow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'index,nofollow') ? 'selected' : ''; ?>>
-                            Index, Nofollow
-                        </option>
-                        <option value="noindex,follow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'noindex,follow') ? 'selected' : ''; ?>>
-                            Noindex, Follow
-                        </option>
-                        <option value="noindex,nofollow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'noindex,nofollow') ? 'selected' : ''; ?>>
-                            Noindex, Nofollow
-                        </option>
-                    </select>
-                </div>
-                
             </div>
         </div>
         
@@ -1468,18 +1458,20 @@ $(document).ready(function() {
 function addFaqItem() {
     const container = document.getElementById('faq-container');
     const item = document.createElement('div');
-    item.className = 'faq-item bg-gray-50 p-4 rounded-lg border border-gray-200 relative';
+    item.className = 'faq-item bg-gray-50/50 p-4 rounded-lg border border-gray-200 relative group transition-all hover:shadow-sm hover:border-blue-200';
     item.innerHTML = `
-        <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-red-500 hover:text-red-700 bg-white rounded-full p-1 shadow-sm">
-            <i class="fas fa-times"></i>
+        <button type="button" onclick="this.parentElement.remove()" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all bg-white rounded-md p-1.5 shadow-sm border border-gray-100">
+            <i class="fas fa-trash-alt text-xs"></i>
         </button>
-        <div class="mb-3">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Question</label>
-            <input type="text" name="faq_q[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" placeholder="e.g. What is the price?">
-        </div>
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Answer</label>
-            <textarea name="faq_a[]" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" placeholder="e.g. The price starts from..."></textarea>
+        <div class="grid gap-3 md:grid-cols-2 pr-8">
+            <div>
+                <label class="block text-[11px] font-medium text-gray-500 mb-1">Question</label>
+                <input type="text" name="faq_q[]" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-1 focus:ring-blue-500 text-sm bg-white" placeholder="e.g. What is the price?">
+            </div>
+            <div>
+                <label class="block text-[11px] font-medium text-gray-500 mb-1">Answer</label>
+                <textarea name="faq_a[]" rows="1" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-1 focus:ring-blue-500 text-sm bg-white" placeholder="e.g. The price starts from..."></textarea>
+            </div>
         </div>
     `;
     container.appendChild(item);
