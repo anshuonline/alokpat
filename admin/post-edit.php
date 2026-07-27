@@ -371,6 +371,17 @@ ob_start();
                     </div>
                 </div>
                 
+                <!-- Excerpt -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        সারাংশ (Excerpt)
+                    </label>
+                    <textarea name="excerpt" 
+                              rows="3"
+                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                              placeholder="সংবাদের সংক্ষিপ্ত সারাংশ..."><?php echo isset($post['excerpt']) ? escape($post['excerpt']) : (isset($_POST['excerpt']) ? escape($_POST['excerpt']) : ''); ?></textarea>
+                </div>
+                
                 <!-- Content -->
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <label class="block text-lg font-semibold text-gray-800 mb-2">
@@ -385,17 +396,6 @@ ob_start();
                         <!-- DEBUG: Content length = <?php echo strlen($post['content']); ?> bytes -->
                     <?php endif; ?>
                     <p class="text-xs text-gray-500 mt-1">HTML ট্যাগ ব্যবহার করতে পারবেন বা টুলবার ব্যবহার করুন</p>
-                </div>
-                
-                <!-- Excerpt -->
-                <div class="bg-white rounded-xl shadow-md p-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        সারাংশ (Excerpt)
-                    </label>
-                    <textarea name="excerpt" 
-                              rows="3"
-                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                              placeholder="সংবাদের সংক্ষিপ্ত সারাংশ..."><?php echo isset($_POST['excerpt']) ? escape($_POST['excerpt']) : ''; ?></textarea>
                 </div>
 
                 <!-- Live Blog Updates Timeline -->

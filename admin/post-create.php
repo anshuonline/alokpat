@@ -286,6 +286,17 @@ ob_start();
                     <p class="text-xs text-gray-500 mt-1">খালি রাখলে শিরোনাম থেকে স্বয়ংক্রিয়ভাবে তৈরি হবে</p>
                 </div>
                 
+                <!-- Excerpt -->
+                <div class="bg-white rounded-xl shadow-md p-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        সারাংশ (Excerpt)
+                    </label>
+                    <textarea name="excerpt" 
+                              rows="3"
+                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                              placeholder="সংবাদের সংক্ষিপ্ত সারাংশ..."><?php echo isset($_POST['excerpt']) ? escape($_POST['excerpt']) : ''; ?></textarea>
+                </div>
+                
                 <!-- Content -->
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <label class="block text-lg font-semibold text-gray-800 mb-2">
@@ -297,17 +308,6 @@ ob_start();
                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 font-mono text-sm"
                               placeholder="সংবাদের বিস্তারিত লিখুন..."><?php echo isset($_POST['content']) ? escape($_POST['content']) : ''; ?></textarea>
                     <p class="text-xs text-gray-500 mt-1">HTML ট্যাগ ব্যবহার করতে পারবেন বা টুলবার ব্যবহার করুন</p>
-                </div>
-                
-                <!-- Excerpt -->
-                <div class="bg-white rounded-xl shadow-md p-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        সারাংশ (Excerpt)
-                    </label>
-                    <textarea name="excerpt" 
-                              rows="3"
-                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                              placeholder="সংবাদের সংক্ষিপ্ত সারাংশ..."><?php echo isset($_POST['excerpt']) ? escape($_POST['excerpt']) : ''; ?></textarea>
                 </div>
                 
             </div>
