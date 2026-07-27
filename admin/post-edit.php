@@ -685,123 +685,74 @@ ob_start();
         
         <!-- SEO Section -->
         <div class="bg-white rounded-xl shadow-md p-6">
-            <h3 class="text-xl font-bold text-gray-800 mb-4">
-                <i class="fas fa-search text-green-600 mr-2"></i>
-                এসইও (SEO) সেটিংস
-            </h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                
-                <!-- SEO Title -->
+            <div class="flex items-center justify-between mb-6 border-b pb-4">
+                <h3 class="text-xl font-bold text-gray-800 flex items-center">
+                    <i class="fas fa-search text-green-600 mr-2"></i>
+                    এসইও (SEO) সেটিংস
+                </h3>
+                <span class="text-xs text-gray-400 hidden md:block">লাইভ প্রিভিউ নিচে দেখুন</span>
+            </div>
+
+            <!-- ===================== Google Search Preview ===================== -->
+            <div class="mb-8">
+                <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2 flex items-center">
+                    <i class="fab fa-google mr-1"></i> Google Search Preview
+                </p>
+                <div class="border border-gray-200 rounded-lg p-4 bg-gray-50 font-sans">
+                    <div class="text-xs text-gray-700 mb-1 truncate" id="serp-url">yoursite.com/news/post-slug</div>
+                    <div class="text-[#1a0dab] text-lg leading-snug hover:underline cursor-pointer truncate" id="serp-title">
+                        SEO Title Preview
+                    </div>
+                    <div class="text-sm text-gray-600 mt-1 line-clamp-2" id="serp-desc">
+                        Meta description preview will appear here...
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===================== Core SEO fields ===================== -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        SEO Title
-                    </label>
-                    <input type="text" 
-                           name="seo_title"
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-sm font-medium text-gray-700">SEO Title</label>
+                        <span class="text-xs text-gray-400" id="seo_title_count">0/60</span>
+                    </div>
+                    <input type="text" name="seo_title" id="seo_title_input"
                            value="<?php echo isset($_POST['seo_title']) ? escape($_POST['seo_title']) : ''; ?>"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                           placeholder="Search engine title">
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                           placeholder="Search engine title" maxlength="70">
                     <p class="text-xs text-gray-500 mt-1">খালি থাকলে শিরোনাম ব্যবহার হবে</p>
                 </div>
-                
-                <!-- SEO Description -->
+
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Meta Description
-                    </label>
-                    <textarea name="seo_description" 
-                              rows="2"
-                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-sm font-medium text-gray-700">Meta Description</label>
+                        <span class="text-xs text-gray-400" id="seo_desc_count">0/160</span>
+                    </div>
+                    <textarea name="seo_description" id="seo_desc_input" rows="3" maxlength="200"
+                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               placeholder="Search engine description"><?php echo isset($_POST['seo_description']) ? escape($_POST['seo_description']) : ''; ?></textarea>
                 </div>
-                
-                <!-- SEO Keywords -->
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Focus Keywords
+                        <i class="fas fa-key text-gray-400 mr-1"></i> Focus Keywords
                     </label>
-                    <input type="text" 
-                           name="seo_keywords"
+                    <input type="text" name="seo_keywords"
                            value="<?php echo isset($_POST['seo_keywords']) ? escape($_POST['seo_keywords']) : ''; ?>"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                            placeholder="keyword1, keyword2, keyword3">
                 </div>
-                
-                <!-- Canonical URL -->
+
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Canonical URL
+                        <i class="fas fa-link text-gray-400 mr-1"></i> Canonical URL
                     </label>
-                    <input type="text" 
-                           name="canonical_url"
+                    <input type="text" name="canonical_url"
                            value="<?php echo isset($_POST['canonical_url']) ? escape($_POST['canonical_url']) : ''; ?>"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                            placeholder="https://example.com/article">
                 </div>
-                
-                <!-- OG Title -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Open Graph Title
-                    </label>
-                    <input type="text" 
-                           name="meta_og_title"
-                           value="<?php echo isset($_POST['meta_og_title']) ? escape($_POST['meta_og_title']) : ''; ?>"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                           placeholder="Facebook share title">
-                </div>
-                
-                <!-- FAQ Schema -->
-                <div class="col-span-1 md:col-span-2 border-t pt-6 mt-4">
-                    <h4 class="text-lg font-semibold text-gray-800 mb-4"><i class="fas fa-question-circle text-blue-500 mr-2"></i>FAQ Schema (People also ask)</h4>
-                    <p class="text-sm text-gray-500 mb-4">Here you can add frequently asked questions and answers to generate JSON-LD schema for Google.</p>
-                    
-                    <div id="faq-container" class="space-y-4">
-                        <?php 
-                        $faqs = [];
-                        if (!empty($post['faq_schema'])) { $faqs = json_decode($post['faq_schema'], true); }
-                        
-                        if (!empty($faqs)): 
-                            foreach ($faqs as $index => $faq):
-                        ?>
-                            <div class="faq-item bg-gray-50 p-4 rounded-lg border border-gray-200 relative">
-                                <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-red-500 hover:text-red-700 bg-white rounded-full p-1 shadow-sm">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                                <div class="mb-3">
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Question</label>
-                                    <input type="text" name="faq_q[]" value="<?php echo escape($faq['q']); ?>" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" placeholder="e.g. What is the price?">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">Answer</label>
-                                    <textarea name="faq_a[]" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" placeholder="e.g. The price starts from..."><?php echo escape($faq['a']); ?></textarea>
-                                </div>
-                            </div>
-                        <?php 
-                            endforeach;
-                        endif; 
-                        ?>
-                    </div>
-                    
-                    <button type="button" onclick="addFaqItem()" class="mt-4 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium transition-colors shadow-sm">
-                        <i class="fas fa-plus mr-1"></i> Add New Question
-                    </button>
-                </div>
-                
-                <!-- OG Description -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Open Graph Description
-                    </label>
-                    <textarea name="meta_og_description" 
-                              rows="2"
-                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                              placeholder="Facebook share description"><?php echo isset($_POST['meta_og_description']) ? escape($_POST['meta_og_description']) : ''; ?></textarea>
-                </div>
-                
-
-                <!-- Robots Meta -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         Robots Meta
