@@ -1464,8 +1464,8 @@ function fetchLiveUpdates() {
                             <button type="button" onclick="openLiveUpdateModal(${update.id}, \`${escapedContent}\`, '${isoTime}')" class="text-blue-500 hover:text-blue-700" title="Edit">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button type="button" onclick="deleteLiveUpdate(${update.id})" class="text-red-500 hover:text-red-700" title="Delete">
-                                <i class="fas fa-trash"></i>
+                            <button type="button" onclick="deleteLiveUpdate(${update.id})" class="text-red-500 hover:text-red-700 w-7 h-7 rounded flex items-center justify-center hover:bg-red-50 transition" title="Delete">
+                                <i class="fas fa-trash text-xs"></i>
                             </button>
                         </div>
                     </div>
