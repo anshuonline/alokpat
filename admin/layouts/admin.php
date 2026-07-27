@@ -52,11 +52,14 @@
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 z-50 flex flex-col transform -translate-x-full lg:translate-x-0">
             <div class="p-6 border-b border-gray-200">
-                <a href="<?php echo ADMIN_URL; ?>/dashboard.php" class="block">
-                    <h1 class="text-2xl font-black text-black tracking-tight uppercase">
+                <a href="<?php echo ADMIN_URL; ?>/dashboard.php" class="block text-center lg:text-left">
+                    <h1 id="logo-full" class="text-2xl font-black text-black tracking-tight uppercase sidebar-text">
                         আলোকপাত
                     </h1>
-                    <p class="text-xs text-gray-500 mt-1 font-bold tracking-widest uppercase">অ্যাডমিন প্যানেল</p>
+                    <h1 id="logo-mini" class="text-2xl font-black text-black tracking-tight uppercase hidden">
+                        আ
+                    </h1>
+                    <p class="text-xs text-gray-500 mt-1 font-bold tracking-widest uppercase sidebar-text">Admin Panel</p>
                 </a>
             </div>
             
@@ -284,7 +287,7 @@
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                                 <i class="fas fa-search text-gray-400"></i>
                             </span>
-                            <input type="search" placeholder="Search..." class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all bg-gray-50 focus:bg-white">
+                            <input type="search" id="adminSearch" placeholder="Search menu..." class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all bg-gray-50 focus:bg-white">
                         </div>
                     </div>
                     
@@ -372,6 +375,23 @@
         }
         if(overlay) {
             overlay.addEventListener('click', toggleSidebar);
+        }
+        
+        // Sidebar Search Filter
+        const adminSearch = document.getElementById('adminSearch');
+        if (adminSearch) {
+            adminSearch.addEventListener('input', function(e) {
+                const term = e.target.value.toLowerCase();
+                const links = document.querySelectorAll('.sidebar-link');
+                links.forEach(link => {
+                    const text = link.textContent.toLowerCase();
+                    if (text.includes(term)) {
+                        link.style.display = 'flex';
+                    } else {
+                        link.style.display = 'none';
+                    }
+                });
+            });
         }
     </script>
     
