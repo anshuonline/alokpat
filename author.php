@@ -53,17 +53,22 @@ $json_ld = [
     '@type' => 'ProfilePage',
     'mainEntity' => [
         '@type' => 'Person',
+        '@id' => SITE_URL . '/#author-' . $author['id'],
         'name' => $author['full_name'],
         'jobTitle' => 'Journalist',
         'description' => !empty($author['bio']) ? $author['bio'] : ($author['full_name'] . ' আলোকপাত এর একজন নিয়মিত লেখক ও সাংবাদিক।'),
         'url' => $author_url,
-        'sameAs' => array_values(array_filter([
-            $author['facebook_url'] ?? null,
-            $author['twitter_url'] ?? null,
-            $author['youtube_url'] ?? null
-        ]))
     ]
 ];
+// Only add sameAs if author has social links
+$_author_social = array_values(array_filter([
+    $author['facebook_url'] ?? null,
+    $author['twitter_url'] ?? null,
+    $author['youtube_url'] ?? null
+]));
+if (!empty($_author_social)) {
+    $json_ld['mainEntity']['sameAs'] = $_author_social;
+}
 if (!empty($author['avatar'])) {
     $json_ld['mainEntity']['image'] = $author['avatar'];
 }

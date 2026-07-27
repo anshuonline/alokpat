@@ -72,6 +72,27 @@ $og_url = url_for_post($article);
 $twitter_card = $article['meta_twitter_card'] ?? 'summary_large_image';
 
 $setting_obj = new Setting();
+$_publisher_logo = $setting_obj->get('site_logo') ?: (SITE_URL . '/assets/images/logo.png');
+$_site_name = $setting_obj->get('site_name') ?: 'আলোকপাত';
+
+$_author_schema = [
+    '@type' => 'Person',
+    '@id' => SITE_URL . '/#author-' . ($article['author_id'] ?? 0),
+    'name' => $article['author_name'] ?? 'আলোকপাত',
+    'url' => SITE_URL . '/author.php?id=' . ($article['author_id'] ?? 0) . '&name=' . urlencode(str_replace(' ', '-', $article['author_name'] ?? ''))
+];
+$_author_social = array_values(array_filter([
+    $article['author_facebook'] ?? null,
+    $article['author_twitter'] ?? null,
+    $article['author_youtube'] ?? null
+]));
+if (!empty($_author_social)) {
+    $_author_schema['sameAs'] = $_author_social;
+}
+if (!empty($article['author_avatar'])) {
+    $_author_schema['image'] = $article['author_avatar'];
+}
+
 $json_ld = [
     '@context' => 'https://schema.org',
     '@type' => 'NewsArticle',
@@ -80,16 +101,14 @@ $json_ld = [
     'image' => !empty($og_image) ? [$og_image] : [],
     'datePublished' => date('c', strtotime($article['published_at'] ?? $article['created_at'])),
     'dateModified' => date('c', strtotime($article['updated_at'] ?? $article['published_at'] ?? $article['created_at'])),
-    'author' => [
-        '@type' => 'Person',
-        'name' => $article['author_name'] ?? 'আলোকপাত'
-    ],
+    'author' => [$_author_schema],
     'publisher' => [
-        '@type' => 'Organization',
-        'name' => $setting_obj->get('site_name') ?: 'আলোকপাত',
+        '@type' => 'NewsMediaOrganization',
+        '@id' => SITE_URL . '/#organization',
+        'name' => $_site_name,
         'logo' => [
             '@type' => 'ImageObject',
-            'url' => SITE_URL . '/assets/images/logo.png'
+            'url' => $_publisher_logo
         ]
     ],
     'mainEntityOfPage' => [
