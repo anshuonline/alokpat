@@ -685,7 +685,7 @@ ob_start();
                     </label>
                     <input type="text" 
                            name="seo_title"
-                           value="<?php echo isset($_POST['seo_title']) ? escape($_POST['seo_title']) : ''; ?>"
+                           value="<?php echo isset($_POST['seo_title']) ? escape($_POST['seo_title']) : escape($post['seo_title'] ?? ''); ?>"
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                            placeholder="Search engine title">
                     <p class="text-xs text-gray-500 mt-1">খালি থাকলে শিরোনাম ব্যবহার হবে</p>
@@ -699,7 +699,7 @@ ob_start();
                     <textarea name="seo_description" 
                               rows="2"
                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                              placeholder="Search engine description"><?php echo isset($_POST['seo_description']) ? escape($_POST['seo_description']) : ''; ?></textarea>
+                              placeholder="Search engine description"><?php echo isset($_POST['seo_description']) ? escape($_POST['seo_description']) : escape($post['seo_description'] ?? ''); ?></textarea>
                 </div>
                 
                 <!-- SEO Keywords -->
@@ -709,7 +709,7 @@ ob_start();
                     </label>
                     <input type="text" 
                            name="seo_keywords"
-                           value="<?php echo isset($_POST['seo_keywords']) ? escape($_POST['seo_keywords']) : ''; ?>"
+                           value="<?php echo isset($_POST['seo_keywords']) ? escape($_POST['seo_keywords']) : escape($post['seo_keywords'] ?? ''); ?>"
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                            placeholder="keyword1, keyword2, keyword3">
                 </div>
@@ -721,7 +721,7 @@ ob_start();
                     </label>
                     <input type="text" 
                            name="canonical_url"
-                           value="<?php echo isset($_POST['canonical_url']) ? escape($_POST['canonical_url']) : ''; ?>"
+                           value="<?php echo isset($_POST['canonical_url']) ? escape($_POST['canonical_url']) : escape($post['canonical_url'] ?? ''); ?>"
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                            placeholder="https://example.com/article">
                 </div>
@@ -733,7 +733,7 @@ ob_start();
                     </label>
                     <input type="text" 
                            name="meta_og_title"
-                           value="<?php echo isset($_POST['meta_og_title']) ? escape($_POST['meta_og_title']) : ''; ?>"
+                           value="<?php echo isset($_POST['meta_og_title']) ? escape($_POST['meta_og_title']) : escape($post['meta_og_title'] ?? ''); ?>"
                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                            placeholder="Facebook share title">
                 </div>
@@ -746,7 +746,7 @@ ob_start();
                     <textarea name="meta_og_description" 
                               rows="2"
                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                              placeholder="Facebook share description"><?php echo isset($_POST['meta_og_description']) ? escape($_POST['meta_og_description']) : ''; ?></textarea>
+                              placeholder="Facebook share description"><?php echo isset($_POST['meta_og_description']) ? escape($_POST['meta_og_description']) : escape($post['meta_og_description'] ?? ''); ?></textarea>
                 </div>
                 
 
@@ -757,18 +757,20 @@ ob_start();
                     </label>
                     <select name="robots_meta" 
                             class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                        <option value="index,follow" <?php echo (!isset($_POST['robots_meta']) || $_POST['robots_meta'] === 'index,follow') ? 'selected' : ''; ?>>
-                            Index, Follow
-                        </option>
-                        <option value="index,nofollow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'index,nofollow') ? 'selected' : ''; ?>>
-                            Index, Nofollow
-                        </option>
-                        <option value="noindex,follow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'noindex,follow') ? 'selected' : ''; ?>>
-                            Noindex, Follow
-                        </option>
-                        <option value="noindex,nofollow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'noindex,nofollow') ? 'selected' : ''; ?>>
-                            Noindex, Nofollow
-                        </option>
+                        <?php
+                        $current_robots = isset($_POST['robots_meta']) ? $_POST['robots_meta'] : ($post['robots_meta'] ?? 'index,follow');
+                        $robots_options = [
+                            'index,follow'    => 'Index, Follow',
+                            'index,nofollow'  => 'Index, Nofollow',
+                            'noindex,follow'  => 'Noindex, Follow',
+                            'noindex,nofollow'=> 'Noindex, Nofollow',
+                        ];
+                        foreach ($robots_options as $val => $label):
+                        ?>
+                            <option value="<?php echo $val; ?>" <?php echo ($current_robots === $val) ? 'selected' : ''; ?>>
+                                <?php echo $label; ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
                 
@@ -808,7 +810,7 @@ ob_start();
   &quot;@context&quot;: &quot;https://schema.org&quot;,
   &quot;@type&quot;: &quot;FAQPage&quot;,
   &quot;mainEntity&quot;: [...]
-}"><?php echo isset($_POST['schema_markup']) ? htmlspecialchars($_POST['schema_markup']) : ''; ?></textarea>
+}"><?php echo isset($_POST['schema_markup']) ? htmlspecialchars($_POST['schema_markup']) : htmlspecialchars($post['schema_markup'] ?? ''); ?></textarea>
                         <div class="flex gap-2 absolute top-3 right-3 z-10">
                             <button type="button" onclick="formatSchemaJson()" class="bg-white/10 hover:bg-blue-600 text-white backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-lg flex items-center gap-2">
                                 <i class="fas fa-magic"></i> Format JSON
