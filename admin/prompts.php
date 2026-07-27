@@ -23,6 +23,7 @@ I will provide you with a topic, raw facts, or source links. First, internally a
 5. SUBHEADINGS & FORMATTING: Use clear H2-style headlines for sub-sections. Use bold text for key names/events to make it highly readable.
 6. BENGALI WITH ENGLISH KEYWORDS: Write the final output in highly professional and fluent Bengali, but you MUST seamlessly integrate relevant English keywords naturally throughout the text (in the headlines, excerpt, main article).
 7. MULTIPLE HEADLINES: Provide 4 to 5 different, highly catchy, and professional (non-clickbait) news-style headlines for me to choose from.
+8. FAQ SCHEMA JSON (MANDATORY 7 TO 10 QUESTIONS): You MUST generate 7 to 10 highly relevant, SEO-optimized Frequently Asked Questions (FAQs) related to the topic. The questions and answers must be in professional Bengali (with natural English keywords). You MUST provide them strictly in clean JSON-LD format (`FAQPage`) so that it can be directly imported into our website's FAQ Schema Builder.
 
 Format your response exactly like this:
 
@@ -46,6 +47,32 @@ SEO METADATA:
 
 IMAGE PROMPT (ALT TEXT):
 [Provide a descriptive ALT text in English for the featured image related to this news.]
+
+FAQ SCHEMA JSON (MANDATORY 7 TO 10 QUESTIONS):
+[Provide strictly valid JSON-LD format for 7 to 10 SEO-optimized FAQs. Provide ONLY the valid JSON block below:]
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "[প্রশ্ন ১: বাংলায় এসইও অপটিমাইজড প্রশ্ন?]",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "[উত্তর ১: বিস্তারিত এবং তথ্যবহুল উত্তর।]"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "[প্রশ্ন ২: বাংলায় এসইও অপটিমাইজড প্রশ্ন?]",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "[উত্তর ২: বিস্তারিত এবং তথ্যবহুল উত্তর।]"
+      }
+    }
+    // ... must include exactly 7 to 10 questions
+  ]
+}
 
 Here is the raw data/topic for the news:
 [INSERT YOUR RAW NEWS DETAILS / TOPIC HERE]
