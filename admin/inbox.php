@@ -8,6 +8,17 @@ $db = (new Database())->getConnection();
 
 // Handle Form Submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && verifyCSRFToken($_POST['csrf_token'])) {
+    // Action: Delete Message
+    if (isset($_POST['action']) && $_POST['action'] === 'delete_message') {
+        $msg_id = (int)$_POST['message_id'];
+        $stmt = $db->prepare("DELETE FROM admin_messages WHERE id = :id AND (sender_id = :uid OR receiver_id = :uid)");
+        if ($stmt->execute(['id' => $msg_id, 'uid' => $user['id']])) {
+            setFlash('success', 'Message deleted successfully!');
+        } else {
+            setFlash('error', 'Failed to delete message.');
+        }
+        redirect(ADMIN_URL . '/inbox.php');
+    }
     
     // Action: Mark as Read
     if (isset($_POST['action']) && $_POST['action'] === 'mark_read') {
@@ -152,14 +163,22 @@ ob_start();
                                     <h3 class="text-sm font-bold text-gray-900">
                                         <?php echo escape($msg['sender_name']); ?>
                                     </h3>
-                                    <div class="text-xs text-gray-500">
-                                        <i class="far fa-clock mr-1"></i>
-                                        <?php echo date('d M Y, h:i A', strtotime($msg['created_at'])); ?>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="text-xs text-gray-500">
+                                            <i class="far fa-clock mr-1"></i>
+                                            <?php echo date('d M Y, h:i A', strtotime($msg['created_at'])); ?>
+                                        </div>
+                                        <form method="POST" action="" class="inline" onsubmit="return confirm('Are you sure you want to delete this message?');">
+                                            <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+                                            <input type="hidden" name="action" value="delete_message">
+                                            <input type="hidden" name="message_id" value="<?php echo $msg['id']; ?>">
+                                            <button type="submit" class="text-red-400 hover:text-red-600 transition-colors" title="Delete Message">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
-                                <div class="mt-2 text-sm text-gray-700 leading-relaxed whitespace-pre-wrap font-medium">
-                                    <?php echo escape($msg['message']); ?>
-                                </div>
+                                <div class="mt-2 text-sm text-gray-700 leading-relaxed whitespace-pre-wrap font-medium"><?php echo escape($msg['message']); ?></div>
                                 
                                 <?php if (!$msg['is_read']): ?>
                                     <div class="mt-4">
@@ -216,14 +235,22 @@ ob_start();
                                     <h3 class="text-sm font-bold text-gray-900">
                                         <span class="text-gray-500 font-normal">To:</span> <?php echo escape($msg['receiver_name']); ?>
                                     </h3>
-                                    <div class="text-xs text-gray-500">
-                                        <i class="far fa-clock mr-1"></i>
-                                        <?php echo date('d M Y, h:i A', strtotime($msg['created_at'])); ?>
+                                    <div class="flex items-center space-x-4">
+                                        <div class="text-xs text-gray-500">
+                                            <i class="far fa-clock mr-1"></i>
+                                            <?php echo date('d M Y, h:i A', strtotime($msg['created_at'])); ?>
+                                        </div>
+                                        <form method="POST" action="" class="inline" onsubmit="return confirm('Are you sure you want to delete this message?');">
+                                            <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+                                            <input type="hidden" name="action" value="delete_message">
+                                            <input type="hidden" name="message_id" value="<?php echo $msg['id']; ?>">
+                                            <button type="submit" class="text-red-400 hover:text-red-600 transition-colors" title="Delete Message">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
-                                <div class="mt-2 text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
-                                    <?php echo escape($msg['message']); ?>
-                                </div>
+                                <div class="mt-2 text-sm text-gray-700 leading-relaxed whitespace-pre-wrap"><?php echo escape($msg['message']); ?></div>
                             </div>
                         </div>
                     </li>

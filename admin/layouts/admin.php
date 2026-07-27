@@ -267,7 +267,7 @@
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                     
-                    <div class="flex items-center space-x-6">
+                    <div class="flex items-center space-x-6 ml-auto">
                         <div class="text-right">
                             <p class="text-sm font-semibold text-gray-800">
                                 <?php echo escape(getCurrentUser()['full_name']); ?>
@@ -294,7 +294,7 @@
                             // Table may not exist yet
                         }
                         ?>
-                        <a href="<?php echo ADMIN_URL; ?>/inbox.php" class="relative text-gray-500 hover:text-indigo-600 transition-colors" title="Messages">
+                        <a href="<?php echo ADMIN_URL; ?>/inbox.php" class="relative text-gray-500 hover:text-indigo-600 transition-colors ml-4" title="Messages">
                             <i class="fas fa-envelope text-2xl"></i>
                             <?php if($unread_msg_count > 0): ?>
                             <span class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white shadow-sm">
