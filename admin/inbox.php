@@ -314,7 +314,7 @@ function switchTab(tab) {
 }
 </script>
 
-<?php if ($can_send): ?>
+
 
 <!-- Read Modal -->
 <div id="readModal" class="fixed inset-0 z-50 hidden bg-gray-900/60 backdrop-blur-sm overflow-y-auto">
@@ -365,6 +365,7 @@ function openReadModal(msgId) {
 }
 </script>
 
+<?php if ($can_send): ?>
 <!-- Compose Modal -->
 <div id="composeModal" class="fixed inset-0 z-50 hidden bg-gray-900/60 backdrop-blur-sm overflow-y-auto">
     <div class="min-h-screen px-4 text-center">
