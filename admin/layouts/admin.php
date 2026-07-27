@@ -267,7 +267,22 @@
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                     
-                    <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-6">
+                        <?php
+                        $db_conn = (new Database())->getConnection();
+                        $user_id = getCurrentUser()['id'];
+                        $unread_stmt = $db_conn->prepare("SELECT COUNT(*) FROM admin_messages WHERE receiver_id = :uid AND is_read = 0");
+                        $unread_stmt->execute(['uid' => $user_id]);
+                        $unread_msg_count = $unread_stmt->fetchColumn();
+                        ?>
+                        <a href="<?php echo ADMIN_URL; ?>/inbox.php" class="relative text-gray-500 hover:text-indigo-600 transition-colors" title="Messages">
+                            <i class="fas fa-envelope text-2xl"></i>
+                            <?php if($unread_msg_count > 0): ?>
+                            <span class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white shadow-sm">
+                                <?php echo $unread_msg_count; ?>
+                            </span>
+                            <?php endif; ?>
+                        </a>
                         <div class="text-right">
                             <p class="text-sm font-semibold text-gray-800">
                                 <?php echo escape(getCurrentUser()['full_name']); ?>
