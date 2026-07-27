@@ -26,12 +26,12 @@ class Post {
                     (title, slug, content, excerpt, featured_image, featured_image_alt, author_id, 
                      category_id, status, post_type, is_featured, is_breaking, is_trending, published_at, 
                      seo_title, seo_description, seo_keywords, canonical_url, meta_og_title, 
-                     meta_og_description, meta_og_image, meta_twitter_card, robots_meta, schema_markup, is_live, flags_expiry, updated_by, parent_id) 
+                     meta_og_description, meta_og_image, meta_twitter_card, robots_meta, schema_markup, is_live, flags_expiry, updated_by, parent_id, faq_schema) 
                     VALUES 
                     (:title, :slug, :content, :excerpt, :featured_image, :featured_image_alt, :author_id, 
                      :category_id, :status, :post_type, :is_featured, :is_breaking, :is_trending, :published_at, 
                      :seo_title, :seo_description, :seo_keywords, :canonical_url, :meta_og_title, 
-                     :meta_og_description, :meta_og_image, :meta_twitter_card, :robots_meta, :schema_markup, :is_live, :flags_expiry, :updated_by, :parent_id)";
+                     :meta_og_description, :meta_og_image, :meta_twitter_card, :robots_meta, :schema_markup, :is_live, :flags_expiry, :updated_by, :parent_id, :faq_schema)";
             
             $stmt = $this->conn->prepare($sql);
             
@@ -67,6 +67,7 @@ class Post {
             $schema_markup = isset($data['schema_markup']) ? $data['schema_markup'] : null;
             $updated_by = isset($data['updated_by']) ? $data['updated_by'] : null;
             $parent_id = isset($data['parent_id']) ? $data['parent_id'] : null;
+            $faq_schema = isset($data['faq_schema']) ? $data['faq_schema'] : null;
             
             $stmt->bindParam(':title', $title);
             $stmt->bindParam(':slug', $slug);
@@ -96,6 +97,7 @@ class Post {
             $stmt->bindParam(':flags_expiry', $flags_expiry);
             $stmt->bindParam(':updated_by', $updated_by, PDO::PARAM_INT);
             $stmt->bindParam(':parent_id', $parent_id, PDO::PARAM_INT);
+            $stmt->bindParam(':faq_schema', $faq_schema);
             
             if ($stmt->execute()) {
                 $postId = $this->conn->lastInsertId();
@@ -140,7 +142,7 @@ class Post {
                 'category_id', 'status', 'post_type', 'is_featured', 'is_breaking', 'is_trending', 'is_live', 'flags_expiry', 'published_at',
                 'seo_title', 'seo_description', 'seo_keywords', 'canonical_url',
                 'meta_og_title', 'meta_og_description', 'meta_og_image', 'meta_twitter_card',
-                'robots_meta', 'schema_markup', 'updated_by', 'parent_id'
+                'robots_meta', 'schema_markup', 'updated_by', 'parent_id', 'faq_schema'
             ];
             
             foreach ($allowed_fields as $field) {

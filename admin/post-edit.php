@@ -96,6 +96,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        
+        // Process FAQ Schema
+        $faqs = [];
+        if (!empty($_POST['faq_q']) && !empty($_POST['faq_a'])) {
+            for ($i = 0; $i < count($_POST['faq_q']); $i++) {
+                $q = trim($_POST['faq_q'][$i]);
+                $a = trim($_POST['faq_a'][$i]);
+                if (!empty($q) && !empty($a)) {
+                    $faqs[] = ['q' => $q, 'a' => $a];
+                }
+            }
+        }
+        $faq_schema = !empty($faqs) ? json_encode($faqs, JSON_UNESCAPED_UNICODE) : null;
+        
         $data = [
             'title' => $title,
             'slug' => $slug,
@@ -117,6 +131,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'meta_og_image' => sanitize($_POST['meta_og_image'] ?? ''),
             'post_type' => sanitize($_POST['post_type'] ?? 'standard'),
             'meta_twitter_card' => sanitize($_POST['meta_twitter_card'] ?? 'summary_large_image'),
+            'faq_schema' => $faq_schema,
             'robots_meta' => sanitize($_POST['robots_meta'] ?? 'index,follow'),
             'tags' => $processed_tags,
         ];
