@@ -37,9 +37,16 @@
         body.sidebar-mini .sidebar-text { display: none; }
         body.sidebar-mini #logo-full { display: none; }
         body.sidebar-mini #logo-mini { display: block; }
+        body.sidebar-mini .sidebar-link { justify-content: center; padding-left: 0; padding-right: 0; }
+        body.sidebar-mini .sidebar-link > i,
+        body.sidebar-mini .sidebar-link > div { margin-right: 0; }
         @media (min-width: 1024px) {
             body.sidebar-mini .lg\:ml-64 { margin-left: 5rem; }
         }
+        
+        /* Hide scrollbar */
+        .sidebar nav::-webkit-scrollbar { display: none; }
+        .sidebar nav { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-gray-50 overflow-x-hidden">
@@ -159,7 +166,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/setup-2fa.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'setup-2fa.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-shield-alt w-6 transition-colors"></i>
-                    <span class="font-medium">2FA Security</span>
+                    <span class="font-medium sidebar-text">2FA Security</span>
                 </a>
                 
                 <?php if(hasPermission('manage_seo')): ?>
@@ -174,7 +181,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/rss-feeds.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'rss-feeds.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-rss text-orange-500 w-6 transition-colors"></i>
-                    <span class="font-medium">RSS Feeds</span>
+                    <span class="font-medium sidebar-text">RSS Feeds</span>
                 </a>
                 <?php endif; ?>
                 
