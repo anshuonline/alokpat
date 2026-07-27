@@ -40,6 +40,24 @@ $categories = $category->getCategoriesWithCount();
 $setting = new Setting();
 $site_info = $setting->getSiteInfo();
 $page_title = 'Contact Us';
+
+$breadcrumb_ld = [
+    '@context' => 'https://schema.org',
+    '@type' => 'BreadcrumbList',
+    'itemListElement' => [
+        ['@type' => 'ListItem', 'position' => 1, 'name' => 'প্রচ্ছদ', 'item' => SITE_URL],
+        ['@type' => 'ListItem', 'position' => 2, 'name' => 'যোগাযোগ', 'item' => SITE_URL . '/contact.php']
+    ]
+];
+
+$json_ld = [
+    '@context' => 'https://schema.org',
+    '@type' => 'ContactPage',
+    'name' => 'Contact Us',
+    'description' => 'আলোকপাত এর সাথে যোগাযোগ করুন। আপনার যেকোনো মতামত বা জিজ্ঞাসার জন্য আমাদের বার্তা পাঠান।',
+    'url' => SITE_URL . '/contact.php'
+];
+
 ob_start();
 component('header', ['categories' => $categories]);
 ?>

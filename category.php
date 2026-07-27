@@ -58,6 +58,23 @@ $meta_keywords = $cat['seo_keywords'] ?? '';
 // Get categories for header
 $categories = $category->getActive();
 
+$breadcrumb_ld = [
+    '@context' => 'https://schema.org',
+    '@type' => 'BreadcrumbList',
+    'itemListElement' => [
+        ['@type' => 'ListItem', 'position' => 1, 'name' => 'প্রচ্ছদ', 'item' => SITE_URL],
+        ['@type' => 'ListItem', 'position' => 2, 'name' => $cat['name'], 'item' => SITE_URL . '/category.php?slug=' . ($cat['slug'] ?? '')]
+    ]
+];
+
+$json_ld = [
+    '@context' => 'https://schema.org',
+    '@type' => 'CollectionPage',
+    'name' => $cat['name'],
+    'description' => $meta_description ?: ($cat['name'] . ' সম্পর্কিত সর্বশেষ সংবাদ ও আপডেট।'),
+    'url' => SITE_URL . '/category.php?slug=' . ($cat['slug'] ?? '')
+];
+
 ob_start();
 component('header', ['categories' => $categories]);
 ?>

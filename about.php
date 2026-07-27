@@ -3,6 +3,24 @@ require_once 'config/config.php';
 $category = new Category();
 $categories = $category->getCategoriesWithCount();
 $page_title = 'About Us';
+
+$breadcrumb_ld = [
+    '@context' => 'https://schema.org',
+    '@type' => 'BreadcrumbList',
+    'itemListElement' => [
+        ['@type' => 'ListItem', 'position' => 1, 'name' => 'প্রচ্ছদ', 'item' => SITE_URL],
+        ['@type' => 'ListItem', 'position' => 2, 'name' => 'আমাদের সম্পর্কে', 'item' => SITE_URL . '/about.php']
+    ]
+];
+
+$json_ld = [
+    '@context' => 'https://schema.org',
+    '@type' => 'AboutPage',
+    'name' => 'About Us',
+    'description' => 'আলোকপাত এর সম্পর্কে জানুন। বস্তুনিষ্ঠ ও নিরপেক্ষ সংবাদ পরিবেশনে আমরা বদ্ধপরিকর।',
+    'url' => SITE_URL . '/about.php'
+];
+
 ob_start();
 component('header', ['categories' => $categories]);
 ?>

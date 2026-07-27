@@ -27,6 +27,22 @@ $categories = $category->getActive();
 $settingModel = new Setting();
 $site_info = $settingModel->getSiteInfo();
 
+$breadcrumb_ld = [
+    '@context' => 'https://schema.org',
+    '@type' => 'BreadcrumbList',
+    'itemListElement' => [
+        ['@type' => 'ListItem', 'position' => 1, 'name' => 'প্রচ্ছদ', 'item' => SITE_URL],
+        ['@type' => 'ListItem', 'position' => 2, 'name' => 'অনুসন্ধান', 'item' => SITE_URL . '/search.php']
+    ]
+];
+
+$json_ld = [
+    '@context' => 'https://schema.org',
+    '@type' => 'SearchResultsPage',
+    'name' => $page_title,
+    'url' => SITE_URL . '/search.php' . (!empty($query) ? '?q=' . urlencode($query) : '')
+];
+
 ob_start();
 component('header', ['categories' => $categories]);
 ?>

@@ -3,6 +3,24 @@ require_once 'config/config.php';
 $category = new Category();
 $categories = $category->getCategoriesWithCount();
 $page_title = 'Privacy Policy';
+
+$breadcrumb_ld = [
+    '@context' => 'https://schema.org',
+    '@type' => 'BreadcrumbList',
+    'itemListElement' => [
+        ['@type' => 'ListItem', 'position' => 1, 'name' => 'প্রচ্ছদ', 'item' => SITE_URL],
+        ['@type' => 'ListItem', 'position' => 2, 'name' => 'গোপনীয়তা নীতি', 'item' => SITE_URL . '/privacy.php']
+    ]
+];
+
+$json_ld = [
+    '@context' => 'https://schema.org',
+    '@type' => 'WebPage',
+    'name' => 'Privacy Policy',
+    'description' => 'আলোকপাত এর গোপনীয়তা নীতি। আমরা কীভাবে আপনার তথ্য সুরক্ষিত রাখি তা জানুন।',
+    'url' => SITE_URL . '/privacy.php'
+];
+
 ob_start();
 component('header', ['categories' => $categories]);
 ?>

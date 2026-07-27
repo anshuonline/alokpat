@@ -7,7 +7,28 @@ require_once 'config/config.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FIFA World Cup 2026 - Live Stats & Schedule</title>
-    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "প্রচ্ছদ", "item": "<?php echo SITE_URL; ?>"},
+            {"@type": "ListItem", "position": 2, "name": "FIFA World Cup 2026", "item": "<?php echo SITE_URL; ?>/archive/worldcup2026.php"}
+          ]
+        },
+        {
+          "@type": "SportsEvent",
+          "name": "FIFA World Cup 2026",
+          "description": "FIFA World Cup 2026 Live Stats, Schedule, Groups and Match Updates in Bengali.",
+          "url": "<?php echo SITE_URL; ?>/archive/worldcup2026.php",
+          "startDate": "2026-06-11",
+          "endDate": "2026-07-19"
+        }
+      ]
+    }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     

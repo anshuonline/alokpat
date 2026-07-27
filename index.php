@@ -73,13 +73,35 @@ $_site_logo = $_setting->get('site_logo') ?: (SITE_URL . '/assets/images/logo.pn
 
 $json_ld = [
     '@context' => 'https://schema.org',
-    '@type' => 'WebSite',
-    'name' => $_site_name,
-    'url' => SITE_URL,
-    'potentialAction' => [
-        '@type' => 'SearchAction',
-        'target' => SITE_URL . '/search.php?q={search_term_string}',
-        'query-input' => 'required name=search_term_string'
+    '@graph' => [
+        [
+            '@type' => 'NewsMediaOrganization',
+            '@id' => SITE_URL . '/#organization',
+            'name' => $_site_name,
+            'url' => SITE_URL,
+            'logo' => [
+                '@type' => 'ImageObject',
+                'url' => $_site_logo
+            ],
+            'sameAs' => array_values(array_filter([
+                $_setting->get('facebook_url'),
+                $_setting->get('twitter_url'),
+                $_setting->get('youtube_url'),
+                $_setting->get('instagram_url')
+            ]))
+        ],
+        [
+            '@type' => 'WebSite',
+            '@id' => SITE_URL . '/#website',
+            'url' => SITE_URL,
+            'name' => $_site_name,
+            'publisher' => ['@id' => SITE_URL . '/#organization'],
+            'potentialAction' => [
+                '@type' => 'SearchAction',
+                'target' => SITE_URL . '/search.php?q={search_term_string}',
+                'query-input' => 'required name=search_term_string'
+            ]
+        ]
     ]
 ];
 

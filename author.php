@@ -37,6 +37,37 @@ $page_title = $author['full_name'] . ' এর লেখা সংবাদ';
 $category = new Category();
 $categories = $category->getActive();
 
+$author_url = SITE_URL . '/author.php?id=' . $author['id'] . '&name=' . urlencode(str_replace(' ', '-', $author['full_name']));
+$breadcrumb_ld = [
+    '@context' => 'https://schema.org',
+    '@type' => 'BreadcrumbList',
+    'itemListElement' => [
+        ['@type' => 'ListItem', 'position' => 1, 'name' => 'প্রচ্ছদ', 'item' => SITE_URL],
+        ['@type' => 'ListItem', 'position' => 2, 'name' => 'লেখক', 'item' => SITE_URL . '/author.php'],
+        ['@type' => 'ListItem', 'position' => 3, 'name' => $author['full_name'], 'item' => $author_url]
+    ]
+];
+
+$json_ld = [
+    '@context' => 'https://schema.org',
+    '@type' => 'ProfilePage',
+    'mainEntity' => [
+        '@type' => 'Person',
+        'name' => $author['full_name'],
+        'jobTitle' => 'Journalist',
+        'description' => !empty($author['bio']) ? $author['bio'] : ($author['full_name'] . ' আলোকপাত এর একজন নিয়মিত লেখক ও সাংবাদিক।'),
+        'url' => $author_url,
+        'sameAs' => array_values(array_filter([
+            $author['facebook_url'] ?? null,
+            $author['twitter_url'] ?? null,
+            $author['youtube_url'] ?? null
+        ]))
+    ]
+];
+if (!empty($author['avatar'])) {
+    $json_ld['mainEntity']['image'] = $author['avatar'];
+}
+
 ob_start();
 component('header', ['categories' => $categories]);
 ?>

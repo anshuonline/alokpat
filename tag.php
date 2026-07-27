@@ -39,6 +39,23 @@ $meta_keywords = $tag_data['seo_keywords'] ?? '';
 $category = new Category();
 $categories = $category->getActive();
 
+$breadcrumb_ld = [
+    '@context' => 'https://schema.org',
+    '@type' => 'BreadcrumbList',
+    'itemListElement' => [
+        ['@type' => 'ListItem', 'position' => 1, 'name' => 'প্রচ্ছদ', 'item' => SITE_URL],
+        ['@type' => 'ListItem', 'position' => 2, 'name' => 'ট্যাগ: ' . $tag_data['name'], 'item' => SITE_URL . '/tag.php?slug=' . ($tag_data['slug'] ?? '')]
+    ]
+];
+
+$json_ld = [
+    '@context' => 'https://schema.org',
+    '@type' => 'CollectionPage',
+    'name' => 'ট্যাগ: ' . $tag_data['name'],
+    'description' => $meta_description ?: ($tag_data['name'] . ' ট্যাগ সম্পর্কিত সর্বশেষ সংবাদ ও আপডেট।'),
+    'url' => SITE_URL . '/tag.php?slug=' . ($tag_data['slug'] ?? '')
+];
+
 ob_start();
 component('header', ['categories' => $categories]);
 ?>
