@@ -33,6 +33,7 @@ class Permissions {
                 'manage_subscribers' => 'সাবস্ক্রাইবার পরিচালনা (Manage Subscribers)',
                 'view_reports' => 'রিপোর্ট দেখা (View Reports)',
                 'manage_contacts' => 'যোগাযোগ বার্তা দেখা (Manage Contacts)',
+                'manage_messages' => 'অ্যাডমিন মেসেজ পরিচালনা (Manage Admin Messages)',
             ],
             'Settings' => [
                 'manage_settings' => 'সাইট সেটিংস (Site Settings)',

@@ -12,9 +12,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && veri
     try {
         // Action: Delete Message
         if (isset($_POST['action']) && $_POST['action'] === 'delete_message') {
+            if (!hasAnyRole(['super_admin', 'admin'])) {
+                setFlash('error', 'You do not have permission to delete messages.');
+                redirect(ADMIN_URL . '/inbox.php');
+            }
             $msg_id = (int)$_POST['message_id'];
-            $stmt = $db->prepare("DELETE FROM admin_messages WHERE id = :id AND (sender_id = :uid OR receiver_id = :uid)");
-            if ($stmt->execute(['id' => $msg_id, 'uid' => $user['id']])) {
+            $stmt = $db->prepare("DELETE FROM admin_messages WHERE id = :id AND (sender_id = :uid1 OR receiver_id = :uid2)");
+            if ($stmt->execute(['id' => $msg_id, 'uid1' => $user['id'], 'uid2' => $user['id']])) {
                 setFlash('success', 'Message deleted successfully!');
             } else {
                 setFlash('error', 'Failed to delete message.');
@@ -174,6 +178,7 @@ ob_start();
                                             <i class="far fa-clock mr-1"></i>
                                             <?php echo date('d M Y, h:i A', strtotime($msg['created_at'])); ?>
                                         </div>
+                                        <?php if (hasAnyRole(['super_admin', 'admin'])): ?>
                                         <form method="POST" action="" class="inline" onsubmit="return confirm('Are you sure you want to delete this message?');">
                                             <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
                                             <input type="hidden" name="action" value="delete_message">
@@ -182,6 +187,7 @@ ob_start();
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </form>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <div class="mt-2 text-sm text-gray-700 leading-relaxed whitespace-pre-wrap font-medium"><?php echo escape($msg['message']); ?></div>
@@ -246,6 +252,7 @@ ob_start();
                                             <i class="far fa-clock mr-1"></i>
                                             <?php echo date('d M Y, h:i A', strtotime($msg['created_at'])); ?>
                                         </div>
+                                        <?php if (hasAnyRole(['super_admin', 'admin'])): ?>
                                         <form method="POST" action="" class="inline" onsubmit="return confirm('Are you sure you want to delete this message?');">
                                             <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
                                             <input type="hidden" name="action" value="delete_message">
@@ -254,6 +261,7 @@ ob_start();
                                                 <i class="fas fa-trash-alt"></i>
                                             </button>
                                         </form>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <div class="mt-2 text-sm text-gray-700 leading-relaxed whitespace-pre-wrap"><?php echo escape($msg['message']); ?></div>
