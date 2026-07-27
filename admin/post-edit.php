@@ -892,12 +892,32 @@ ob_start();
                             <h4 class="text-sm font-semibold text-gray-700">FAQ Schema</h4>
                             <span class="text-[10px] font-medium text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">Rich Results</span>
                         </div>
-                        <button type="button" onclick="addFaqItem()" class="inline-flex items-center gap-1.5 text-xs font-semibold text-orange-600 bg-orange-50 hover:bg-orange-100 px-4 py-2 rounded-xl transition-all duration-200 border border-orange-200 hover:border-orange-300">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                            </svg>
-                            Add Question
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="document.getElementById('import-json-container').classList.toggle('hidden')" class="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-600 bg-gray-50 hover:bg-gray-100 px-4 py-2 rounded-xl transition-all duration-200 border border-gray-200 hover:border-gray-300">
+                                <i class="fas fa-code"></i>
+                                Import JSON
+                            </button>
+                            <button type="button" onclick="addFaqItem()" class="inline-flex items-center gap-1.5 text-xs font-semibold text-orange-600 bg-orange-50 hover:bg-orange-100 px-4 py-2 rounded-xl transition-all duration-200 border border-orange-200 hover:border-orange-300">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                Add Question
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="import-json-container" class="hidden mb-4 p-4 bg-orange-50/30 rounded-xl border border-orange-100/50 relative">
+                        <button type="button" onclick="this.parentElement.classList.add('hidden')" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times"></i>
                         </button>
+                        <label class="block text-xs font-medium text-gray-600 mb-2">Paste JSON-LD Schema (People Also Ask) here:</label>
+                        <textarea id="import-json-textarea" rows="4" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 text-xs font-mono mb-3 bg-white" placeholder='{&#10;  "@context": "https://schema.org",&#10;  "@type": "FAQPage",&#10;  "mainEntity": [...]&#10;}'></textarea>
+                        <div class="flex justify-end gap-2">
+                            <button type="button" onclick="processJsonImport()" class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors">
+                                <i class="fas fa-file-import"></i>
+                                Import Questions
+                            </button>
+                        </div>
                     </div>
                     
                     <div id="faq-container" class="space-y-3">
@@ -1580,10 +1600,15 @@ $(document).ready(function() {
     setInterval(autoSave, 30000);
 });
 
-function addFaqItem() {
+function addFaqItem(q = '', a = '') {
     const container = document.getElementById('faq-container');
     const faqItem = document.createElement('div');
     faqItem.className = 'faq-item bg-gradient-to-r from-orange-50/30 to-transparent p-4 rounded-xl border border-orange-100/50 relative group transition-all hover:border-orange-200 hover:shadow-sm';
+    
+    const escapeHtml = (text) => text.replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]);
+    const safeQ = escapeHtml(q);
+    const safeA = escapeHtml(a);
+
     faqItem.innerHTML = `
         <button type="button" onclick="this.parentElement.remove()" class="absolute top-2.5 right-2.5 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all bg-white rounded-lg p-1.5 shadow-sm border border-gray-100">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1593,15 +1618,47 @@ function addFaqItem() {
         <div class="grid gap-3 md:grid-cols-2 pr-8">
             <div>
                 <label class="block text-[11px] font-medium text-gray-500 mb-1">Question</label>
-                <input type="text" name="faq_q[]" class="w-full px-3.5 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-200 text-sm bg-white" placeholder="e.g. What is the price?">
+                <input type="text" name="faq_q[]" value="${safeQ}" class="w-full px-3.5 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-200 text-sm bg-white" placeholder="e.g. What is the price?">
             </div>
             <div>
                 <label class="block text-[11px] font-medium text-gray-500 mb-1">Answer</label>
-                <textarea name="faq_a[]" rows="1" class="w-full px-3.5 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-200 text-sm bg-white resize-none" placeholder="e.g. The price starts from..."></textarea>
+                <textarea name="faq_a[]" rows="1" class="w-full px-3.5 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-200 text-sm bg-white resize-none" placeholder="e.g. The price starts from...">${safeA}</textarea>
             </div>
         </div>
     `;
     container.appendChild(faqItem);
+}
+
+function processJsonImport() {
+    const textarea = document.getElementById('import-json-textarea');
+    const jsonStr = textarea.value.trim();
+    if(!jsonStr) {
+        alert('Please paste some JSON-LD code.');
+        return;
+    }
+    
+    try {
+        const data = JSON.parse(jsonStr);
+        if(data['@type'] === 'FAQPage' && Array.isArray(data.mainEntity)) {
+            let count = 0;
+            data.mainEntity.forEach(item => {
+                if(item['@type'] === 'Question' && item.name && item.acceptedAnswer && item.acceptedAnswer.text) {
+                    addFaqItem(item.name, item.acceptedAnswer.text);
+                    count++;
+                }
+            });
+            if(count > 0) {
+                textarea.value = '';
+                document.getElementById('import-json-container').classList.add('hidden');
+            } else {
+                alert('No valid Question/Answer pairs found in the JSON.');
+            }
+        } else {
+            alert('Invalid FAQ Schema format. Make sure it contains "@type": "FAQPage" and a "mainEntity" array.');
+        }
+    } catch(e) {
+        alert('Invalid JSON! Please check the syntax.');
+    }
 }
 </script>
 
