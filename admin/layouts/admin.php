@@ -32,6 +32,14 @@
         .sidebar-link:hover:not(.active) i {
             color: #000;
         }
+            /* Sidebar Minimized State */
+        body.sidebar-mini #sidebar { width: 5rem; }
+        body.sidebar-mini .sidebar-text { display: none; }
+        body.sidebar-mini #logo-full { display: none; }
+        body.sidebar-mini #logo-mini { display: block; }
+        @media (min-width: 1024px) {
+            body.sidebar-mini .lg\:ml-64 { margin-left: 5rem; }
+        }
     </style>
 </head>
 <body class="bg-gray-50 overflow-x-hidden">
@@ -56,13 +64,13 @@
                 <a href="<?php echo ADMIN_URL; ?>/dashboard.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-home w-6 transition-colors"></i>
-                    <span class="font-medium">ড্যাশবোর্ড</span>
+                    <span class="font-medium sidebar-text">Dashboard</span>
                 </a>
                 
                 <a href="<?php echo ADMIN_URL; ?>/posts.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'posts.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-newspaper w-6 transition-colors"></i>
-                    <span class="font-medium">সংবাদ</span>
+                    <span class="font-medium sidebar-text">Posts</span>
                 </a>
                 
                 <?php if (hasPermission('manage_settings')): ?>
@@ -71,21 +79,21 @@
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center mr-3 <?php echo basename($_SERVER['PHP_SELF']) == 'prompts.php' ? 'bg-indigo-600/20 text-indigo-100' : 'bg-gray-100 text-gray-500'; ?>">
                         <i class="fas fa-robot text-lg"></i>
                     </div>
-                    <span>AI প্রম্পট</span>
+                    <span class="sidebar-text">AI Prompts</span>
                 </a>
                 <?php endif; ?>
                 
                 <a href="<?php echo ADMIN_URL; ?>/short-links.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'short-links.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-link w-6 transition-colors"></i>
-                    <span class="font-medium">শর্ট লিংক</span>
+                    <span class="font-medium sidebar-text">Short Links</span>
                 </a>
                 
                 <?php if(hasPermission('manage_categories')): ?>
                 <a href="<?php echo ADMIN_URL; ?>/categories.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'categories.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-folder w-6 transition-colors"></i>
-                    <span class="font-medium">ক্যাটাগরি</span>
+                    <span class="font-medium sidebar-text">Categories</span>
                 </a>
                 <?php endif; ?>
                 
@@ -93,7 +101,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/menus.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'menus.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-bars w-6 transition-colors"></i>
-                    <span class="font-medium">মেনু</span>
+                    <span class="font-medium sidebar-text">Menus</span>
                 </a>
                 <?php endif; ?>
                 
@@ -101,7 +109,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/tags.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'tags.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-tags w-6 transition-colors"></i>
-                    <span class="font-medium">ট্যাগ</span>
+                    <span class="font-medium sidebar-text">Tags</span>
                 </a>
                 <?php endif; ?>
                 
@@ -109,7 +117,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/media.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'media.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-images w-6 transition-colors"></i>
-                    <span class="font-medium">মিডিয়া</span>
+                    <span class="font-medium sidebar-text">Media</span>
                 </a>
                 <?php endif; ?>
                 
@@ -117,7 +125,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/optimize.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'optimize.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-rocket w-6 transition-colors"></i>
-                    <span class="font-medium">অপ্টিমাইজ</span>
+                    <span class="font-medium sidebar-text">Optimize</span>
                 </a>
                 <?php endif; ?>
                 
@@ -125,7 +133,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/users.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'users.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-users w-6 transition-colors"></i>
-                    <span class="font-medium">ব্যবহারকারী</span>
+                    <span class="font-medium sidebar-text">Users</span>
                 </a>
                 <?php endif; ?>
                 
@@ -133,7 +141,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/id-cards.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'id-cards.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-id-card w-6 transition-colors"></i>
-                    <span class="font-medium">আইডি কার্ড</span>
+                    <span class="font-medium sidebar-text">ID Cards</span>
                 </a>
                 <?php endif; ?>
                 
@@ -141,7 +149,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/roles.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'roles.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-user-shield w-6 transition-colors"></i>
-                    <span class="font-medium">রোল ও পারমিশন</span>
+                    <span class="font-medium sidebar-text">Roles & Permissions</span>
                 </a>
                 <?php endif; ?>
                 
@@ -155,7 +163,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/seo.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'seo.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-search w-6 transition-colors"></i>
-                    <span class="font-medium">এসইও</span>
+                    <span class="font-medium sidebar-text">SEO</span>
                 </a>
                 <?php endif; ?>
                 
@@ -171,7 +179,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/contacts.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'contacts.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-envelope w-6 transition-colors"></i>
-                    <span class="font-medium">যোগাযোগ (Contacts)</span>
+                    <span class="font-medium sidebar-text">Contacts</span>
                 </a>
                 <?php endif; ?>
                 
@@ -179,7 +187,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/reports.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'reports.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-chart-line w-6 transition-colors"></i>
-                    <span class="font-medium">রিপোর্টস</span>
+                    <span class="font-medium sidebar-text">Reports</span>
                 </a>
                 <?php endif; ?>
                 
@@ -187,7 +195,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/subscribers.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'subscribers.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-users-cog w-6 transition-colors"></i>
-                    <span class="font-medium">সাবস্ক্রাইবার</span>
+                    <span class="font-medium sidebar-text">Subscribers</span>
                 </a>
                 <?php endif; ?>
                 
@@ -195,7 +203,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/notifications.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'notifications.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-bell w-6 transition-colors"></i>
-                    <span class="font-medium">নোটিফিকেশন</span>
+                    <span class="font-medium sidebar-text">Notifications</span>
                 </a>
                 <?php endif; ?>
                 
@@ -203,7 +211,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/ads.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'ads.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-bullhorn w-6 transition-colors"></i>
-                    <span class="font-medium">বিজ্ঞাপন</span>
+                    <span class="font-medium sidebar-text">Ads</span>
                 </a>
                 <?php endif; ?>
                 
@@ -211,7 +219,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/appearance.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'appearance.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-palette w-6 transition-colors"></i>
-                    <span class="font-medium">এপিয়ারেন্স</span>
+                    <span class="font-medium sidebar-text">Appearance</span>
                 </a>
                 <?php endif; ?>
                 
@@ -219,7 +227,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/homepage-settings.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'homepage-settings.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-home w-6 transition-colors"></i>
-                    <span class="font-medium">হোমপেজ সেটিংস</span>
+                    <span class="font-medium sidebar-text">Homepage Settings</span>
                 </a>
                 <?php endif; ?>
                 
@@ -232,7 +240,7 @@
                     <a href="<?php echo ADMIN_URL; ?>/pending-actions.php" 
                        class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'pending-actions.php' ? 'active' : 'text-gray-700'; ?>">
                         <i class="fas fa-tasks w-6 transition-colors"></i>
-                        <span class="font-medium flex-1">পেন্ডিং অ্যাকশন</span>
+                        <span class="font-medium flex-1 sidebar-text">Pending Actions</span>
                         <?php if ($pending_count > 0): ?>
                             <span class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full"><?php echo $pending_count; ?></span>
                         <?php endif; ?>
@@ -243,7 +251,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/settings.php" 
                    class="sidebar-link flex items-center px-4 py-3 rounded-lg font-bold transition-all <?php echo basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'active' : 'text-gray-700'; ?>">
                     <i class="fas fa-cog w-6 transition-colors"></i>
-                    <span class="font-medium">সেটিংস</span>
+                    <span class="font-medium sidebar-text">Settings</span>
                 </a>
                 <?php endif; ?>
             </nav>
@@ -252,7 +260,7 @@
                 <a href="<?php echo ADMIN_URL; ?>/logout.php" 
                    class="flex items-center px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 transition-all">
                     <i class="fas fa-sign-out-alt w-6"></i>
-                    <span class="font-medium">লগআউট</span>
+                    <span class="font-medium sidebar-text">Logout</span>
                 </a>
             </div>
         </aside>
@@ -263,9 +271,22 @@
             <!-- Top Bar -->
             <header class="bg-white shadow-sm px-6 py-4">
                 <div class="flex items-center justify-between">
-                    <button id="sidebarToggle" class="lg:hidden text-gray-600">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
+                    <div class="flex items-center space-x-4">
+                        <button id="sidebarToggle" class="lg:hidden text-gray-600 hover:text-gray-900 transition-colors">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                        <button id="desktopSidebarToggle" class="hidden lg:block text-gray-600 hover:text-gray-900 transition-colors" title="Toggle Sidebar">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                        
+                        <!-- Search Bar -->
+                        <div class="hidden md:block relative ml-4">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                                <i class="fas fa-search text-gray-400"></i>
+                            </span>
+                            <input type="search" placeholder="Search..." class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all bg-gray-50 focus:bg-white">
+                        </div>
+                    </div>
                     
                     <div class="flex items-center space-x-6 ml-auto">
                         <div class="text-right">
@@ -322,6 +343,20 @@
     </div>
     
     <script>
+        const desktopSidebarToggle = document.getElementById('desktopSidebarToggle');
+        if (desktopSidebarToggle) {
+            desktopSidebarToggle.addEventListener('click', () => {
+                document.body.classList.toggle('sidebar-mini');
+                if (document.body.classList.contains('sidebar-mini')) {
+                    localStorage.setItem('sidebarState', 'minimized');
+                } else {
+                    localStorage.setItem('sidebarState', 'expanded');
+                }
+            });
+            if (localStorage.getItem('sidebarState') === 'minimized') {
+                document.body.classList.add('sidebar-mini');
+            }
+        }
         // Mobile sidebar toggle
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
