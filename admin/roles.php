@@ -10,6 +10,12 @@ requirePermission('manage_roles'); // Ensure only authorized users can access
 
 $db = (new Database())->getConnection();
 
+// Fetch current user's role ID for hierarchy logic
+$currentUserRoleSlug = getCurrentUser()['role'];
+$stmt = $db->prepare("SELECT id FROM roles WHERE slug = ?");
+$stmt->execute([$currentUserRoleSlug]);
+$currentUserRoleId = (int)$stmt->fetchColumn();
+
 // Handle Delete
 if (isset($_GET['delete'])) {
     requireCSRF();
@@ -20,7 +26,9 @@ if (isset($_GET['delete'])) {
     $stmt->execute([$id]);
     $role = $stmt->fetch();
     
-    if ($role && $role['is_system'] == 1) {
+    if ($currentUserRoleId !== 1 && $id <= $currentUserRoleId) {
+        setFlash('error', 'আপনি আপনার থেকে বড় বা সমান রোল মুছতে পারবেন না।');
+    } elseif ($role && $role['is_system'] == 1) {
         setFlash('error', 'সিস্টেম রোল (System Role) মোছা সম্ভব নয়।');
     } else {
         $stmt = $db->prepare("DELETE FROM roles WHERE id = ?");
@@ -61,7 +69,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$id]);
         $role = $stmt->fetch();
         
-        if ($role && $role['is_system'] == 1) {
+        if ($currentUserRoleId !== 1 && $id <= $currentUserRoleId) {
+            setFlash('error', 'আপনি আপনার থেকে বড় বা সমান রোল আপডেট করতে পারবেন না।');
+            $success = false;
+        } elseif ($role && $role['is_system'] == 1) {
             $stmt = $db->prepare("UPDATE roles SET name = ?, permissions = ? WHERE id = ?");
             $success = $stmt->execute([$name, $permissions_json, $id]);
         } else {
@@ -164,6 +175,10 @@ ob_start();
                 <?php endif; ?>
             </div>
             
+            <?php 
+            $canManage = ($currentUserRoleId === 1) || ($role['id'] > $currentUserRoleId);
+            if ($canManage): 
+            ?>
             <div class="p-4 border-t bg-gray-50 flex justify-end space-x-3">
                 <button onclick="editRole(<?php echo htmlspecialchars(json_encode($role)); ?>)" class="text-blue-600 hover:text-blue-800 font-medium text-sm transition flex items-center">
                     <i class="fas fa-edit mr-1"></i> এডিট
@@ -175,6 +190,11 @@ ob_start();
                     </a>
                 <?php endif; ?>
             </div>
+            <?php else: ?>
+            <div class="p-4 border-t bg-gray-50 flex justify-end space-x-3">
+                <span class="text-gray-400 text-sm italic"><i class="fas fa-lock mr-1"></i> মডিফাই করার অনুমতি নেই</span>
+            </div>
+            <?php endif; ?>
         </div>
         <?php endforeach; ?>
     </div>
