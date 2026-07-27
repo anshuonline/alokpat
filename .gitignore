@@ -6,10 +6,15 @@ config/google-indexing-key.json
 database/migrations/*.sql
 update_db*.php
 test*.php
+create_symlink.php
 
 # Uploads and Cache
 /uploads/*
 !/uploads/.gitkeep
+/shared_uploads/*
+!/shared_uploads/.gitkeep
+/uploads_old_backup/*
+!/uploads_old_backup/.gitkeep
 /cache/*
 !/cache/.gitkeep
 /assets/css/output.css
