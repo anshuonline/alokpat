@@ -318,9 +318,8 @@ function switchTab(tab) {
 
 <!-- Read Modal -->
 <div id="readModal" class="fixed inset-0 z-50 hidden bg-gray-900/60 backdrop-blur-sm overflow-y-auto">
-    <div class="min-h-screen px-4 text-center">
-        <span class="inline-block h-screen align-middle" aria-hidden="true">&#8203;</span>
-        <div class="inline-block w-full max-w-2xl p-8 my-8 text-left align-middle transition-all transform bg-white shadow-2xl rounded-2xl relative">
+    <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+        <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 w-full max-w-2xl p-6 sm:p-8">
             
             <button type="button" onclick="document.getElementById('readModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 transition-colors bg-gray-100 hover:bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center">
                 <i class="fas fa-times text-lg"></i>
@@ -368,9 +367,8 @@ function openReadModal(msgId) {
 <?php if ($can_send): ?>
 <!-- Compose Modal -->
 <div id="composeModal" class="fixed inset-0 z-50 hidden bg-gray-900/60 backdrop-blur-sm overflow-y-auto">
-    <div class="min-h-screen px-4 text-center">
-        <span class="inline-block h-screen align-middle" aria-hidden="true">&#8203;</span>
-        <div class="inline-block w-full max-w-lg p-6 my-8 text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl relative">
+    <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+        <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-xl transition-all sm:my-8 w-full max-w-lg p-6">
             
             <button type="button" onclick="document.getElementById('composeModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
                 <i class="fas fa-times text-xl"></i>
