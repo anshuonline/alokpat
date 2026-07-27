@@ -1,6 +1,6 @@
 <?php
 require_once __DIR__ . '/../config/config.php';
-requireAdmin();
+requireAuth();
 
 $page_title = 'ইনবক্স (Inbox)';
 $user = getCurrentUser();
