@@ -98,6 +98,11 @@ if (isset($json_ld)): ?>
 <?php if (isset($breadcrumb_ld)): ?>
     <script type="application/ld+json"><?php echo json_encode($breadcrumb_ld, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT); ?></script>
 <?php endif; ?>
+<?php if (isset($article) && !empty($article['schema_markup'])): ?>
+    <script type="application/ld+json">
+<?php echo $article['schema_markup']; ?>
+    </script>
+<?php endif; ?>
     <?php
     $google_search_console = $setting->get('google_search_console');
     if ($google_search_console) {
