@@ -3,28 +3,28 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once __DIR__ . '/config/config.php';
-require_once __DIR__ . '/core/Database.php';
+echo "<h2>Debug Page</h2>";
 
+// Direct PDO connection - no require needed
 try {
-    $db = (new Database())->getConnection();
-    echo "Database Connected successfully.<br>";
+    $dsn = "mysql:host=localhost;dbname=u388169091_alokpat;charset=utf8mb4";
+    $pdo = new PDO($dsn, 'u388169091_alokpat', '@Alokpat.in1234');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "1. Database Connected OK<br>";
     
     // Check if table exists
-    $result = $db->query("SHOW TABLES LIKE 'admin_messages'");
-    if ($result && $result->rowCount() > 0) {
-        echo "Table 'admin_messages' EXISTS.<br>";
-        
-        // Try the query that's in admin layout
-        $unread_stmt = $db->prepare("SELECT COUNT(*) FROM admin_messages WHERE receiver_id = 1 AND is_read = 0");
-        $unread_stmt->execute();
-        $count = $unread_stmt->fetchColumn();
-        echo "Unread query executed successfully. Count: $count <br>";
+    $result = $pdo->query("SHOW TABLES LIKE 'admin_messages'");
+    if ($result->rowCount() > 0) {
+        echo "2. Table 'admin_messages' EXISTS<br>";
     } else {
-        echo "Table 'admin_messages' DOES NOT EXIST! This is causing the 500 error.<br>";
-        echo "Please run the SQL query to create it.<br>";
+        echo "2. Table 'admin_messages' DOES NOT EXIST - yahi 500 ka reason hai<br>";
     }
+    
+    // Test admin layout include
+    echo "3. Now testing config include...<br>";
+    require_once __DIR__ . '/config/config.php';
+    echo "4. Config loaded OK<br>";
+    
 } catch (Exception $e) {
-    echo "Exception Caught:<br>";
-    echo $e->getMessage() . "<br>";
+    echo "ERROR: " . $e->getMessage() . "<br>";
 }
