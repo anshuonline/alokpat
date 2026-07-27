@@ -190,7 +190,13 @@ ob_start();
                                         <?php endif; ?>
                                     </div>
                                 </div>
-                                <div class="mt-2 text-sm text-gray-700 leading-relaxed whitespace-pre-wrap font-medium"><?php echo escape($msg['message']); ?></div>
+                                <div class="mt-2 cursor-pointer" onclick="openReadModal('msg-inbox-<?php echo $msg['id']; ?>')">
+                                    <div class="text-sm text-gray-700 leading-relaxed font-medium line-clamp-2"><?php echo escape($msg['message']); ?></div>
+                                    <span class="text-indigo-600 text-xs font-semibold hover:underline mt-1 inline-block">Read full message</span>
+                                </div>
+                                <div id="msg-inbox-<?php echo $msg['id']; ?>-full" class="hidden"><?php echo escape($msg['message']); ?></div>
+                                <div id="msg-inbox-<?php echo $msg['id']; ?>-title" class="hidden"><?php echo escape($msg['sender_name']); ?></div>
+                                <div id="msg-inbox-<?php echo $msg['id']; ?>-date" class="hidden"><?php echo date('d M Y, h:i A', strtotime($msg['created_at'])); ?></div>
                                 
                                 <?php if (!$msg['is_read']): ?>
                                     <div class="mt-4">
@@ -264,7 +270,13 @@ ob_start();
                                         <?php endif; ?>
                                     </div>
                                 </div>
-                                <div class="mt-2 text-sm text-gray-700 leading-relaxed whitespace-pre-wrap"><?php echo escape($msg['message']); ?></div>
+                                <div class="mt-2 cursor-pointer" onclick="openReadModal('msg-sent-<?php echo $msg['id']; ?>')">
+                                    <div class="text-sm text-gray-700 leading-relaxed line-clamp-2"><?php echo escape($msg['message']); ?></div>
+                                    <span class="text-indigo-600 text-xs font-semibold hover:underline mt-1 inline-block">Read full message</span>
+                                </div>
+                                <div id="msg-sent-<?php echo $msg['id']; ?>-full" class="hidden"><?php echo escape($msg['message']); ?></div>
+                                <div id="msg-sent-<?php echo $msg['id']; ?>-title" class="hidden"><?php echo escape($msg['receiver_name']); ?></div>
+                                <div id="msg-sent-<?php echo $msg['id']; ?>-date" class="hidden"><?php echo date('d M Y, h:i A', strtotime($msg['created_at'])); ?></div>
                             </div>
                         </div>
                     </li>
@@ -303,6 +315,56 @@ function switchTab(tab) {
 </script>
 
 <?php if ($can_send): ?>
+
+<!-- Read Modal -->
+<div id="readModal" class="fixed inset-0 z-50 hidden bg-gray-900/60 backdrop-blur-sm overflow-y-auto">
+    <div class="min-h-screen px-4 text-center">
+        <span class="inline-block h-screen align-middle" aria-hidden="true">&#8203;</span>
+        <div class="inline-block w-full max-w-2xl p-8 my-8 text-left align-middle transition-all transform bg-white shadow-2xl rounded-2xl relative">
+            
+            <button type="button" onclick="document.getElementById('readModal').classList.add('hidden')" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 transition-colors bg-gray-100 hover:bg-gray-200 rounded-full w-8 h-8 flex items-center justify-center">
+                <i class="fas fa-times text-lg"></i>
+            </button>
+
+            <div class="flex items-center space-x-3 mb-6 border-b pb-4">
+                <div class="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl font-bold border border-indigo-200 shadow-sm">
+                    <i class="fas fa-envelope-open-text"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900" id="readModalTitle">Sender Name</h3>
+                    <p class="text-sm text-gray-500 font-medium" id="readModalDate"><i class="far fa-clock mr-1"></i> Date</p>
+                </div>
+            </div>
+
+            <div class="mt-4 bg-gray-50 rounded-xl p-6 border border-gray-100 max-h-[60vh] overflow-y-auto">
+                <div id="readModalContent" class="text-base text-gray-800 leading-relaxed whitespace-pre-wrap font-medium">
+                    Message Content
+                </div>
+            </div>
+
+            <div class="mt-8 flex justify-end">
+                <button type="button" onclick="document.getElementById('readModal').classList.add('hidden')" class="px-6 py-2.5 text-sm font-bold text-white bg-gray-800 hover:bg-gray-900 rounded-lg transition-colors shadow-sm">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function openReadModal(msgId) {
+    var content = document.getElementById(msgId + '-full').innerText;
+    var title = document.getElementById(msgId + '-title').innerText;
+    var date = document.getElementById(msgId + '-date').innerText;
+    
+    document.getElementById('readModalTitle').innerText = title;
+    document.getElementById('readModalDate').innerHTML = '<i class="far fa-clock mr-1"></i> ' + date;
+    document.getElementById('readModalContent').innerText = content;
+    
+    document.getElementById('readModal').classList.remove('hidden');
+}
+</script>
+
 <!-- Compose Modal -->
 <div id="composeModal" class="fixed inset-0 z-50 hidden bg-gray-900/60 backdrop-blur-sm overflow-y-auto">
     <div class="min-h-screen px-4 text-center">
