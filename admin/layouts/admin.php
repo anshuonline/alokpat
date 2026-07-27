@@ -268,27 +268,6 @@
                     </button>
                     
                     <div class="flex items-center space-x-6">
-                        <?php
-                        $unread_msg_count = 0;
-                        try {
-                            $db_conn = (new Database())->getConnection();
-                            $user_id = getCurrentUser()['id'];
-                            $unread_stmt = $db_conn->prepare("SELECT COUNT(*) FROM admin_messages WHERE receiver_id = :uid AND is_read = 0");
-                            $unread_stmt->execute(['uid' => $user_id]);
-                            $unread_msg_count = $unread_stmt->fetchColumn();
-                        } catch (Exception $e) {
-                            // Table might not exist yet
-                        }
-                        ?>
-                        <a href="<?php echo ADMIN_URL; ?>/inbox.php" class="relative text-gray-500 hover:text-indigo-600 transition-colors" title="Messages">
-                            <i class="fas fa-envelope text-2xl"></i>
-                            <?php if($unread_msg_count > 0): ?>
-                            <span class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white shadow-sm">
-                                <?php echo $unread_msg_count; ?>
-                            </span>
-                            <?php endif; ?>
-                        </a>
-                        
                         <div class="text-right">
                             <p class="text-sm font-semibold text-gray-800">
                                 <?php echo escape(getCurrentUser()['full_name']); ?>
@@ -302,6 +281,22 @@
                         <div class="h-10 w-10 rounded-full bg-black flex items-center justify-center text-white font-bold border-2 border-white shadow">
                             <?php echo mb_substr(getCurrentUser()['full_name'], 0, 1, 'UTF-8'); ?>
                         </div>
+                        
+                        <?php
+                        $db_conn = (new Database())->getConnection();
+                        $user_id = getCurrentUser()['id'];
+                        $unread_stmt = $db_conn->prepare("SELECT COUNT(*) FROM admin_messages WHERE receiver_id = :uid AND is_read = 0");
+                        $unread_stmt->execute(['uid' => $user_id]);
+                        $unread_msg_count = $unread_stmt->fetchColumn();
+                        ?>
+                        <a href="<?php echo ADMIN_URL; ?>/inbox.php" class="relative text-gray-500 hover:text-indigo-600 transition-colors" title="Messages">
+                            <i class="fas fa-envelope text-2xl"></i>
+                            <?php if($unread_msg_count > 0): ?>
+                            <span class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white shadow-sm">
+                                <?php echo $unread_msg_count; ?>
+                            </span>
+                            <?php endif; ?>
+                        </a>
                     </div>
                 </div>
             </header>
