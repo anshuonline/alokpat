@@ -623,17 +623,35 @@ ob_start();
                 </div>
                 
                 <!-- Schema Markup (FAQ / JSON-LD) -->
-                <div class="col-span-1 md:col-span-2 mt-2 p-4 border border-blue-100 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 shadow-sm relative overflow-hidden group">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-200 rounded-full mix-blend-multiply filter blur-2xl opacity-30 group-hover:opacity-60 transition-opacity duration-500"></div>
-                    <label class="flex items-center text-sm font-bold text-gray-800 mb-3">
-                        <i class="fas fa-code text-blue-600 mr-2"></i> FAQ Schema (JSON-LD Format)
-                        <span class="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 shadow-sm">
-                            <i class="fas fa-check-circle mr-1"></i> SEO Optimized
-                        </span>
-                    </label>
-                    <div class="relative">
+                <div class="col-span-1 md:col-span-2 mt-2 p-5 border border-blue-100 rounded-xl bg-white shadow-sm relative group" id="faq-builder-wrapper">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center mb-4 border-b pb-3 gap-2">
+                        <label class="flex items-center text-sm font-bold text-gray-800">
+                            <i class="fas fa-question-circle text-blue-600 mr-2"></i> FAQ Schema Builder
+                            <span class="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 shadow-sm">
+                                SEO Optimized
+                            </span>
+                        </label>
+                        <div class="flex space-x-2 bg-gray-100 p-1 rounded-lg">
+                            <button type="button" onclick="toggleFaqMode('visual')" id="btn-faq-visual" class="px-4 py-1.5 bg-white text-blue-700 text-xs font-bold rounded shadow-sm transition-all">Visual Builder</button>
+                            <button type="button" onclick="toggleFaqMode('json')" id="btn-faq-json" class="px-4 py-1.5 text-gray-500 text-xs font-bold rounded hover:bg-gray-200 transition-all">Raw JSON</button>
+                        </div>
+                    </div>
+
+                    <!-- Visual Builder Mode -->
+                    <div id="faq-visual-mode" class="block">
+                        <div id="faq-list" class="space-y-4 mb-4">
+                            <!-- FAQ items will be injected here by JS -->
+                        </div>
+                        <button type="button" onclick="addFaqItem()" class="flex items-center justify-center w-full py-3 border-2 border-dashed border-blue-300 rounded-lg text-blue-600 hover:bg-blue-50 hover:border-blue-400 font-semibold text-sm transition-all">
+                            <i class="fas fa-plus mr-2"></i> Add New FAQ
+                        </button>
+                    </div>
+
+                    <!-- Raw JSON Mode -->
+                    <div id="faq-json-mode" class="hidden relative">
                         <textarea id="schema_markup" name="schema_markup" 
-                                  rows="8"
+                                  rows="10"
+                                  oninput="syncJsonToVisual()"
                                   class="w-full px-4 py-4 bg-gray-900 border-0 rounded-xl focus:ring-4 focus:ring-blue-500/30 font-mono text-sm text-green-400 transition-all duration-300 shadow-inner scrollbar-thin scrollbar-thumb-gray-600"
                                   placeholder="Paste your FAQ Schema JSON here...
 {
@@ -641,12 +659,13 @@ ob_start();
   &quot;@type&quot;: &quot;FAQPage&quot;,
   &quot;mainEntity&quot;: [...]
 }"><?php echo isset($_POST['schema_markup']) ? htmlspecialchars($_POST['schema_markup']) : ''; ?></textarea>
-                        <button type="button" onclick="formatSchemaJson()" class="absolute top-3 right-3 bg-white/10 hover:bg-blue-600 text-white backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-lg flex items-center gap-2 z-10" title="Format JSON">
-                            <i class="fas fa-magic"></i> Format & Validate
-                        </button>
+                        <div class="flex gap-2 absolute top-3 right-3 z-10">
+                            <button type="button" onclick="formatSchemaJson()" class="bg-white/10 hover:bg-blue-600 text-white backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-lg flex items-center gap-2">
+                                <i class="fas fa-magic"></i> Format JSON
+                            </button>
+                        </div>
+                        <div id="schema_validation_msg" class="text-xs mt-2 hidden transition-all duration-300 font-medium"></div>
                     </div>
-                    <div id="schema_validation_msg" class="text-xs mt-2 hidden transition-all duration-300 font-medium"></div>
-                    <p class="text-xs text-gray-500 mt-3"><i class="fas fa-info-circle mr-1"></i> Paste valid JSON-LD. This helps search engines understand your FAQ content and display rich snippets.</p>
                 </div>
                 
             </div>
@@ -675,6 +694,129 @@ function removeFeaturedImage() {
     document.getElementById('featured_image_url').value = '';
 }
 
+let faqItems = [];
+
+function initFaqBuilder() {
+    const rawJson = document.getElementById('schema_markup').value.trim();
+    if (rawJson) {
+        parseJsonToItems(rawJson);
+    }
+    if (faqItems.length === 0) {
+        addFaqItem('', '');
+    }
+}
+
+function parseJsonToItems(jsonStr) {
+    try {
+        let cleanVal = jsonStr.replace(/<script[^>]*>/gi, '').replace(/<\/script>/gi, '').trim();
+        const obj = JSON.parse(cleanVal);
+        faqItems = [];
+        if (obj['@type'] === 'FAQPage' && obj.mainEntity && Array.isArray(obj.mainEntity)) {
+            obj.mainEntity.forEach(item => {
+                if (item['@type'] === 'Question') {
+                    faqItems.push({
+                        q: item.name || '',
+                        a: item.acceptedAnswer?.text || ''
+                    });
+                }
+            });
+        }
+        renderFaqList();
+    } catch(e) {
+        // Invalid JSON on load, do nothing visual
+    }
+}
+
+function renderFaqList() {
+    const container = document.getElementById('faq-list');
+    container.innerHTML = '';
+    faqItems.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'p-4 bg-gray-50 border border-gray-200 rounded-lg relative group transition-all';
+        div.innerHTML = `
+            <button type="button" onclick="removeFaqItem(${index})" class="absolute top-2 right-2 text-red-400 hover:text-red-600 bg-white rounded-full w-6 h-6 flex items-center justify-center shadow-sm opacity-0 group-hover:opacity-100 transition-opacity" title="Remove Question"><i class="fas fa-times text-xs"></i></button>
+            <div class="mb-3">
+                <label class="block text-xs font-bold text-gray-700 mb-1">Question</label>
+                <input type="text" value="${item.q.replace(/"/g, '&quot;')}" oninput="updateFaqItem(${index}, 'q', this.value)" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500" placeholder="e.g. What is the price?">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-700 mb-1">Answer</label>
+                <textarea rows="2" oninput="updateFaqItem(${index}, 'a', this.value)" class="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500" placeholder="e.g. The price is...">${item.a}</textarea>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+    syncVisualToJson();
+}
+
+function addFaqItem(q = '', a = '') {
+    faqItems.push({q, a});
+    renderFaqList();
+}
+
+function removeFaqItem(index) {
+    faqItems.splice(index, 1);
+    renderFaqList();
+}
+
+function updateFaqItem(index, field, value) {
+    faqItems[index][field] = value;
+    syncVisualToJson();
+}
+
+function syncVisualToJson() {
+    const validItems = faqItems.filter(item => item.q.trim() !== '' && item.a.trim() !== '');
+    if (validItems.length === 0) {
+        if(!document.getElementById('faq-json-mode').classList.contains('hidden')){
+            return;
+        }
+        document.getElementById('schema_markup').value = '';
+        return;
+    }
+    
+    const schema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": validItems.map(item => ({
+            "@type": "Question",
+            "name": item.q.trim(),
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": item.a.trim()
+            }
+        }))
+    };
+    
+    document.getElementById('schema_markup').value = JSON.stringify(schema, null, 2);
+}
+
+function syncJsonToVisual() {
+    const jsonStr = document.getElementById('schema_markup').value.trim();
+    if(jsonStr) {
+        parseJsonToItems(jsonStr);
+    }
+}
+
+function toggleFaqMode(mode) {
+    const visualMode = document.getElementById('faq-visual-mode');
+    const jsonMode = document.getElementById('faq-json-mode');
+    const btnVisual = document.getElementById('btn-faq-visual');
+    const btnJson = document.getElementById('btn-faq-json');
+    
+    if (mode === 'visual') {
+        visualMode.classList.remove('hidden');
+        jsonMode.classList.add('hidden');
+        btnVisual.className = 'px-4 py-1.5 bg-white text-blue-700 text-xs font-bold rounded shadow-sm transition-all';
+        btnJson.className = 'px-4 py-1.5 text-gray-500 text-xs font-bold rounded hover:bg-gray-200 transition-all';
+        syncJsonToVisual();
+    } else {
+        visualMode.classList.add('hidden');
+        jsonMode.classList.remove('hidden');
+        btnJson.className = 'px-4 py-1.5 bg-white text-blue-700 text-xs font-bold rounded shadow-sm transition-all';
+        btnVisual.className = 'px-4 py-1.5 text-gray-500 text-xs font-bold rounded hover:bg-gray-200 transition-all';
+    }
+}
+
 function formatSchemaJson() {
     const textarea = document.getElementById('schema_markup');
     const msgDiv = document.getElementById('schema_validation_msg');
@@ -687,7 +829,6 @@ function formatSchemaJson() {
     
     try {
         let cleanVal = val;
-        // Remove script tags if pasted accidentally
         if (cleanVal.includes('<script')) {
             cleanVal = cleanVal.replace(/<script[^>]*>/gi, '').replace(/<\/script>/gi, '').trim();
         }
@@ -697,9 +838,10 @@ function formatSchemaJson() {
         msgDiv.className = 'text-xs mt-2 text-green-600 font-medium block';
         msgDiv.innerHTML = '<i class="fas fa-check mr-1"></i> Valid JSON formatted successfully!';
         
-        // Add a subtle flash effect
         textarea.classList.add('ring-2', 'ring-green-500');
         setTimeout(() => textarea.classList.remove('ring-2', 'ring-green-500'), 1000);
+        
+        syncJsonToVisual();
     } catch (e) {
         msgDiv.className = 'text-xs mt-2 text-red-500 font-medium block';
         msgDiv.innerHTML = '<i class="fas fa-times mr-1"></i> Invalid JSON format: ' + e.message;
@@ -707,6 +849,10 @@ function formatSchemaJson() {
         setTimeout(() => textarea.classList.remove('ring-2', 'ring-red-500'), 1000);
     }
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    initFaqBuilder();
+});
 
 function switchTab(tabName) {
     // Hide all tabs
