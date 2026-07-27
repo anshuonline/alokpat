@@ -54,6 +54,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $submitted_permissions = $_POST['permissions'] ?? [];
     if (!is_array($submitted_permissions)) $submitted_permissions = [];
     
+    // Privilege Escalation Prevention: Only allow assigning permissions the current user already has
+    if ($currentUserRoleId !== 1) {
+        $final_permissions = [];
+        
+        if ($is_update) {
+            $id = (int)$_POST['update_id'];
+            $stmt_existing = $db->prepare("SELECT permissions FROM roles WHERE id = ?");
+            $stmt_existing->execute([$id]);
+            $existing_permissions = json_decode($stmt_existing->fetchColumn(), true) ?: [];
+            
+            // Preserve existing permissions that current user CANNOT manage
+            foreach ($existing_permissions as $perm) {
+                if (!hasPermission($perm)) {
+                    $final_permissions[] = $perm;
+                }
+            }
+        }
+        
+        // Add submitted permissions that current user CAN manage
+        foreach ($submitted_permissions as $perm) {
+            if (hasPermission($perm)) {
+                $final_permissions[] = $perm;
+            }
+        }
+        
+        // Strict wildcard check
+        if (in_array('*', $final_permissions) && !hasPermission('*')) {
+            $final_permissions = array_diff($final_permissions, ['*']);
+        }
+        
+        $submitted_permissions = array_values(array_unique($final_permissions));
+    }
+    
     $permissions_json = json_encode($submitted_permissions);
     
     if (empty($name)) {
@@ -244,10 +277,16 @@ ob_start();
                                 <h5 class="font-bold text-gray-700 mb-4 pb-2 border-b uppercase text-sm tracking-wider"><?php echo $groupName; ?></h5>
                                 <div class="space-y-3">
                                     <?php foreach ($permissions as $key => $label): ?>
-                                        <label class="flex items-start space-x-3 cursor-pointer group">
+                                        <label class="flex items-start space-x-3 <?php echo ($currentUserRoleId !== 1 && !hasPermission($key)) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer group'; ?>">
                                             <input type="checkbox" name="permissions[]" value="<?php echo $key; ?>" 
+                                                   <?php echo ($currentUserRoleId !== 1 && !hasPermission($key)) ? 'disabled' : ''; ?>
                                                    class="perm-checkbox mt-1 w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 transition">
-                                            <span class="text-gray-700 group-hover:text-blue-600 transition font-medium text-sm"><?php echo $label; ?> <br><span class="text-xs font-mono text-gray-400"><?php echo $key; ?></span></span>
+                                            <span class="text-gray-700 transition font-medium text-sm <?php echo ($currentUserRoleId !== 1 && !hasPermission($key)) ? '' : 'group-hover:text-blue-600'; ?>">
+                                                <?php echo $label; ?> <br><span class="text-xs font-mono text-gray-400"><?php echo $key; ?></span>
+                                                <?php if($currentUserRoleId !== 1 && !hasPermission($key)): ?>
+                                                    <i class="fas fa-lock ml-1 text-gray-400" title="You do not have this permission"></i>
+                                                <?php endif; ?>
+                                            </span>
                                         </label>
                                     <?php endforeach; ?>
                                 </div>
