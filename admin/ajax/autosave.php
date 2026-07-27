@@ -92,6 +92,7 @@ $data = [
     'meta_og_image' => sanitize($_POST['meta_og_image'] ?? ''),
     'meta_twitter_card' => sanitize($_POST['meta_twitter_card'] ?? 'summary_large_image'),
     'robots_meta' => sanitize($_POST['robots_meta'] ?? 'index,follow'),
+    'schema_markup' => $_POST['schema_markup'] ?? '',
     'tags' => $processed_tags,
 ];
 

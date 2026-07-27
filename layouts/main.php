@@ -98,9 +98,11 @@ if (isset($json_ld)): ?>
 <?php if (isset($breadcrumb_ld)): ?>
     <script type="application/ld+json"><?php echo json_encode($breadcrumb_ld, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT); ?></script>
 <?php endif; ?>
-<?php if (isset($article) && !empty($article['schema_markup'])): ?>
+<?php if (isset($article) && !empty($article['schema_markup'])): 
+    $clean_schema = str_ireplace(['<script type="application/ld+json">', '<script>', '</script>'], '', $article['schema_markup']);
+?>
     <script type="application/ld+json">
-<?php echo $article['schema_markup']; ?>
+<?php echo trim($clean_schema); ?>
     </script>
 <?php endif; ?>
     <?php

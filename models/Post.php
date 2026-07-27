@@ -153,8 +153,8 @@ class Post {
                         $params[':' . $field] = !empty($data[$field]) ? 1 : 0;
                     } elseif ($field === 'flags_expiry' || $field === 'published_at') {
                         $params[':' . $field] = !empty($data[$field]) ? $data[$field] : null;
-                    } elseif ($field === 'content') {
-                        // Don't sanitize content (keep HTML tags)
+                    } elseif (in_array($field, ['content', 'schema_markup', 'faq_schema'])) {
+                        // Don't sanitize content or JSON schemas (keep HTML/JSON tags intact)
                         $params[':' . $field] = $data[$field];
                     } else {
                         $params[':' . $field] = is_string($data[$field]) ? sanitize($data[$field]) : $data[$field];
