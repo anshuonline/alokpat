@@ -268,20 +268,6 @@
                     </button>
                     
                     <div class="flex items-center space-x-6">
-                        <div class="text-right">
-                            <p class="text-sm font-semibold text-gray-800">
-                                <?php echo escape(getCurrentUser()['full_name']); ?>
-                            </p>
-                            <p class="text-xs text-gray-500">
-                                <?php 
-                                echo ucfirst(str_replace('_', ' ', getCurrentUser()['role']));
-                                ?>
-                            </p>
-                        </div>
-                        <div class="h-10 w-10 rounded-full bg-black flex items-center justify-center text-white font-bold border-2 border-white shadow">
-                            <?php echo mb_substr(getCurrentUser()['full_name'], 0, 1, 'UTF-8'); ?>
-                        </div>
-                        
                         <?php
                         $unread_msg_count = 0;
                         try {
@@ -302,6 +288,20 @@
                             </span>
                             <?php endif; ?>
                         </a>
+                        
+                        <div class="text-right">
+                            <p class="text-sm font-semibold text-gray-800">
+                                <?php echo escape(getCurrentUser()['full_name']); ?>
+                            </p>
+                            <p class="text-xs text-gray-500">
+                                <?php 
+                                echo ucfirst(str_replace('_', ' ', getCurrentUser()['role']));
+                                ?>
+                            </p>
+                        </div>
+                        <div class="h-10 w-10 rounded-full bg-black flex items-center justify-center text-white font-bold border-2 border-white shadow">
+                            <?php echo mb_substr(getCurrentUser()['full_name'], 0, 1, 'UTF-8'); ?>
+                        </div>
                     </div>
                 </div>
             </header>
