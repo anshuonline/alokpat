@@ -14,9 +14,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && veri
         $msg_id = (int)$_POST['message_id'];
         $stmt = $db->prepare("UPDATE admin_messages SET is_read = 1 WHERE id = :id AND receiver_id = :uid");
         if ($stmt->execute(['id' => $msg_id, 'uid' => $user['id']])) {
-            setFlash('Message marked as read', 'success');
+            setFlash('success', 'Message marked as read');
         } else {
-            setFlash('Failed to mark message as read', 'error');
+            setFlash('error', 'Failed to mark message as read');
         }
         redirect(ADMIN_URL . '/inbox.php');
     }
@@ -39,9 +39,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && veri
                         }
                     }
                     if ($success) {
-                        setFlash('Message sent to all staff successfully!', 'success');
+                        setFlash('success', 'Message sent to all staff successfully!');
                     } else {
-                        setFlash('Failed to send message to some users.', 'error');
+                        setFlash('error', 'Failed to send message to some users.');
                     }
                 } else {
                     if ($stmt->execute([
@@ -49,16 +49,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && veri
                         'rid' => (int)$receiver_id,
                         'msg' => $message
                     ])) {
-                        setFlash('Message sent successfully!', 'success');
+                        setFlash('success', 'Message sent successfully!');
                     } else {
-                        setFlash('Failed to send message.', 'error');
+                        setFlash('error', 'Failed to send message.');
                     }
                 }
             } else {
-                setFlash('Please fill all required fields.', 'error');
+                setFlash('error', 'Please fill all required fields.');
             }
         } else {
-            setFlash('You do not have permission to send messages.', 'error');
+            setFlash('error', 'You do not have permission to send messages.');
         }
         redirect(ADMIN_URL . '/inbox.php');
     }
@@ -80,12 +80,27 @@ try {
     // Table may not exist yet
 }
 
-// Fetch Users for sending message (if admin)
+// Fetch Users for sending message and Sent Messages (if admin)
 $users = [];
+$sent_messages = [];
 $can_send = hasAnyRole(['super_admin', 'admin']);
 if ($can_send) {
     $user_stmt = $db->query("SELECT id, full_name, role FROM users WHERE id != " . (int)$user['id'] . " ORDER BY full_name ASC");
     $users = $user_stmt->fetchAll();
+    
+    try {
+        $sent_stmt = $db->prepare("
+            SELECT m.*, u.full_name as receiver_name, u.avatar as receiver_avatar 
+            FROM admin_messages m 
+            JOIN users u ON m.receiver_id = u.id 
+            WHERE m.sender_id = :uid 
+            ORDER BY m.created_at DESC
+        ");
+        $sent_stmt->execute(['uid' => $user['id']]);
+        $sent_messages = $sent_stmt->fetchAll();
+    } catch (Exception $e) {
+        // Table may not exist yet
+    }
 }
 
 // Build UI
@@ -105,56 +120,146 @@ ob_start();
 </div>
 
 <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-    <?php if (count($messages) > 0): ?>
-        <ul class="divide-y divide-gray-200">
-            <?php foreach ($messages as $msg): ?>
-                <li class="p-6 hover:bg-gray-50 transition-colors <?php echo $msg['is_read'] ? 'bg-white' : 'bg-blue-50/50'; ?>">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0 mr-4">
-                            <?php 
-                            $avatar = $msg['sender_avatar'] ?: 'https://ui-avatars.com/api/?name='.urlencode($msg['sender_name']).'&background=random';
-                            if (strpos($avatar, 'http') !== 0) $avatar = SITE_URL . '/' . ltrim($avatar, '/');
-                            ?>
-                            <img src="<?php echo escape($avatar); ?>" alt="Sender" class="w-12 h-12 rounded-full border border-gray-300 shadow-sm object-cover">
+    <?php if ($can_send): ?>
+    <div class="border-b border-gray-200">
+        <nav class="flex -mb-px" aria-label="Tabs">
+            <button onclick="switchTab('inbox')" id="tab-inbox" class="w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm border-indigo-500 text-indigo-600 bg-indigo-50/30 transition-colors">
+                <i class="fas fa-inbox mr-2"></i> প্রাপ্ত মেসেজ (Inbox)
+            </button>
+            <button onclick="switchTab('sent')" id="tab-sent" class="w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors">
+                <i class="fas fa-paper-plane mr-2"></i> প্রেরিত (Sent)
+            </button>
+        </nav>
+    </div>
+    <?php endif; ?>
+
+    <!-- INBOX CONTENT -->
+    <div id="content-inbox" class="block">
+        <?php if (count($messages) > 0): ?>
+            <ul class="divide-y divide-gray-200">
+                <?php foreach ($messages as $msg): ?>
+                    <li class="p-6 hover:bg-gray-50 transition-colors <?php echo $msg['is_read'] ? 'bg-white' : 'bg-blue-50/50'; ?>">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 mr-4">
+                                <?php 
+                                $avatar = $msg['sender_avatar'] ?: 'https://ui-avatars.com/api/?name='.urlencode($msg['sender_name']).'&background=random';
+                                if (strpos($avatar, 'http') !== 0) $avatar = SITE_URL . '/' . ltrim($avatar, '/');
+                                ?>
+                                <img src="<?php echo escape($avatar); ?>" alt="Sender" class="w-12 h-12 rounded-full border border-gray-300 shadow-sm object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-sm font-bold text-gray-900">
+                                        <?php echo escape($msg['sender_name']); ?>
+                                    </h3>
+                                    <div class="text-xs text-gray-500">
+                                        <i class="far fa-clock mr-1"></i>
+                                        <?php echo date('d M Y, h:i A', strtotime($msg['created_at'])); ?>
+                                    </div>
+                                </div>
+                                <div class="mt-2 text-sm text-gray-700 leading-relaxed whitespace-pre-wrap font-medium">
+                                    <?php echo escape($msg['message']); ?>
+                                </div>
+                                
+                                <?php if (!$msg['is_read']): ?>
+                                    <div class="mt-4">
+                                        <form method="POST" action="">
+                                            <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
+                                            <input type="hidden" name="action" value="mark_read">
+                                            <input type="hidden" name="message_id" value="<?php echo $msg['id']; ?>">
+                                            <button type="submit" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-full transition-colors inline-flex items-center">
+                                                <i class="fas fa-check-double mr-1.5"></i> Mark as Read
+                                            </button>
+                                        </form>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
                         </div>
-                        <div class="flex-1">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-sm font-bold text-gray-900">
-                                    <?php echo escape($msg['sender_name']); ?>
-                                </h3>
-                                <div class="text-xs text-gray-500">
-                                    <i class="far fa-clock mr-1"></i>
-                                    <?php echo date('d M Y, h:i A', strtotime($msg['created_at'])); ?>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <div class="p-12 text-center text-gray-500">
+                <i class="fas fa-inbox text-5xl mb-4 text-gray-300"></i>
+                <p class="text-lg font-medium">আপনার ইনবক্সে কোনো মেসেজ নেই</p>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- SENT CONTENT -->
+    <?php if ($can_send): ?>
+    <div id="content-sent" class="hidden">
+        <?php if (count($sent_messages) > 0): ?>
+            <ul class="divide-y divide-gray-200">
+                <?php foreach ($sent_messages as $msg): ?>
+                    <li class="p-6 bg-white hover:bg-gray-50 transition-colors">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 mr-4 relative">
+                                <?php 
+                                $avatar = $msg['receiver_avatar'] ?: 'https://ui-avatars.com/api/?name='.urlencode($msg['receiver_name']).'&background=random';
+                                if (strpos($avatar, 'http') !== 0) $avatar = SITE_URL . '/' . ltrim($avatar, '/');
+                                ?>
+                                <img src="<?php echo escape($avatar); ?>" alt="Receiver" class="w-12 h-12 rounded-full border border-gray-300 shadow-sm object-cover">
+                                
+                                <?php if ($msg['is_read']): ?>
+                                    <div class="absolute -bottom-1 -right-1 bg-green-500 text-white text-[9px] w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm" title="Read">
+                                        <i class="fas fa-check-double"></i>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="absolute -bottom-1 -right-1 bg-gray-400 text-white text-[9px] w-5 h-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm" title="Unread">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="text-sm font-bold text-gray-900">
+                                        <span class="text-gray-500 font-normal">To:</span> <?php echo escape($msg['receiver_name']); ?>
+                                    </h3>
+                                    <div class="text-xs text-gray-500">
+                                        <i class="far fa-clock mr-1"></i>
+                                        <?php echo date('d M Y, h:i A', strtotime($msg['created_at'])); ?>
+                                    </div>
+                                </div>
+                                <div class="mt-2 text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
+                                    <?php echo escape($msg['message']); ?>
                                 </div>
                             </div>
-                            <div class="mt-2 text-sm text-gray-700 leading-relaxed whitespace-pre-wrap font-medium">
-                                <?php echo escape($msg['message']); ?>
-                            </div>
-                            
-                            <?php if (!$msg['is_read']): ?>
-                                <div class="mt-4">
-                                    <form method="POST" action="">
-                                        <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
-                                        <input type="hidden" name="action" value="mark_read">
-                                        <input type="hidden" name="message_id" value="<?php echo $msg['id']; ?>">
-                                        <button type="submit" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-full transition-colors inline-flex items-center">
-                                            <i class="fas fa-check-double mr-1.5"></i> Mark as Read
-                                        </button>
-                                    </form>
-                                </div>
-                            <?php endif; ?>
                         </div>
-                    </div>
-                </li>
-            <?php endforeach; ?>
-        </ul>
-    <?php else: ?>
-        <div class="p-12 text-center text-gray-500">
-            <i class="fas fa-inbox text-5xl mb-4 text-gray-300"></i>
-            <p class="text-lg font-medium">আপনার ইনবক্সে কোনো মেসেজ নেই</p>
-        </div>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <div class="p-12 text-center text-gray-500">
+                <i class="fas fa-paper-plane text-5xl mb-4 text-gray-300"></i>
+                <p class="text-lg font-medium">আপনি এখনও কোনো মেসেজ পাঠাননি</p>
+            </div>
+        <?php endif; ?>
+    </div>
     <?php endif; ?>
 </div>
+
+<script>
+function switchTab(tab) {
+    if (tab === 'inbox') {
+        document.getElementById('content-inbox').classList.remove('hidden');
+        document.getElementById('content-inbox').classList.add('block');
+        document.getElementById('content-sent').classList.remove('block');
+        document.getElementById('content-sent').classList.add('hidden');
+        
+        document.getElementById('tab-inbox').className = "w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm border-indigo-500 text-indigo-600 bg-indigo-50/30 transition-colors";
+        document.getElementById('tab-sent').className = "w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors";
+    } else {
+        document.getElementById('content-inbox').classList.remove('block');
+        document.getElementById('content-inbox').classList.add('hidden');
+        document.getElementById('content-sent').classList.remove('hidden');
+        document.getElementById('content-sent').classList.add('block');
+        
+        document.getElementById('tab-sent').className = "w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm border-indigo-500 text-indigo-600 bg-indigo-50/30 transition-colors";
+        document.getElementById('tab-inbox').className = "w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 transition-colors";
+    }
+}
+</script>
 
 <?php if ($can_send): ?>
 <!-- Compose Modal -->
