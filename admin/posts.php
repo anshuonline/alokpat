@@ -333,7 +333,7 @@ ob_start();
                                             <?php if (!empty($post_item['featured_image'])): ?>
                                                 <img src="<?php echo escape($post_item['featured_image']); ?>" 
                                                      alt="" 
-                                                     class="w-16 h-16 object-cover rounded">
+                                                     class="w-16 h-16 object-cover rounded" onerror="this.src='<?php echo SITE_URL; ?>/assets/images/default-news.jpg'; this.onerror=null;">
                                             <?php endif; ?>
                                         <div>
                                             <h4 class="font-semibold text-gray-800 hover:text-blue-600">

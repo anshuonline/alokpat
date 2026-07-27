@@ -202,6 +202,7 @@ function loadMediaLibrary(page = 1) {
                     img.src = item.file_url;
                     img.className = 'w-full h-full object-cover group-hover:scale-105 transition duration-300';
                     img.loading = 'lazy';
+                    img.onerror = () => { img.src = '<?php echo SITE_URL; ?>/assets/images/default-news.jpg'; img.onerror = null; };
                     
                     const overlay = document.createElement('div');
                     overlay.className = 'absolute inset-0 bg-blue-600 bg-opacity-0 group-hover:bg-opacity-10 transition duration-300';

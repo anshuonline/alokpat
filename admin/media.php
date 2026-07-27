@@ -48,7 +48,7 @@ ob_start();
                         
                         <!-- Image thumbnail -->
                         <div class="aspect-square relative overflow-hidden bg-gray-200 cursor-pointer" onclick="previewMediaFullscreen('<?php echo escape($item['file_url']); ?>')">
-                            <img src="<?php echo escape($item['file_url']); ?>" alt="<?php echo escape($item['alt_text'] ?? $item['filename']); ?>" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                            <img src="<?php echo escape($item['file_url']); ?>" alt="<?php echo escape($item['alt_text'] ?? $item['filename']); ?>" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='<?php echo SITE_URL; ?>/assets/images/default-news.jpg'; this.onerror=null;">
                         </div>
                         
                         <!-- Actions Overlay -->
