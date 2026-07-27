@@ -737,6 +737,43 @@ ob_start();
                            placeholder="Facebook share title">
                 </div>
                 
+                <!-- FAQ Schema -->
+                <div class="col-span-1 md:col-span-2 border-t pt-6 mt-4">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4"><i class="fas fa-question-circle text-blue-500 mr-2"></i>FAQ Schema (People also ask)</h4>
+                    <p class="text-sm text-gray-500 mb-4">Here you can add frequently asked questions and answers to generate JSON-LD schema for Google.</p>
+                    
+                    <div id="faq-container" class="space-y-4">
+                        <?php 
+                        $faqs = [];
+                        if (!empty($post['faq_schema'])) { $faqs = json_decode($post['faq_schema'], true); }
+                        
+                        if (!empty($faqs)): 
+                            foreach ($faqs as $index => $faq):
+                        ?>
+                            <div class="faq-item bg-gray-50 p-4 rounded-lg border border-gray-200 relative">
+                                <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-red-500 hover:text-red-700 bg-white rounded-full p-1 shadow-sm">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                <div class="mb-3">
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Question</label>
+                                    <input type="text" name="faq_q[]" value="<?php echo escape($faq['q']); ?>" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" placeholder="e.g. What is the price?">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Answer</label>
+                                    <textarea name="faq_a[]" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" placeholder="e.g. The price starts from..."><?php echo escape($faq['a']); ?></textarea>
+                                </div>
+                            </div>
+                        <?php 
+                            endforeach;
+                        endif; 
+                        ?>
+                    </div>
+                    
+                    <button type="button" onclick="addFaqItem()" class="mt-4 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium transition-colors shadow-sm">
+                        <i class="fas fa-plus mr-1"></i> Add New Question
+                    </button>
+                </div>
+                
                 <!-- OG Description -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -1412,6 +1449,26 @@ $(document).ready(function() {
 
     setInterval(autoSave, 30000);
 });
+
+function addFaqItem() {
+    const container = document.getElementById('faq-container');
+    const item = document.createElement('div');
+    item.className = 'faq-item bg-gray-50 p-4 rounded-lg border border-gray-200 relative';
+    item.innerHTML = `
+        <button type="button" onclick="this.parentElement.remove()" class="absolute top-2 right-2 text-red-500 hover:text-red-700 bg-white rounded-full p-1 shadow-sm">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="mb-3">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Question</label>
+            <input type="text" name="faq_q[]" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" placeholder="e.g. What is the price?">
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Answer</label>
+            <textarea name="faq_a[]" rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500" placeholder="e.g. The price starts from..."></textarea>
+        </div>
+    `;
+    container.appendChild(item);
+}
 </script>
 
 <?php
