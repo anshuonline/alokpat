@@ -575,27 +575,6 @@ ob_start();
                            placeholder="https://example.com/article">
                 </div>
                 
-                <!-- Robots Meta -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Robots Meta
-                    </label>
-                    <select name="robots_meta" 
-                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                        <option value="index,follow" <?php echo (!isset($_POST['robots_meta']) || $_POST['robots_meta'] === 'index,follow') ? 'selected' : ''; ?>>
-                            Index, Follow
-                        </option>
-                        <option value="index,nofollow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'index,nofollow') ? 'selected' : ''; ?>>
-                            Index, Nofollow
-                        </option>
-                        <option value="noindex,follow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'noindex,follow') ? 'selected' : ''; ?>>
-                            Noindex, Follow
-                        </option>
-                        <option value="noindex,nofollow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'noindex,nofollow') ? 'selected' : ''; ?>>
-                            Noindex, Nofollow
-                        </option>
-                    </select>
-                </div>
                 <!-- OG Title -->
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -608,18 +587,6 @@ ob_start();
                            placeholder="Facebook share title">
                 </div>
                 
-                <!-- OG Description -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Open Graph Description
-                    </label>
-                    <textarea name="meta_og_description" 
-                              rows="2"
-                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                              placeholder="Facebook share description"><?php echo isset($_POST['meta_og_description']) ? escape($_POST['meta_og_description']) : ''; ?></textarea>
-                </div>
-                
-
                 <!-- FAQ Schema -->
                 <div class="col-span-1 md:col-span-2 border-t pt-6 mt-4">
                     <h4 class="text-lg font-semibold text-gray-800 mb-4"><i class="fas fa-question-circle text-blue-500 mr-2"></i>FAQ Schema (People also ask)</h4>
@@ -663,6 +630,39 @@ ob_start();
                     </button>
                 </div>
                 
+                <!-- OG Description -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Open Graph Description
+                    </label>
+                    <textarea name="meta_og_description" 
+                              rows="2"
+                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                              placeholder="Facebook share description"><?php echo isset($_POST['meta_og_description']) ? escape($_POST['meta_og_description']) : ''; ?></textarea>
+                </div>
+                
+
+                <!-- Robots Meta -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Robots Meta
+                    </label>
+                    <select name="robots_meta" 
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        <option value="index,follow" <?php echo (!isset($_POST['robots_meta']) || $_POST['robots_meta'] === 'index,follow') ? 'selected' : ''; ?>>
+                            Index, Follow
+                        </option>
+                        <option value="index,nofollow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'index,nofollow') ? 'selected' : ''; ?>>
+                            Index, Nofollow
+                        </option>
+                        <option value="noindex,follow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'noindex,follow') ? 'selected' : ''; ?>>
+                            Noindex, Follow
+                        </option>
+                        <option value="noindex,nofollow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'noindex,nofollow') ? 'selected' : ''; ?>>
+                            Noindex, Nofollow
+                        </option>
+                    </select>
+                </div>
                 
             </div>
         </div>
