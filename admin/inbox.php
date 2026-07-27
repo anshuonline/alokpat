@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && veri
     try {
         // Action: Delete Message
         if (isset($_POST['action']) && $_POST['action'] === 'delete_message') {
-            if (!hasAnyRole(['super_admin', 'admin'])) {
+            if (!hasPermission('manage_messages')) {
                 setFlash('error', 'You do not have permission to delete messages.');
                 redirect(ADMIN_URL . '/inbox.php');
             }
@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && veri
 
         // Action: Send Message
         if (isset($_POST['action']) && $_POST['action'] === 'send_message') {
-            if (hasAnyRole(['super_admin', 'admin'])) {
+            if (hasPermission('manage_messages')) {
                 $receiver_id = $_POST['receiver_id'];
                 $message = trim($_POST['message']);
                 
@@ -104,7 +104,7 @@ try {
 // Fetch Users for sending message and Sent Messages (if admin)
 $users = [];
 $sent_messages = [];
-$can_send = hasAnyRole(['super_admin', 'admin']);
+$can_send = hasPermission('manage_messages');
 if ($can_send) {
     $user_stmt = $db->query("SELECT id, full_name, role FROM users WHERE id != " . (int)$user['id'] . " ORDER BY full_name ASC");
     $users = $user_stmt->fetchAll();
@@ -178,7 +178,7 @@ ob_start();
                                             <i class="far fa-clock mr-1"></i>
                                             <?php echo date('d M Y, h:i A', strtotime($msg['created_at'])); ?>
                                         </div>
-                                        <?php if (hasAnyRole(['super_admin', 'admin'])): ?>
+                                        <?php if (hasPermission('manage_messages')): ?>
                                         <form method="POST" action="" class="inline" onsubmit="return confirm('Are you sure you want to delete this message?');">
                                             <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
                                             <input type="hidden" name="action" value="delete_message">
@@ -252,7 +252,7 @@ ob_start();
                                             <i class="far fa-clock mr-1"></i>
                                             <?php echo date('d M Y, h:i A', strtotime($msg['created_at'])); ?>
                                         </div>
-                                        <?php if (hasAnyRole(['super_admin', 'admin'])): ?>
+                                        <?php if (hasPermission('manage_messages')): ?>
                                         <form method="POST" action="" class="inline" onsubmit="return confirm('Are you sure you want to delete this message?');">
                                             <input type="hidden" name="csrf_token" value="<?php echo generateCSRFToken(); ?>">
                                             <input type="hidden" name="action" value="delete_message">
