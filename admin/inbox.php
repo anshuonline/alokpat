@@ -8,69 +8,75 @@ $db = (new Database())->getConnection();
 
 // Handle Form Submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && verifyCSRFToken($_POST['csrf_token'])) {
-    // Action: Delete Message
-    if (isset($_POST['action']) && $_POST['action'] === 'delete_message') {
-        $msg_id = (int)$_POST['message_id'];
-        $stmt = $db->prepare("DELETE FROM admin_messages WHERE id = :id AND (sender_id = :uid OR receiver_id = :uid)");
-        if ($stmt->execute(['id' => $msg_id, 'uid' => $user['id']])) {
-            setFlash('success', 'Message deleted successfully!');
-        } else {
-            setFlash('error', 'Failed to delete message.');
-        }
-        redirect(ADMIN_URL . '/inbox.php');
-    }
     
-    // Action: Mark as Read
-    if (isset($_POST['action']) && $_POST['action'] === 'mark_read') {
-        $msg_id = (int)$_POST['message_id'];
-        $stmt = $db->prepare("UPDATE admin_messages SET is_read = 1 WHERE id = :id AND receiver_id = :uid");
-        if ($stmt->execute(['id' => $msg_id, 'uid' => $user['id']])) {
-            setFlash('success', 'Message marked as read');
-        } else {
-            setFlash('error', 'Failed to mark message as read');
+    try {
+        // Action: Delete Message
+        if (isset($_POST['action']) && $_POST['action'] === 'delete_message') {
+            $msg_id = (int)$_POST['message_id'];
+            $stmt = $db->prepare("DELETE FROM admin_messages WHERE id = :id AND (sender_id = :uid OR receiver_id = :uid)");
+            if ($stmt->execute(['id' => $msg_id, 'uid' => $user['id']])) {
+                setFlash('success', 'Message deleted successfully!');
+            } else {
+                setFlash('error', 'Failed to delete message.');
+            }
+            redirect(ADMIN_URL . '/inbox.php');
         }
-        redirect(ADMIN_URL . '/inbox.php');
-    }
+        
+        // Action: Mark as Read
+        if (isset($_POST['action']) && $_POST['action'] === 'mark_read') {
+            $msg_id = (int)$_POST['message_id'];
+            $stmt = $db->prepare("UPDATE admin_messages SET is_read = 1 WHERE id = :id AND receiver_id = :uid");
+            if ($stmt->execute(['id' => $msg_id, 'uid' => $user['id']])) {
+                setFlash('success', 'Message marked as read');
+            } else {
+                setFlash('error', 'Failed to mark message as read');
+            }
+            redirect(ADMIN_URL . '/inbox.php');
+        }
 
-    // Action: Send Message
-    if (isset($_POST['action']) && $_POST['action'] === 'send_message') {
-        if (hasAnyRole(['super_admin', 'admin'])) {
-            $receiver_id = $_POST['receiver_id'];
-            $message = trim($_POST['message']);
-            
-            if (!empty($receiver_id) && !empty($message)) {
-                $stmt = $db->prepare("INSERT INTO admin_messages (sender_id, receiver_id, message) VALUES (:sid, :rid, :msg)");
+        // Action: Send Message
+        if (isset($_POST['action']) && $_POST['action'] === 'send_message') {
+            if (hasAnyRole(['super_admin', 'admin'])) {
+                $receiver_id = $_POST['receiver_id'];
+                $message = trim($_POST['message']);
                 
-                if ($receiver_id === 'all') {
-                    $all_users = $db->query("SELECT id FROM users WHERE id != " . (int)$user['id'])->fetchAll();
-                    $success = true;
-                    foreach ($all_users as $u) {
-                        if (!$stmt->execute(['sid' => $user['id'], 'rid' => $u['id'], 'msg' => $message])) {
-                            $success = false;
+                if (!empty($receiver_id) && !empty($message)) {
+                    $stmt = $db->prepare("INSERT INTO admin_messages (sender_id, receiver_id, message) VALUES (:sid, :rid, :msg)");
+                    
+                    if ($receiver_id === 'all') {
+                        $all_users = $db->query("SELECT id FROM users WHERE id != " . (int)$user['id'])->fetchAll();
+                        $success = true;
+                        foreach ($all_users as $u) {
+                            if (!$stmt->execute(['sid' => $user['id'], 'rid' => $u['id'], 'msg' => $message])) {
+                                $success = false;
+                            }
+                        }
+                        if ($success) {
+                            setFlash('success', 'Message sent to all staff successfully!');
+                        } else {
+                            setFlash('error', 'Failed to send message to some users.');
+                        }
+                    } else {
+                        if ($stmt->execute([
+                            'sid' => $user['id'],
+                            'rid' => (int)$receiver_id,
+                            'msg' => $message
+                        ])) {
+                            setFlash('success', 'Message sent successfully!');
+                        } else {
+                            setFlash('error', 'Failed to send message.');
                         }
                     }
-                    if ($success) {
-                        setFlash('success', 'Message sent to all staff successfully!');
-                    } else {
-                        setFlash('error', 'Failed to send message to some users.');
-                    }
                 } else {
-                    if ($stmt->execute([
-                        'sid' => $user['id'],
-                        'rid' => (int)$receiver_id,
-                        'msg' => $message
-                    ])) {
-                        setFlash('success', 'Message sent successfully!');
-                    } else {
-                        setFlash('error', 'Failed to send message.');
-                    }
+                    setFlash('error', 'Please fill all required fields.');
                 }
             } else {
-                setFlash('error', 'Please fill all required fields.');
+                setFlash('error', 'You do not have permission to send messages.');
             }
-        } else {
-            setFlash('error', 'You do not have permission to send messages.');
+            redirect(ADMIN_URL . '/inbox.php');
         }
+    } catch (PDOException $e) {
+        setFlash('error', 'Database Error: ' . escape($e->getMessage()));
         redirect(ADMIN_URL . '/inbox.php');
     }
 }
