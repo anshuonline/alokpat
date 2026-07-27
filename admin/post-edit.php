@@ -683,127 +683,248 @@ ob_start();
             
         </div>
         
-        <!-- SEO Section -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-            <div class="bg-gradient-to-r from-gray-50 to-white px-6 py-4 border-b border-gray-100 flex items-center justify-between">
-                <h3 class="text-lg font-bold text-gray-800 flex items-center">
-                    <span class="bg-green-100 text-green-600 p-2 rounded-lg mr-3">
-                        <i class="fas fa-search"></i>
-                    </span>
-                    এসইও (SEO) সেটিংস
-                </h3>
+        <!-- SEO Section - Enhanced -->
+        <div class="bg-white rounded-2xl shadow-lg border border-gray-100/80 overflow-hidden transition-all hover:shadow-xl">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-emerald-50 to-white px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center text-emerald-600 shadow-sm">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800">SEO Settings</h3>
+                        <p class="text-xs text-gray-500">Optimize your content for search engines and social sharing</p>
+                    </div>
+                </div>
+                <span class="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                    <i class="fas fa-check-circle mr-1"></i> Live Preview
+                </span>
             </div>
             
-            <div class="p-6">
+            <div class="p-6 md:p-8 space-y-8">
                 <!-- Group 1: General SEO -->
-                <div class="mb-8">
-                    <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4 border-b pb-2">General Search</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-1 h-6 bg-emerald-500 rounded-full"></div>
+                        <h4 class="text-sm font-semibold text-gray-700">Search Engine Optimization</h4>
+                        <span class="text-[10px] font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">Primary</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <!-- SEO Title -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">
                                 SEO Title
+                                <span class="text-gray-400 font-normal text-xs ml-1">(optional)</span>
                             </label>
-                            <input type="text" name="seo_title" value="<?php echo isset($_POST['seo_title']) ? escape($_POST['seo_title']) : ''; ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors" placeholder="Custom search engine title">
-                            <p class="text-[11px] text-gray-500 mt-1">খালি থাকলে মূল শিরোনাম ব্যবহার হবে</p>
+                            <div class="relative">
+                                <input type="text" name="seo_title" value="<?php echo isset($_POST['seo_title']) ? escape($_POST['seo_title']) : ''; ?>" 
+                                       class="w-full pl-4 pr-10 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200 bg-gray-50/50 hover:bg-white" 
+                                       placeholder="Custom search engine title">
+                                <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="text-[11px] text-gray-400 mt-1.5 flex items-center gap-1">
+                                <span class="inline-block w-1 h-1 bg-gray-300 rounded-full"></span>
+                                Leave blank to use the main title
+                            </p>
                         </div>
                         
                         <!-- Focus Keywords -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">
                                 Focus Keywords
+                                <span class="text-gray-400 font-normal text-xs ml-1">(optional)</span>
                             </label>
-                            <input type="text" name="seo_keywords" value="<?php echo isset($_POST['seo_keywords']) ? escape($_POST['seo_keywords']) : ''; ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors" placeholder="keyword1, keyword2, keyword3">
-                            <p class="text-[11px] text-gray-500 mt-1">কমা দিয়ে আলাদা করুন</p>
+                            <div class="relative">
+                                <input type="text" name="seo_keywords" value="<?php echo isset($_POST['seo_keywords']) ? escape($_POST['seo_keywords']) : ''; ?>" 
+                                       class="w-full pl-4 pr-10 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200 bg-gray-50/50 hover:bg-white" 
+                                       placeholder="keyword1, keyword2, keyword3">
+                                <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="text-[11px] text-gray-400 mt-1.5 flex items-center gap-1">
+                                <span class="inline-block w-1 h-1 bg-gray-300 rounded-full"></span>
+                                Separate with commas
+                            </p>
                         </div>
-
+        
                         <!-- SEO Description -->
                         <div class="md:col-span-2">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">
                                 Meta Description
+                                <span class="text-gray-400 font-normal text-xs ml-1">(optional)</span>
                             </label>
-                            <textarea name="seo_description" rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors" placeholder="Brief description for search results..."><?php echo isset($_POST['seo_description']) ? escape($_POST['seo_description']) : ''; ?></textarea>
+                            <div class="relative">
+                                <textarea name="seo_description" rows="2" 
+                                          class="w-full pl-4 pr-10 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all duration-200 bg-gray-50/50 hover:bg-white resize-none" 
+                                          placeholder="Write a compelling description for search results..."><?php echo isset($_POST['seo_description']) ? escape($_POST['seo_description']) : ''; ?></textarea>
+                                <div class="absolute right-3 top-3 text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between mt-1.5">
+                                <p class="text-[11px] text-gray-400 flex items-center gap-1">
+                                    <span class="inline-block w-1 h-1 bg-gray-300 rounded-full"></span>
+                                    Recommended: 150-160 characters
+                                </p>
+                                <span class="text-[10px] text-gray-400 bg-gray-50 px-2 py-0.5 rounded-full">0/160</span>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Group 2: Social Media (Open Graph) -->
-                <div class="mb-8">
-                    <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4 border-b pb-2">Social Share (Facebook/Twitter)</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- OG Title -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Open Graph Title
-                            </label>
-                            <input type="text" name="meta_og_title" value="<?php echo isset($_POST['meta_og_title']) ? escape($_POST['meta_og_title']) : ''; ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" placeholder="Title for social media">
+        
+                <!-- Group 2: Social Media -->
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-1 h-6 bg-blue-500 rounded-full"></div>
+                        <h4 class="text-sm font-semibold text-gray-700">Social Sharing</h4>
+                        <span class="text-[10px] font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">Open Graph</span>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-blue-50/30 to-transparent p-4 rounded-xl border border-blue-100/50">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <!-- OG Title -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                                    Social Title
+                                    <span class="text-gray-400 font-normal text-xs ml-1">(optional)</span>
+                                </label>
+                                <input type="text" name="meta_og_title" value="<?php echo isset($_POST['meta_og_title']) ? escape($_POST['meta_og_title']) : ''; ?>" 
+                                       class="w-full px-4 py-2.5 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 bg-white/80" 
+                                       placeholder="Title for social media posts">
+                            </div>
+                            
+                            <!-- OG Description -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1.5">
+                                    Social Description
+                                    <span class="text-gray-400 font-normal text-xs ml-1">(optional)</span>
+                                </label>
+                                <textarea name="meta_og_description" rows="1" 
+                                          class="w-full px-4 py-2.5 border border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 bg-white/80 resize-none" 
+                                          placeholder="Description for social media"><?php echo isset($_POST['meta_og_description']) ? escape($_POST['meta_og_description']) : ''; ?></textarea>
+                            </div>
                         </div>
-                        
-                        <!-- OG Description -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Open Graph Description
-                            </label>
-                            <textarea name="meta_og_description" rows="1" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors" placeholder="Description for social media"><?php echo isset($_POST['meta_og_description']) ? escape($_POST['meta_og_description']) : ''; ?></textarea>
+                        <div class="flex items-center gap-3 mt-3 pt-3 border-t border-blue-100/50">
+                            <span class="text-[10px] font-medium text-gray-400 flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                                Facebook
+                            </span>
+                            <span class="text-[10px] font-medium text-gray-400 flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.104c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 0021.216-5.53c.852-2.143.852-4.294.852-6.435 0-.098-.002-.196-.006-.294A9.99 9.99 0 0023.953 4.57z"/></svg>
+                                Twitter
+                            </span>
+                            <span class="text-[10px] text-gray-400 ml-auto">Preview available when shared</span>
                         </div>
                     </div>
                 </div>
-
+        
                 <!-- Group 3: Advanced SEO -->
-                <div class="mb-8">
-                    <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4 border-b pb-2">Advanced Config</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-1 h-6 bg-purple-500 rounded-full"></div>
+                        <h4 class="text-sm font-semibold text-gray-700">Advanced Configuration</h4>
+                        <span class="text-[10px] font-medium text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full">Technical</span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <!-- Canonical URL -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">
                                 Canonical URL
+                                <span class="text-gray-400 font-normal text-xs ml-1">(optional)</span>
                             </label>
-                            <input type="text" name="canonical_url" value="<?php echo isset($_POST['canonical_url']) ? escape($_POST['canonical_url']) : ''; ?>" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors" placeholder="https://example.com/original-article">
+                            <div class="relative">
+                                <input type="text" name="canonical_url" value="<?php echo isset($_POST['canonical_url']) ? escape($_POST['canonical_url']) : ''; ?>" 
+                                       class="w-full pl-4 pr-10 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-200 bg-gray-50/50 hover:bg-white" 
+                                       placeholder="https://example.com/original-article">
+                                <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="text-[11px] text-gray-400 mt-1.5 flex items-center gap-1">
+                                <span class="inline-block w-1 h-1 bg-gray-300 rounded-full"></span>
+                                Prevents duplicate content issues
+                            </p>
                         </div>
                         
                         <!-- Robots Meta -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-1.5">
                                 Robots Meta
+                                <span class="text-gray-400 font-normal text-xs ml-1">(required)</span>
                             </label>
-                            <select name="robots_meta" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-500 focus:border-gray-500 transition-colors bg-white">
-                                <option value="index,follow" <?php echo (!isset($_POST['robots_meta']) || $_POST['robots_meta'] === 'index,follow') ? 'selected' : ''; ?>>Index, Follow</option>
-                                <option value="index,nofollow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'index,nofollow') ? 'selected' : ''; ?>>Index, Nofollow</option>
-                                <option value="noindex,follow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'noindex,follow') ? 'selected' : ''; ?>>Noindex, Follow</option>
-                                <option value="noindex,nofollow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'noindex,nofollow') ? 'selected' : ''; ?>>Noindex, Nofollow</option>
+                            <select name="robots_meta" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all duration-200 bg-white appearance-none cursor-pointer">
+                                <option value="index,follow" <?php echo (!isset($_POST['robots_meta']) || $_POST['robots_meta'] === 'index,follow') ? 'selected' : ''; ?>>✅ Index, Follow</option>
+                                <option value="index,nofollow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'index,nofollow') ? 'selected' : ''; ?>>📌 Index, Nofollow</option>
+                                <option value="noindex,follow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'noindex,follow') ? 'selected' : ''; ?>>🚫 Noindex, Follow</option>
+                                <option value="noindex,nofollow" <?php echo (isset($_POST['robots_meta']) && $_POST['robots_meta'] === 'noindex,nofollow') ? 'selected' : ''; ?>>🚫 Noindex, Nofollow</option>
                             </select>
+                            <div class="relative pointer-events-none">
+                                <div class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
+        
                 <!-- Group 4: FAQ Schema -->
                 <div>
-                    <div class="flex items-center justify-between mb-4 border-b pb-2">
-                        <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider">FAQ Schema (People also ask)</h4>
-                        <button type="button" onclick="addFaqItem()" class="text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full hover:bg-blue-100 transition-colors">
-                            <i class="fas fa-plus mr-1"></i> Add Question
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-2">
+                            <div class="w-1 h-6 bg-orange-500 rounded-full"></div>
+                            <h4 class="text-sm font-semibold text-gray-700">FAQ Schema</h4>
+                            <span class="text-[10px] font-medium text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full">Rich Results</span>
+                        </div>
+                        <button type="button" onclick="addFaqItem()" class="inline-flex items-center gap-1.5 text-xs font-semibold text-orange-600 bg-orange-50 hover:bg-orange-100 px-4 py-2 rounded-xl transition-all duration-200 border border-orange-200 hover:border-orange-300">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            Add Question
                         </button>
                     </div>
                     
-                    <div id="faq-container" class="space-y-4">
+                    <div id="faq-container" class="space-y-3">
                         <?php 
                         $faqs = [];
                         if (!empty($post['faq_schema'])) { $faqs = json_decode($post['faq_schema'], true); }
                         if (!empty($faqs)): 
                             foreach ($faqs as $index => $faq):
                         ?>
-                            <div class="faq-item bg-gray-50/50 p-4 rounded-lg border border-gray-200 relative group transition-all hover:shadow-sm hover:border-blue-200">
-                                <button type="button" onclick="this.parentElement.remove()" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all bg-white rounded-md p-1.5 shadow-sm border border-gray-100">
-                                    <i class="fas fa-trash-alt text-xs"></i>
+                            <div class="faq-item bg-gradient-to-r from-orange-50/30 to-transparent p-4 rounded-xl border border-orange-100/50 relative group transition-all hover:border-orange-200 hover:shadow-sm">
+                                <button type="button" onclick="this.parentElement.remove()" class="absolute top-2.5 right-2.5 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all bg-white rounded-lg p-1.5 shadow-sm border border-gray-100">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
                                 </button>
                                 <div class="grid gap-3 md:grid-cols-2 pr-8">
                                     <div>
                                         <label class="block text-[11px] font-medium text-gray-500 mb-1">Question</label>
-                                        <input type="text" name="faq_q[]" value="<?php echo escape($faq['q']); ?>" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-1 focus:ring-blue-500 text-sm bg-white" placeholder="e.g. What is the price?">
+                                        <input type="text" name="faq_q[]" value="<?php echo escape($faq['q']); ?>" 
+                                               class="w-full px-3.5 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-200 text-sm bg-white" 
+                                               placeholder="e.g. What is the price?">
                                     </div>
                                     <div>
                                         <label class="block text-[11px] font-medium text-gray-500 mb-1">Answer</label>
-                                        <textarea name="faq_a[]" rows="1" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-1 focus:ring-blue-500 text-sm bg-white" placeholder="e.g. The price starts from..."><?php echo escape($faq['a']); ?></textarea>
+                                        <textarea name="faq_a[]" rows="1" 
+                                                  class="w-full px-3.5 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-200 text-sm bg-white resize-none" 
+                                                  placeholder="e.g. The price starts from..."><?php echo escape($faq['a']); ?></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -811,6 +932,10 @@ ob_start();
                             endforeach;
                         endif; 
                         ?>
+                    </div>
+                    <div class="mt-2 flex items-center gap-2">
+                        <span class="text-[10px] text-gray-400">💡</span>
+                        <p class="text-[10px] text-gray-400">Add frequently asked questions to appear in Google's rich snippets</p>
                     </div>
                 </div>
             </div>
@@ -1457,24 +1582,26 @@ $(document).ready(function() {
 
 function addFaqItem() {
     const container = document.getElementById('faq-container');
-    const item = document.createElement('div');
-    item.className = 'faq-item bg-gray-50/50 p-4 rounded-lg border border-gray-200 relative group transition-all hover:shadow-sm hover:border-blue-200';
-    item.innerHTML = `
-        <button type="button" onclick="this.parentElement.remove()" class="absolute top-3 right-3 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all bg-white rounded-md p-1.5 shadow-sm border border-gray-100">
-            <i class="fas fa-trash-alt text-xs"></i>
+    const faqItem = document.createElement('div');
+    faqItem.className = 'faq-item bg-gradient-to-r from-orange-50/30 to-transparent p-4 rounded-xl border border-orange-100/50 relative group transition-all hover:border-orange-200 hover:shadow-sm';
+    faqItem.innerHTML = `
+        <button type="button" onclick="this.parentElement.remove()" class="absolute top-2.5 right-2.5 text-gray-300 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all bg-white rounded-lg p-1.5 shadow-sm border border-gray-100">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
         </button>
         <div class="grid gap-3 md:grid-cols-2 pr-8">
             <div>
                 <label class="block text-[11px] font-medium text-gray-500 mb-1">Question</label>
-                <input type="text" name="faq_q[]" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-1 focus:ring-blue-500 text-sm bg-white" placeholder="e.g. What is the price?">
+                <input type="text" name="faq_q[]" class="w-full px-3.5 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-200 text-sm bg-white" placeholder="e.g. What is the price?">
             </div>
             <div>
                 <label class="block text-[11px] font-medium text-gray-500 mb-1">Answer</label>
-                <textarea name="faq_a[]" rows="1" class="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-1 focus:ring-blue-500 text-sm bg-white" placeholder="e.g. The price starts from..."></textarea>
+                <textarea name="faq_a[]" rows="1" class="w-full px-3.5 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-200 text-sm bg-white resize-none" placeholder="e.g. The price starts from..."></textarea>
             </div>
         </div>
     `;
-    container.appendChild(item);
+    container.appendChild(faqItem);
 }
 </script>
 
