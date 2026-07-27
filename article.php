@@ -98,29 +98,6 @@ $json_ld = [
     ]
 ];
 
-// Add FAQ Schema if exists
-$faq_json_ld = null;
-if (!empty($article['faq_schema'])) {
-    $faqs = json_decode($article['faq_schema'], true);
-    if (!empty($faqs)) {
-        $faq_json_ld = [
-            '@context' => 'https://schema.org',
-            '@type' => 'FAQPage',
-            'mainEntity' => []
-        ];
-        foreach ($faqs as $faq) {
-            $faq_json_ld['mainEntity'][] = [
-                '@type' => 'Question',
-                'name' => $faq['q'],
-                'acceptedAnswer' => [
-                    '@type' => 'Answer',
-                    'text' => $faq['a']
-                ]
-            ];
-        }
-    }
-}
-
 $breadcrumb_ld = [
     '@context' => 'https://schema.org',
     '@type' => 'BreadcrumbList',
@@ -797,12 +774,6 @@ component('header', ['categories' => $categories]);
             </div>
         </div>
     </div>
-
-    <?php if (isset($faq_json_ld) && !empty($faq_json_ld)): ?>
-    <script type="application/ld+json">
-        <?php echo json_encode($faq_json_ld, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT); ?>
-    </script>
-    <?php endif; ?>
 </main>
 
 <?php
