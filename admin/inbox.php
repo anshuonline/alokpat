@@ -24,19 +24,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && veri
     // Action: Send Message
     if (isset($_POST['action']) && $_POST['action'] === 'send_message') {
         if (hasAnyRole(['super_admin', 'admin'])) {
-            $receiver_id = (int)$_POST['receiver_id'];
+            $receiver_id = $_POST['receiver_id'];
             $message = trim($_POST['message']);
             
             if (!empty($receiver_id) && !empty($message)) {
                 $stmt = $db->prepare("INSERT INTO admin_messages (sender_id, receiver_id, message) VALUES (:sid, :rid, :msg)");
-                if ($stmt->execute([
-                    'sid' => $user['id'],
-                    'rid' => $receiver_id,
-                    'msg' => $message
-                ])) {
-                    setFlash('Message sent successfully!', 'success');
+                
+                if ($receiver_id === 'all') {
+                    $all_users = $db->query("SELECT id FROM users WHERE id != " . (int)$user['id'])->fetchAll();
+                    $success = true;
+                    foreach ($all_users as $u) {
+                        if (!$stmt->execute(['sid' => $user['id'], 'rid' => $u['id'], 'msg' => $message])) {
+                            $success = false;
+                        }
+                    }
+                    if ($success) {
+                        setFlash('Message sent to all staff successfully!', 'success');
+                    } else {
+                        setFlash('Failed to send message to some users.', 'error');
+                    }
                 } else {
-                    setFlash('Failed to send message.', 'error');
+                    if ($stmt->execute([
+                        'sid' => $user['id'],
+                        'rid' => (int)$receiver_id,
+                        'msg' => $message
+                    ])) {
+                        setFlash('Message sent successfully!', 'success');
+                    } else {
+                        setFlash('Failed to send message.', 'error');
+                    }
                 }
             } else {
                 setFlash('Please fill all required fields.', 'error');
@@ -161,6 +177,7 @@ ob_start();
                     <label class="block text-sm font-semibold text-gray-700 mb-2">প্রাপক (Receiver)</label>
                     <select name="receiver_id" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all">
                         <option value="">স্টাফ নির্বাচন করুন...</option>
+                        <option value="all" class="font-bold text-indigo-600">সবাইকে পাঠান (All Staff)</option>
                         <?php foreach ($users as $u): ?>
                             <option value="<?php echo $u['id']; ?>">
                                 <?php echo escape($u['full_name']); ?> (<?php echo ucfirst(str_replace('_', ' ', $u['role'])); ?>)
