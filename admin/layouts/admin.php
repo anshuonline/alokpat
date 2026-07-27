@@ -283,11 +283,16 @@
                         </div>
                         
                         <?php
-                        $db_conn = (new Database())->getConnection();
-                        $user_id = getCurrentUser()['id'];
-                        $unread_stmt = $db_conn->prepare("SELECT COUNT(*) FROM admin_messages WHERE receiver_id = :uid AND is_read = 0");
-                        $unread_stmt->execute(['uid' => $user_id]);
-                        $unread_msg_count = $unread_stmt->fetchColumn();
+                        $unread_msg_count = 0;
+                        try {
+                            $db_conn = (new Database())->getConnection();
+                            $user_id = getCurrentUser()['id'];
+                            $unread_stmt = $db_conn->prepare("SELECT COUNT(*) FROM admin_messages WHERE receiver_id = :uid AND is_read = 0");
+                            $unread_stmt->execute(['uid' => $user_id]);
+                            $unread_msg_count = $unread_stmt->fetchColumn();
+                        } catch (Exception $e) {
+                            // Table may not exist yet
+                        }
                         ?>
                         <a href="<?php echo ADMIN_URL; ?>/inbox.php" class="relative text-gray-500 hover:text-indigo-600 transition-colors" title="Messages">
                             <i class="fas fa-envelope text-2xl"></i>

@@ -49,15 +49,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && veri
 }
 
 // Fetch Inbox Messages
-$stmt = $db->prepare("
-    SELECT m.*, u.full_name as sender_name, u.avatar as sender_avatar 
-    FROM admin_messages m 
-    JOIN users u ON m.sender_id = u.id 
-    WHERE m.receiver_id = :uid 
-    ORDER BY m.created_at DESC
-");
-$stmt->execute(['uid' => $user['id']]);
-$messages = $stmt->fetchAll();
+$messages = [];
+try {
+    $stmt = $db->prepare("
+        SELECT m.*, u.full_name as sender_name, u.avatar as sender_avatar 
+        FROM admin_messages m 
+        JOIN users u ON m.sender_id = u.id 
+        WHERE m.receiver_id = :uid 
+        ORDER BY m.created_at DESC
+    ");
+    $stmt->execute(['uid' => $user['id']]);
+    $messages = $stmt->fetchAll();
+} catch (Exception $e) {
+    // Table may not exist yet
+}
 
 // Fetch Users for sending message (if admin)
 $users = [];
