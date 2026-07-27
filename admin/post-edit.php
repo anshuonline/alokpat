@@ -118,6 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'post_type' => sanitize($_POST['post_type'] ?? 'standard'),
             'meta_twitter_card' => sanitize($_POST['meta_twitter_card'] ?? 'summary_large_image'),
             'robots_meta' => sanitize($_POST['robots_meta'] ?? 'index,follow'),
+            'schema_markup' => $_POST['schema_markup'] ?? '',
             'tags' => $processed_tags,
         ];
         
@@ -771,6 +772,33 @@ ob_start();
                     </select>
                 </div>
                 
+                <!-- Schema Markup (FAQ / JSON-LD) -->
+                <div class="col-span-1 md:col-span-2 mt-2 p-4 border border-blue-100 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 shadow-sm relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-200 rounded-full mix-blend-multiply filter blur-2xl opacity-30 group-hover:opacity-60 transition-opacity duration-500"></div>
+                    <label class="flex items-center text-sm font-bold text-gray-800 mb-3">
+                        <i class="fas fa-code text-blue-600 mr-2"></i> FAQ Schema (JSON-LD Format)
+                        <span class="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-800 shadow-sm">
+                            <i class="fas fa-check-circle mr-1"></i> SEO Optimized
+                        </span>
+                    </label>
+                    <div class="relative">
+                        <textarea id="schema_markup" name="schema_markup" 
+                                  rows="8"
+                                  class="w-full px-4 py-4 bg-gray-900 border-0 rounded-xl focus:ring-4 focus:ring-blue-500/30 font-mono text-sm text-green-400 transition-all duration-300 shadow-inner scrollbar-thin scrollbar-thumb-gray-600"
+                                  placeholder="Paste your FAQ Schema JSON here...
+{
+  &quot;@context&quot;: &quot;https://schema.org&quot;,
+  &quot;@type&quot;: &quot;FAQPage&quot;,
+  &quot;mainEntity&quot;: [...]
+}"><?php echo isset($_POST['schema_markup']) ? htmlspecialchars($_POST['schema_markup']) : ''; ?></textarea>
+                        <button type="button" onclick="formatSchemaJson()" class="absolute top-3 right-3 bg-white/10 hover:bg-blue-600 text-white backdrop-blur-md border border-white/20 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all shadow-lg flex items-center gap-2 z-10" title="Format JSON">
+                            <i class="fas fa-magic"></i> Format & Validate
+                        </button>
+                    </div>
+                    <div id="schema_validation_msg" class="text-xs mt-2 hidden transition-all duration-300 font-medium"></div>
+                    <p class="text-xs text-gray-500 mt-3"><i class="fas fa-info-circle mr-1"></i> Paste valid JSON-LD. This helps search engines understand your FAQ content and display rich snippets.</p>
+                </div>
+                
             </div>
         </div>
         
@@ -795,6 +823,39 @@ function removeFeaturedImage() {
     document.getElementById('featuredImagePreview').src = '';
     document.getElementById('featuredImagePreviewContainer').classList.add('hidden');
     document.getElementById('featured_image_url').value = '';
+}
+
+function formatSchemaJson() {
+    const textarea = document.getElementById('schema_markup');
+    const msgDiv = document.getElementById('schema_validation_msg');
+    const val = textarea.value.trim();
+    if (!val) {
+        msgDiv.className = 'text-xs mt-2 text-yellow-600 font-medium block';
+        msgDiv.innerHTML = '<i class="fas fa-exclamation-triangle mr-1"></i> Please paste some JSON first.';
+        return;
+    }
+    
+    try {
+        let cleanVal = val;
+        // Remove script tags if pasted accidentally
+        if (cleanVal.includes('<script')) {
+            cleanVal = cleanVal.replace(/<script[^>]*>/gi, '').replace(/<\/script>/gi, '').trim();
+        }
+        const obj = JSON.parse(cleanVal);
+        textarea.value = JSON.stringify(obj, null, 2);
+        
+        msgDiv.className = 'text-xs mt-2 text-green-600 font-medium block';
+        msgDiv.innerHTML = '<i class="fas fa-check mr-1"></i> Valid JSON formatted successfully!';
+        
+        // Add a subtle flash effect
+        textarea.classList.add('ring-2', 'ring-green-500');
+        setTimeout(() => textarea.classList.remove('ring-2', 'ring-green-500'), 1000);
+    } catch (e) {
+        msgDiv.className = 'text-xs mt-2 text-red-500 font-medium block';
+        msgDiv.innerHTML = '<i class="fas fa-times mr-1"></i> Invalid JSON format: ' + e.message;
+        textarea.classList.add('ring-2', 'ring-red-500');
+        setTimeout(() => textarea.classList.remove('ring-2', 'ring-red-500'), 1000);
+    }
 }
 
 function copyFullUrl() {
