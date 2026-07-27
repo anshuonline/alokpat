@@ -63,6 +63,7 @@ if ($showFlags) {
             <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
                 <img src="<?php echo $imgSrc; ?>" 
                      alt="<?php echo escape($post['title']); ?>" 
+                     title="<?php echo escape($post['title']); ?>" 
                      class="w-full h-full <?php echo $imgClass; ?> object-cover group-hover:scale-105 transition duration-500"
                      fetchpriority="high" onload="this.classList.remove('animate-pulse', 'bg-gray-200');">
             </a>
@@ -87,6 +88,7 @@ if ($showFlags) {
             <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
                 <img src="<?php echo $imgSrc; ?>" 
                      alt="<?php echo escape($post['title']); ?>" 
+                     title="<?php echo escape($post['title']); ?>" 
                      class="w-full h-full <?php echo $imgClass; ?> object-cover group-hover:scale-110 transition duration-300"
                      loading="lazy" onload="this.classList.remove('animate-pulse', 'bg-gray-200');">
             </a>
@@ -108,6 +110,7 @@ if ($showFlags) {
             <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
                 <img src="<?php echo $imgSrc; ?>" 
                      alt="<?php echo escape($post['title']); ?>" 
+                     title="<?php echo escape($post['title']); ?>" 
                      class="w-full h-full <?php echo $imgClass; ?> object-cover group-hover:scale-105 transition duration-500"
                      loading="lazy" onload="this.classList.remove('animate-pulse', 'bg-gray-200');">
             </a>
@@ -155,6 +158,7 @@ if ($showFlags) {
                     <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
                         <img src="<?php echo escape($post['featured_image']); ?>" 
                              alt="<?php echo escape($post['featured_image_alt'] ?? $post['title']); ?>" 
+                             title="<?php echo escape($post['featured_image_alt'] ?? $post['title']); ?>" 
                              class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                              loading="lazy" onload="this.classList.remove('animate-pulse', 'bg-gray-200');">
                     </a>
@@ -198,7 +202,7 @@ if ($showFlags) {
         <?php if (!empty($post['featured_image'])): ?>
             <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
                 <div class="relative w-full h-full overflow-hidden">
-                <img src="<?php echo $imgSrc; ?>" alt="<?php echo escape($post['featured_image_alt'] ?? $post['title']); ?>" 
+                <img src="<?php echo $imgSrc; ?>" alt="<?php echo escape($post['featured_image_alt'] ?? $post['title']); ?>" title="<?php echo escape($post['featured_image_alt'] ?? $post['title']); ?>" 
                      class="w-full h-full object-cover transition-transform duration-700 hover:scale-105 <?php echo $imgClass; ?>" 
                      fetchpriority="high" onload="this.classList.remove('animate-pulse', 'bg-gray-200');">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
@@ -257,6 +261,7 @@ if ($showFlags) {
                 <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full">
                     <img src="<?php echo escape($post['featured_image']); ?>" 
                          alt="<?php echo escape($post['featured_image_alt'] ?? $post['title']); ?>" 
+                         title="<?php echo escape($post['featured_image_alt'] ?? $post['title']); ?>" 
                          class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
                          loading="lazy" onload="this.classList.remove('animate-pulse', 'bg-gray-200');">
                 </a>
@@ -265,7 +270,7 @@ if ($showFlags) {
         <?php else: ?>
             <div class="relative overflow-hidden group aspect-video bg-gray-50 flex items-center justify-center">
                 <a href="<?php echo url_for_post($post); ?>" class="block w-full h-full flex items-center justify-center">
-                    <img src="<?php echo $imgSrc; ?>" alt="logo" class="h-20 opacity-30 object-contain">
+                    <img src="<?php echo $imgSrc; ?>" alt="logo" title="<?php echo escape($post['title']); ?>" class="h-20 opacity-30 object-contain">
                 </a>
                 <?php echo $badgeHtml; ?>
             </div>

@@ -233,6 +233,7 @@ component('header', ['categories' => $categories]);
                 <a href="<?php echo escape($article['featured_image']); ?>" class="glightbox" data-title="<?php echo escape($article['featured_image_alt'] ?? $article['title']); ?>">
                     <img src="<?php echo escape($article['featured_image']); ?>" 
                          alt="<?php echo escape($article['featured_image_alt'] ?? $article['title']); ?>" 
+                         title="<?php echo escape($article['featured_image_alt'] ?? $article['title']); ?>" 
                          class="w-full h-full object-cover rounded-lg shadow-sm cursor-zoom-in opacity-0 transition-opacity duration-500"
                          onload="this.style.opacity='1'; document.getElementById('featured-img-skeleton').classList.remove('animate-pulse', 'bg-gray-200');">
                 </a>
@@ -409,6 +410,14 @@ component('header', ['categories' => $categories]);
                     
                     if (stripos($attrs, 'loading=') === false) {
                         $attrs .= ' loading="lazy"';
+                    }
+                    
+                    if (stripos($attrs, 'title=') === false) {
+                        if (preg_match('/alt=(["\'])(.*?)\1/i', $attrs, $alt_match)) {
+                            $attrs .= ' title="' . htmlspecialchars($alt_match[2], ENT_QUOTES, 'UTF-8') . '"';
+                        } else {
+                            $attrs .= ' title=""';
+                        }
                     }
                     
                     $onload = "this.style.opacity='1'; this.classList.remove('animate-pulse', 'bg-gray-200');";
@@ -671,7 +680,7 @@ component('header', ['categories' => $categories]);
         <div class="mb-12 bg-primary-50 rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6 border border-primary-100">
             <div class="flex-shrink-0">
                 <?php if (!empty($article['author_avatar'])): ?>
-                    <img src="<?php echo escape($article['author_avatar']); ?>" class="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover shadow-md border-4 border-white" alt="<?php echo escape($article['author_name'] ?? 'Author'); ?>">
+                    <img src="<?php echo escape($article['author_avatar']); ?>" class="w-24 h-24 md:w-32 md:h-32 rounded-full object-cover shadow-md border-4 border-white" alt="<?php echo escape($article['author_name'] ?? 'Author'); ?>" title="<?php echo escape($article['author_name'] ?? 'Author'); ?>">
                 <?php else: ?>
                     <div class="w-24 h-24 md:w-32 md:h-32 rounded-full bg-primary-200 text-primary-600 flex items-center justify-center text-4xl shadow-md border-4 border-white">
                         <i class="fas fa-user"></i>
@@ -706,6 +715,7 @@ component('header', ['categories' => $categories]);
                                 <a href="<?php echo url_for_post($related); ?>" class="block aspect-video">
                                     <img src="<?php echo escape($related['featured_image']); ?>" 
                                          alt="<?php echo escape($related['title']); ?>" 
+                                         title="<?php echo escape($related['title']); ?>" 
                                          class="w-full h-full object-cover">
                                 </a>
                             <?php endif; ?>
@@ -735,7 +745,7 @@ component('header', ['categories' => $categories]);
             </button>
             <div class="p-8 text-center">
                 <?php if (!empty($article['author_avatar'])): ?>
-                    <img src="<?php echo escape($article['author_avatar']); ?>" alt="<?php echo escape($article['author_name']); ?>" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-blue-100 object-cover">
+                    <img src="<?php echo escape($article['author_avatar']); ?>" alt="<?php echo escape($article['author_name']); ?>" title="<?php echo escape($article['author_name']); ?>" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-blue-100 object-cover">
                 <?php else: ?>
                     <div class="w-24 h-24 rounded-full mx-auto mb-4 bg-blue-100 text-blue-600 flex items-center justify-center text-4xl font-bold border-4 border-blue-50">
                         <?php echo mb_substr($article['author_name'], 0, 1); ?>

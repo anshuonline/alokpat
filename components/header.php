@@ -35,7 +35,7 @@ $is_home = ($current_path === $site_path || $current_path === rtrim($site_path, 
     </button>
     <a href="<?php echo SITE_URL; ?>" class="flex-shrink-0 flex items-center justify-center mx-4">
         <?php if (!empty($site_info['site_logo'])): ?>
-            <img src="<?php echo escape($site_info['site_logo']); ?>" alt="Logo" class="h-9 object-contain">
+            <img src="<?php echo escape($site_info['site_logo']); ?>" alt="Logo" title="<?php echo escape($site_info['site_name'] ?? 'আলোকপাত'); ?>" class="h-9 object-contain">
         <?php else: ?>
             <h1 class="text-2xl font-heading font-black text-gray-900 tracking-tight m-0 leading-none">
                 <?php echo escape($site_info['site_name'] ?? 'আলোকপাত'); ?>
@@ -73,7 +73,7 @@ $hor_home_class = $is_home ? "text-primary-700 font-bold" : "text-gray-700 font-
     <div class="max-w-6xl mx-auto px-4 flex flex-col items-center justify-center">
         <a href="<?php echo SITE_URL; ?>" class="mb-3">
             <?php if (!empty($site_info['site_logo'])): ?>
-                <img src="<?php echo escape($site_info['site_logo']); ?>" alt="Logo" class="h-16 md:h-20">
+                <img src="<?php echo escape($site_info['site_logo']); ?>" alt="Logo" title="<?php echo escape($site_info['site_name'] ?? 'আলোকপাত'); ?>" class="h-16 md:h-20">
             <?php else: ?>
                 <h1 class="text-3xl font-heading font-black text-gray-900 tracking-tight">
                     <?php echo escape($site_info['site_name'] ?? 'আলোকপাত'); ?>

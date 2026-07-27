@@ -18,7 +18,7 @@ $categories = $category->getActive();
             <!-- About -->
             <div>
                 <?php if (!empty($site_info['footer_logo'])): ?>
-                    <img src="<?php echo escape($site_info['footer_logo']); ?>" alt="Footer Logo" class="h-16 w-auto mb-6 brightness-0 invert object-contain object-left">
+                    <img src="<?php echo escape($site_info['footer_logo']); ?>" alt="Footer Logo" title="<?php echo escape($site_info['site_name'] ?? 'আলোকপাত'); ?>" class="h-16 w-auto mb-6 brightness-0 invert object-contain object-left">
                 <?php else: ?>
                     <h3 class="text-3xl font-bold mb-6 text-white tracking-wide">
                         <?php echo escape($site_info['site_name'] ?? 'আলোকপাত'); ?>

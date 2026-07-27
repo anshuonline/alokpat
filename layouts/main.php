@@ -608,5 +608,14 @@ if (isset($json_ld)): ?>
     </script>
     <?php endif; // end if $fcm_popup_enable === '1' ?>
     <?php } // end if !empty($fcm_api_key) ?>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('img').forEach(function(img) {
+            if (!img.getAttribute('title') && img.getAttribute('alt')) {
+                img.setAttribute('title', img.getAttribute('alt'));
+            }
+        });
+    });
+    </script>
 </body>
 </html>
