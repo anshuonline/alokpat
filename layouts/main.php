@@ -492,6 +492,39 @@ if (isset($json_ld)): ?>
                 }
             }
 
+            // Reusable function to fetch and save token
+            async function fetchAndSaveFCMToken(swReg) {
+                try {
+                    if (!swReg) {
+                        swReg = await navigator.serviceWorker.register('<?php echo SITE_URL; ?>/firebase-messaging-sw.js');
+                    }
+                    await navigator.serviceWorker.ready;
+                    
+                    const tokenOptions = { 
+                        vapidKey: "<?php echo escape($fcm_vapid_key); ?>",
+                        serviceWorkerRegistration: swReg
+                    };
+                    
+                    const token = await messaging.getToken(tokenOptions);
+                    if (token) {
+                        await fetch('<?php echo SITE_URL; ?>/api/fcm_subscribe.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ token: token })
+                        });
+                        console.log('FCM Token synced successfully');
+                    }
+                } catch (err) {
+                    console.error('FCM Token/Sync Error:', err);
+                    throw err;
+                }
+            }
+
+            // Auto-sync token if permission is already granted! (Crucial Fix for 0 subscribers)
+            if ('Notification' in window && Notification.permission === 'granted') {
+                fetchAndSaveFCMToken(swRegistration).catch(e => console.warn('Background sync failed:', e));
+            }
+
             const popup = document.getElementById('fcm-popup');
             const overlay = document.getElementById('fcm-popup-overlay');
             const subscribeBtn = document.getElementById('fcm-subscribe-btn');
@@ -550,31 +583,11 @@ if (isset($json_ld)): ?>
                         // Once subscribed, never show popup again
                         localStorage.setItem('fcm_dismissed_forever', 'true');
                         
+                        // Fetch token and save to DB
+                        await fetchAndSaveFCMToken(swRegistration);
+
                         // Dismiss popup after 2 seconds
                         setTimeout(dismissPopup, 2000);
-                        
-                        // Ensure SW is ready before fetching token
-                        if (!swRegistration) {
-                            swRegistration = await navigator.serviceWorker.register('<?php echo SITE_URL; ?>/firebase-messaging-sw.js');
-                        }
-                        await navigator.serviceWorker.ready;
-                        
-                        // Fetch token with SW registration and save to DB
-                        const tokenOptions = { 
-                            vapidKey: "<?php echo escape($fcm_vapid_key); ?>",
-                            serviceWorkerRegistration: swRegistration
-                        };
-                        messaging.getToken(tokenOptions)
-                            .then(token => {
-                                if (token) {
-                                    fetch('<?php echo SITE_URL; ?>/api/fcm_subscribe.php', {
-                                        method: 'POST',
-                                        headers: { 'Content-Type': 'application/json' },
-                                        body: JSON.stringify({ token: token })
-                                    }).catch(e => console.error('DB Save error:', e));
-                                }
-                            })
-                            .catch(e => console.error('Token error:', e));
                             
                     } else {
                         throw new Error('Permission denied');
