@@ -7,6 +7,7 @@ database/migrations/*.sql
 update_db*.php
 test*.php
 create_symlink.php
+gitpull.php
 
 # Uploads and Media
 /uploads
