@@ -6,6 +6,33 @@
  * @package Alokpath\Helpers
  */
 
+// --- IMMORTAL SYMLINK FOR HOSTINGER GIT DEPLOYMENTS ---
+// This ensures that the uploads symlink survives Git Auto-Deploys by recreating it instantly if missing.
+// We put this in functions.php because it's tracked by Git and loaded globally.
+if (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== 'localhost' && $_SERVER['HTTP_HOST'] !== '127.0.0.1') {
+    // Define BASE_PATH if not defined (though it should be from config.php)
+    $base = defined('BASE_PATH') ? BASE_PATH : dirname(__DIR__);
+    $target_dir = dirname($base) . '/shared_uploads';
+    $symlink_path = $base . '/uploads';
+
+    if (!is_link($symlink_path)) {
+        // If Git created an empty folder named 'uploads', remove it
+        if (is_dir($symlink_path)) {
+            @rmdir($symlink_path);
+        }
+        
+        // Ensure target exists outside public_html
+        if (!is_dir($target_dir)) {
+            @mkdir($target_dir, 0755, true);
+        }
+        
+        // Recreate the symlink instantly
+        if (!file_exists($symlink_path)) {
+            @symlink($target_dir, $symlink_path);
+        }
+    }
+}
+
 /**
  * Sanitize input data
  * 
