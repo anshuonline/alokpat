@@ -54,7 +54,7 @@ if (!empty($homepage_categories_json)) {
         $categories = $filtered_categories;
     }
 }
-$latest_posts = $post->getPublished(5); // Fetch exactly 5 for the 1+4 layout
+$latest_posts = $post->getPublished(15); // Fetch 15 for the new professional layout
 
 $home_seo_title = $setting->get('home_seo_title');
 $page_title = $home_seo_title ?: 'প্রচ্ছদ';
@@ -123,29 +123,97 @@ component('header', ['categories' => $categories]);
         <!-- Featured Section Removed -->
         
         
-        <!-- Top Split Section (Recent News + Sidebar) -->
+        <!-- Top Split Section (Recent News) -->
         <div class="w-full mb-10">
-            <!-- Recent News Grid (1 Large, 4 Small) -->
+            <!-- Recent News - Professional Layout (15 posts) -->
             <?php if (!empty($latest_posts)): ?>
-            <section class="bg-white p-6 shadow-sm border-t-4 border-gray-400">
-                <div class="flex justify-center mb-8 relative">
-                    <div class="absolute inset-0 flex items-center" aria-hidden="true">
-                        <div class="w-full border-t border-gray-300"></div>
-                    </div>
-                    <div class="relative bg-white px-4">
-                        <h2 class="text-xl md:text-2xl font-bold text-primary-800 bg-primary-50 px-6 py-2 rounded-full border border-primary-100 shadow-sm">
-                            সাম্প্রতিক খবর
-                        </h2>
-                    </div>
+            <section class="bg-white shadow-sm border-t-4 border-primary-500 rounded-b-lg overflow-hidden">
+                <!-- Section Header -->
+                <div class="bg-primary-600 text-white px-5 py-3 flex justify-between items-center">
+                    <h2 class="text-xl font-bold flex items-center">
+                        <i class="far fa-newspaper mr-2.5 text-primary-200"></i>সাম্প্রতিক খবর
+                    </h2>
+                    <span class="text-xs text-primary-200 font-medium hidden sm:inline-block">
+                        <i class="fas fa-sync-alt mr-1"></i>সর্বশেষ আপডেট
+                    </span>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                        <?php component('news-card', ['post' => $latest_posts[0], 'variant' => 'magazine-main', 'theme' => 'light']); ?>
+                <div class="p-5 md:p-6">
+                    <!-- Row 1: Hero (1 large left) + 4 list items right -->
+                    <div class="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8">
+                        <!-- Hero Post (3 cols) -->
+                        <div class="lg:col-span-3">
+                            <?php component('news-card', ['post' => $latest_posts[0], 'variant' => 'magazine-main', 'theme' => 'light']); ?>
+                        </div>
+                        <!-- Side List (2 cols) -->
+                        <div class="lg:col-span-2 flex flex-col justify-between">
+                            <?php foreach (array_slice($latest_posts, 1, 4) as $lp): ?>
+                                <?php component('news-card', ['post' => $lp, 'variant' => 'magazine-list', 'theme' => 'light']); ?>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
-                    <div class="flex flex-col justify-between space-y-4">
-                        <?php foreach (array_slice($latest_posts, 1, 4) as $latest_post): ?>
-                            <?php component('news-card', ['post' => $latest_post, 'variant' => 'magazine-list', 'theme' => 'light']); ?>
+                    
+                    <!-- Divider -->
+                    <div class="border-t-2 border-primary-100 mb-8"></div>
+                    
+                    <!-- Row 2: 4 medium vertical cards in a grid -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5 mb-8">
+                        <?php foreach (array_slice($latest_posts, 5, 4) as $mp): ?>
+                        <a href="<?php echo url_for_post($mp); ?>" class="group block">
+                            <div class="relative overflow-hidden rounded-lg aspect-video mb-2.5 bg-gray-100">
+                                <?php if(!empty($mp['featured_image'])): ?>
+                                    <img src="<?php echo escape($mp['featured_image']); ?>" 
+                                         alt="<?php echo escape($mp['title']); ?>" 
+                                         loading="lazy" 
+                                         class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
+                                         onload="this.classList.remove('animate-pulse', 'bg-gray-200');">
+                                <?php endif; ?>
+                                <?php if(!empty($mp['category_name'])): ?>
+                                    <span class="absolute bottom-0 left-0 bg-primary-600 text-white text-[10px] font-bold px-2 py-0.5">
+                                        <?php echo escape($mp['category_name']); ?>
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+                            <h3 class="font-bold text-gray-800 group-hover:text-primary-600 transition text-sm leading-snug line-clamp-2 mb-1">
+                                <?php echo escape($mp['title']); ?>
+                            </h3>
+                            <p class="text-[11px] text-gray-400 font-medium">
+                                <i class="far fa-clock mr-1"></i><?php echo timeAgoBengali($mp['published_at'] ?? $mp['created_at']); ?>
+                            </p>
+                        </a>
+                        <?php endforeach; ?>
+                    </div>
+                    
+                    <!-- Divider -->
+                    <div class="border-t-2 border-primary-100 mb-8"></div>
+                    
+                    <!-- Row 3: 6 compact horizontal list items (2 columns) -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-0">
+                        <?php foreach (array_slice($latest_posts, 9, 6) as $idx => $cp): ?>
+                        <a href="<?php echo url_for_post($cp); ?>" class="group flex items-center py-3.5 border-b border-dashed border-gray-200 last:border-0 gap-4">
+                            <span class="flex-shrink-0 w-8 h-8 rounded-full bg-primary-50 text-primary-600 font-black text-sm flex items-center justify-center border border-primary-100">
+                                <?php echo $idx + 10; ?>
+                            </span>
+                            <?php if(!empty($cp['featured_image'])): ?>
+                                <div class="w-16 h-12 flex-shrink-0 overflow-hidden rounded bg-gray-100">
+                                    <img src="<?php echo escape($cp['featured_image']); ?>" 
+                                         alt="<?php echo escape($cp['title']); ?>" 
+                                         loading="lazy" 
+                                         class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
+                                </div>
+                            <?php endif; ?>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-bold text-gray-700 group-hover:text-primary-600 transition text-[14px] leading-snug line-clamp-2">
+                                    <?php echo escape($cp['title']); ?>
+                                </h3>
+                                <p class="text-[11px] text-gray-400 mt-0.5">
+                                    <?php if(!empty($cp['category_name'])): ?>
+                                        <span class="text-primary-500 font-semibold"><?php echo escape($cp['category_name']); ?></span> &middot; 
+                                    <?php endif; ?>
+                                    <?php echo timeAgoBengali($cp['published_at'] ?? $cp['created_at']); ?>
+                                </p>
+                            </div>
+                        </a>
                         <?php endforeach; ?>
                     </div>
                 </div>
