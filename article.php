@@ -765,23 +765,19 @@ component('header', ['categories' => $categories]);
                     <div class="flex items-center justify-between border-b-2 border-primary-100 pb-3 mb-5">
                         <h3 class="text-lg font-bold text-gray-800">
                             <span class="text-primary-600 border-b-2 border-primary-600 pb-3 -mb-[18px] inline-block">
-                                <?php echo !empty($article['category_name']) ? escape($article['category_name']) . ' থেকে আরও' : 'সর্বশেষ সংবাদ'; ?>
+                                সর্বশেষ সংবাদ
                             </span>
                         </h3>
                     </div>
                     
                     <div class="flex flex-col gap-4">
                         <?php 
-                        // Fetch latest posts from the same category, excluding current
-                        $sidebar_posts = $post->getRelated($article['id'], $article['category_id'] ?? 0, 6);
-                        if (empty($sidebar_posts)) {
-                            // Fallback to latest posts if no category related posts
-                            $sidebar_posts = $post->getPublished(6);
-                        }
+                        // Fetch latest posts from any category
+                        $sidebar_posts = $post->getPublished(6);
                         
                         if (!empty($sidebar_posts)):
                             foreach ($sidebar_posts as $sb_post): 
-                                // Skip current article in fallback
+                                // Skip current article
                                 if ($sb_post['id'] == $article['id']) continue;
                         ?>
                         <a href="<?php echo url_for_post($sb_post); ?>" class="group flex gap-4 items-center bg-white p-2.5 rounded-xl hover:shadow-md transition duration-300 border border-gray-100">
@@ -805,13 +801,11 @@ component('header', ['categories' => $categories]);
                         ?>
                     </div>
                     
-                    <?php if (!empty($article['category_slug'])): ?>
-                        <div class="mt-6 text-center">
-                            <a href="<?php echo SITE_URL; ?>/category.php?slug=<?php echo escape($article['category_slug']); ?>" class="inline-block w-full py-2.5 rounded-xl bg-primary-50 text-primary-600 font-bold hover:bg-primary-600 hover:text-white transition duration-300">
-                                সব খবর দেখুন <i class="fas fa-arrow-right ml-1 text-sm"></i>
-                            </a>
-                        </div>
-                    <?php endif; ?>
+                    <div class="mt-6 text-center">
+                        <a href="<?php echo SITE_URL; ?>" class="inline-block w-full py-2.5 rounded-xl bg-primary-50 text-primary-600 font-bold hover:bg-primary-600 hover:text-white transition duration-300">
+                            আরও খবর দেখুন <i class="fas fa-arrow-right ml-1 text-sm"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         </aside>
