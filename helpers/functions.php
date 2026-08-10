@@ -471,6 +471,18 @@ function uploadFile($file, $directory = 'uploads') {
         return ['error' => 'শুধু ' . implode(', ', $allowed_extensions) . ' ফাইল আপলোড করা যাবে'];
     }
     
+    // Validate actual MIME type (Security Fix)
+    if (function_exists('finfo_open')) {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime_type = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+        
+        $allowed_mimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif'];
+        if (!in_array($mime_type, $allowed_mimes)) {
+            return ['error' => 'অবৈধ ফাইল ফরম্যাট! ক্ষতিকর কন্টেন্ট পাওয়া গেছে।'];
+        }
+    }
+    
     // Create directory structure by date
     if (UPLOAD_DIR_STRUCTURE) {
         $directory .= '/' . date('Y/m/d');
